@@ -26,6 +26,7 @@ export function DropableNew(props) {
             .draggable({
                 inertia: true,
                 autoScroll: true,
+                allowFrom: `#Svg${id}`,
                 modifiers: [
                     interact.modifiers.restrictRect({
                         restriction: 'parent',
@@ -40,8 +41,12 @@ export function DropableNew(props) {
                     end: handleEnd
                 }
             })
-            .on('doubletap', function (e) {
-                changeshown(e)
+            .on(
+                'doubletap', function (e) {
+                    changeshown(e)
+                })
+            .pointerEvents({
+                allowFrom: `#Svg${id}`,
             })
         return () => {
             // Clean up any e listeners or resources if needed
@@ -110,8 +115,35 @@ export function DropableNew(props) {
         <div
             // onMouseEnter={() => setIsShown(true)}
             ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
-            {props.children}
-            <div style={{ position: "absolute", marginTop: "26px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
+            <div id={`Svg${id}`}>
+                {props.children}
+            </div>
+            {
+                id.split("_")[0] == "distributedLoad" && (<input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    // className="form-control-sm"  
+                    aria-label={`Change position of ${id}`}
+                    value={inputValue}
+                    id={`setLength${id}`}
+                    style={{ width: "60px", textAlign: "center", height: "22px" }}
+                    onChange={handleInputChange} // Handle input changes
+                    // Handle input changes
+                    onBlur={(e) => {
+                        e.stopPropagation()
+                        console.log(e.target.value)
+                        let newPosition = (parseFloat(e.target.value)).toFixed(3)
+                        console.log(newPosition)
+                        newPosition = Math.max(newPosition, 0)
+                        newPosition = Math.min(newPosition, props.beamLength)
+                        console.log(props.beamLength)
+                        setinputValue(e.target.value)
+                        changeToolValue(beamID, id, "span", newPosition)
+                    }} />)
+            }
+
+            <div style={{ position: "absolute", marginTop: "32px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
                 <input
                     type="number"
                     inputMode="numeric"

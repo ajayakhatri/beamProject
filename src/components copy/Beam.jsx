@@ -7,7 +7,6 @@ import { BeamBar } from './DndStage1';
 function InputBeamLength({ beam, onChange, updateScale }) {
 
   const [inputValue, setInputValue] = useState(beam.length);
-  const [a, seta] = useState(null);
 
   return (
     <div className='d-flex justify-content-between'>
@@ -46,7 +45,6 @@ function InputBeamLength({ beam, onChange, updateScale }) {
       </div>
       <div className="border-primary" style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed" }}></div>
       <span className="text-primary">&#8594;</span>|
-      {a}
     </div>
   )
 }
@@ -82,10 +80,12 @@ function Beam() {
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     const beamRollerSupport = beams[beamIndex]?.tools?.rollerSupport || [];
     const beamPointLoad = beams[beamIndex]?.tools?.pointLoad || [];
+    const distributedLoad = beams[beamIndex]?.tools?.distributedLoad || [];
     const beamHingedSupport = beams[beamIndex]?.tools?.hingedSupport || [];
     console.log(`----Info of beam ${beamID}----`)
     console.log("Roller Supports", beamRollerSupport.length, beamRollerSupport)
     console.log("Point Loads", beamPointLoad.length, beamPointLoad)
+    console.log("Distributed Load", distributedLoad.length, distributedLoad)
     console.log("Hinged Supports", beamHingedSupport.length, beamHingedSupport)
     console.log("-------------")
   }
@@ -127,21 +127,6 @@ function Beam() {
     );
   }
 
-  // function updateScale(beamID, newScale) {
-  //   setBeams((prevBeams) =>
-  //     produce(prevBeams, (draftBeams) => {
-  //       const beamIndex = draftBeams.findIndex((beam) => beam.id === beamID);
-  //       if (beamIndex !== -1) {
-  //         const toolIndex = draftBeams[beamIndex].tools[toolType].findIndex(
-  //           (tool) => tool.id === toolID
-  //         );
-  //         if (toolIndex !== -1) {
-  //           draftBeams[beamIndex].tools[toolType][toolIndex][property] = newValue;
-  //         }
-  //       }
-  //     })
-  //   );
-  // }
   const changeToolValue = (beamID, toolID, property, newValue) => {
     console.log(`changing....,${property} of ${toolID} of Beam_${beamID} to ${newValue}`)
     setBeams((prevBeams) =>
@@ -162,7 +147,6 @@ function Beam() {
       })
     );
   }
-  const [INdexcale, setINdexcale] = useState(1)
   const [beamscale, setbeamscale] = useState(1)
 
   const updateScale = (beamID, newScale) => {
@@ -182,30 +166,6 @@ function Beam() {
         }
       });
     });
-  }
-
-  const AllDivs = ({ beamID }) => {
-    const toolWidth = getToolWidth()
-    const beamIndex = beams.findIndex((beam) => beam.id === beamID);
-    let beam = beams[beamIndex]
-    console.log(beams[beamIndex].scale, "beammIndex].scale")
-    console.log(beamscale, "beammscaleDiv")
-
-    // console.log(beams)
-    let alldivs = Object.values(beam.tools).map((toolType) =>
-      // console.log("newTool", beams[beamIndex])
-      toolType.map((tool, index) =>
-        <DropableNew deleteTool={deleteTool} changeBeamValue={changeBeamValue} beamLength={beam.length} positionOnBeam={tool.positionOnBeam} beamID={beamID} id={tool.id} key={index} changeToolValue={changeToolValue} style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0, display: "flex", flexDirection: "column" }}>
-          <div style={{
-            scale: "1.8", display: "flex", flexDirection: "row", justifyContent: "center",
-            marginTop: tool.isUp ? "-25px" : "0px",
-          }}>
-            {tool.img}
-          </div>
-        </DropableNew >
-      )
-    )
-    return alldivs;
   }
 
 
@@ -234,7 +194,14 @@ function Beam() {
             positionOnBeam: positionOnBeam,
             isUp: toolType === "rollerSupport" || toolType === "hingedSupport" ? false : true,
             img: getImg(toolType),
+            value: 0,
           };
+          if (toolType === "distributedLoad") {
+            newTool["span"] = 50
+          }
+          if (toolType !== "rollerSupport" || toolType !== "hingedSupport") {
+            newTool["load"] = 5
+          }
           beam.tools[toolType].push(newTool); // Update the beam object directly
         }
       });
@@ -242,34 +209,30 @@ function Beam() {
 
   };
 
-  const addTools = (beamID, toolType, actualPosition, positionOnBeam) => {
+
+  // const changeDLSpan = (beamID, toolID, property, newValue) => {
+  //   changeToolValue(beamID, toolID, property, newValue)
+  // }
+  const AllDivs = ({ beamID }) => {
     const toolWidth = getToolWidth()
-    console.log("Adding tool.....", {
-      "toolType": toolType,
-      "position": actualPosition,
-      "ToolWidth": toolWidth,
-    })
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
-    console.log(beamscale, "bealeDiv")
-    console.log(beams[beamIndex].scale, "beamm].scale")
-    setBeams(previousBeams => {
-      const nextState = produce(previousBeams, (draftBeams) => {
-        if (beamIndex !== -1) {
-          draftBeams[beamIndex]["tools"] = draftBeams[beamIndex]["tools"] || {};
-          draftBeams[beamIndex]["tools"][toolType] = draftBeams[beamIndex]["tools"][toolType] || [];
-          console.log(`Received... beamID: ${beamID} and toolType: ${toolType}`)
-          const newTool = {
-            id: `${toolType}_${beamID}_${draftBeams[beamIndex].tools[toolType].length + 1}`,
-            actualPosition: actualPosition,
-            positionOnBeam: positionOnBeam,
-            isUp: toolType === "rollerSupport" || toolType === "hingedSupport" ? false : true,
-            img: getImg(toolType)
-          };
-          draftBeams[beamIndex].tools[toolType].push(newTool);
-        }
-      });
-      return nextState;
-    });
+    let beam = beams[beamIndex]
+    console.log(beams[beamIndex].scale, "beammIndex].scale")
+    console.log(beamscale, "beammscaleDiv")
+
+    let alldivs = Object.values(beam.tools).map((toolType) =>
+      // console.log("newTool", beams[beamIndex])
+      toolType.map((tool, index) =>
+        <DropableNew deleteTool={deleteTool} changeBeamValue={changeBeamValue} beamLength={beam.length} positionOnBeam={tool.positionOnBeam} beamID={beamID} id={tool.id} key={index} changeToolValue={changeToolValue} style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0, display: "flex", flexDirection: "column" }}>
+          <div style={{
+            display: "flex", flexDirection: "row", justifyContent: "center",
+          }}>
+            {tool.img}
+          </div>
+        </DropableNew >
+      )
+    )
+    return alldivs;
   }
 
 
