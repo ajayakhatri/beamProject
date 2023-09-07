@@ -3,7 +3,6 @@ import interact from 'interactjs';
 import { actualbeamLength, getToolWidth } from './ToolBar';
 import { TbArrowBackUp } from 'react-icons/tb';
 import { RiDeleteBin5Line } from 'react-icons/ri';
-import { validateInput } from './utility';
 
 export function DropableNew(props) {
     const { beamID, changeToolValue, beamLength, style, id, deleteTool } = props
@@ -101,8 +100,10 @@ export function DropableNew(props) {
 
 
     function handleInputChange(e) {
-        let newPosition = e.target.value;
-        setinputValue(newPosition)
+        if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
+            e.target.value = inputValue
+        }
+        setinputValue(e.target.value)
     }
 
     return (
@@ -121,13 +122,6 @@ export function DropableNew(props) {
                     id={`setLength${id}`}
                     style={{ width: "60px", textAlign: "center", }}
                     onChange={handleInputChange} // Handle input changes
-                    onInput={(e) => {
-                        e.stopPropagation()
-                        if (!validateInput(e.key)) {
-                            e.preventDefault()
-                        }
-                    }
-                    }
                     // Handle input changes
                     onBlur={(e) => {
                         e.stopPropagation()

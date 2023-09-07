@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ToolBar, { actualbeamLength, getImg, getToolWidth } from './ToolBar';
 import { produce } from "immer";
 import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
-import { validateInput } from './utility';
 
 function InputBeamLength({ beam, onChange, updateScale }) {
 
   const [inputValue, setInputValue] = useState(beam.length);
+  const [a, seta] = useState(null);
 
   return (
     <div className='d-flex justify-content-between'>
@@ -22,6 +22,10 @@ function InputBeamLength({ beam, onChange, updateScale }) {
           aria-label={`Enter beam length for Beam ${beam.id}`}
           value={inputValue}
           onChange={(e) => {
+            e.stopPropagation()
+            if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
+              e.target.value = inputValue
+            }
             const newValue = (e.target.value < 0 ? e.target.value * -1 : e.target.value);
             setInputValue(newValue);
             const scale = newValue / actualbeamLength()
@@ -32,13 +36,6 @@ function InputBeamLength({ beam, onChange, updateScale }) {
           onBlur={(e) => {
             setInputValue(e.target.value === "" || isNaN(e.target.value) ? 1 : e.target.value);
           }}
-          onInput={(e) => {
-            e.stopPropagation()
-            if (!validateInput(e.key)) {
-              e.preventDefault()
-            }
-          }
-          }
         />
         <select style={{ maxWidth: "80px", width: "80px" }} className="form-select form-select-sm" onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
           <option defaultValue="">m</option>
@@ -49,6 +46,7 @@ function InputBeamLength({ beam, onChange, updateScale }) {
       </div>
       <div className="border-primary" style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed" }}></div>
       <span className="text-primary">&#8594;</span>|
+      {a}
     </div>
   )
 }
