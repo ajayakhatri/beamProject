@@ -32,7 +32,7 @@ function InputBeamLength({ beam, onChange, updateScale }) {
           onBlur={(e) => {
             setInputValue(e.target.value === "" || isNaN(e.target.value) ? 1 : e.target.value);
           }}
-          onKeyDown={(e) => {
+          onInput={(e) => {
             e.stopPropagation()
             if (!validateInput(e.key)) {
               e.preventDefault()

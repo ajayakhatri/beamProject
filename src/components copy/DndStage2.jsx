@@ -121,7 +121,7 @@ export function DropableNew(props) {
                     id={`setLength${id}`}
                     style={{ width: "60px", textAlign: "center", }}
                     onChange={handleInputChange} // Handle input changes
-                    onKeyDown={(e) => {
+                    onInput={(e) => {
                         e.stopPropagation()
                         if (!validateInput(e.key)) {
                             e.preventDefault()
