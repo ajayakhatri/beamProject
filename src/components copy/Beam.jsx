@@ -3,6 +3,7 @@ import ToolBar, { actualbeamLength, getImg, getToolWidth } from './ToolBar';
 import { produce } from "immer";
 import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
+import { validateInput } from './utility';
 
 function InputBeamLength({ beam, onChange, updateScale }) {
 
@@ -21,16 +22,23 @@ function InputBeamLength({ beam, onChange, updateScale }) {
           aria-label={`Enter beam length for Beam ${beam.id}`}
           value={inputValue}
           onChange={(e) => {
-            const newValue = e.target.value;
+            const newValue = (e.target.value < 0 ? e.target.value * -1 : e.target.value);
             setInputValue(newValue);
             const scale = newValue / actualbeamLength()
-            updateScale(beam.id, newValue === "" ? 1 : scale)
-            onChange(beam.id, "scale", newValue === "" ? 1 : scale);
-            onChange(beam.id, "length", newValue === "" ? 1 : newValue);
+            updateScale(beam.id, newValue === "" || isNaN(newValue) ? 1 : scale)
+            onChange(beam.id, "scale", newValue === "" || isNaN(newValue) ? 1 : scale);
+            onChange(beam.id, "length", newValue === "" || isNaN(newValue) ? 1 : newValue);
           }}
           onBlur={(e) => {
-            setInputValue(e.target.value === "" ? 1 : e.target.value);
+            setInputValue(e.target.value === "" || isNaN(e.target.value) ? 1 : e.target.value);
           }}
+          onKeyDown={(e) => {
+            e.stopPropagation()
+            if (!validateInput(e.key)) {
+              e.preventDefault()
+            }
+          }
+          }
         />
         <select style={{ maxWidth: "80px", width: "80px" }} className="form-select form-select-sm" onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
           <option defaultValue="">m</option>

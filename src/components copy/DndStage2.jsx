@@ -3,6 +3,7 @@ import interact from 'interactjs';
 import { actualbeamLength, getToolWidth } from './ToolBar';
 import { TbArrowBackUp } from 'react-icons/tb';
 import { RiDeleteBin5Line } from 'react-icons/ri';
+import { validateInput } from './utility';
 
 export function DropableNew(props) {
     const { beamID, changeToolValue, beamLength, style, id, deleteTool } = props
@@ -96,6 +97,9 @@ export function DropableNew(props) {
         height: "40px",
         position: "absolute"
     }
+
+
+
     function handleInputChange(e) {
         let newPosition = e.target.value;
         setinputValue(newPosition)
@@ -106,42 +110,51 @@ export function DropableNew(props) {
             // onMouseEnter={() => setIsShown(true)}
             ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
             {props.children}
-            <div style={{ position: "absolute", marginTop: "26px", marginLeft: "-6px", display: "flex", justifyContent: "center" }}>
-                {isShown ?
+            <div style={{ position: "absolute", marginTop: "26px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
+                <input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    className="form-control-sm"
+                    aria-label={`Change position of ${id}`}
+                    value={inputValue}
+                    id={`setLength${id}`}
+                    style={{ width: "60px", textAlign: "center", }}
+                    onChange={handleInputChange} // Handle input changes
+                    onKeyDown={(e) => {
+                        e.stopPropagation()
+                        if (!validateInput(e.key)) {
+                            e.preventDefault()
+                        }
+                    }
+                    }
+                    // Handle input changes
+                    onBlur={(e) => {
+                        e.stopPropagation()
+                        console.log(e.target.value)
+                        let newPosition = (parseFloat(e.target.value)).toFixed(3)
+                        console.log(newPosition)
+                        newPosition = Math.max(newPosition, 0)
+                        newPosition = Math.min(newPosition, props.beamLength)
+                        console.log(props.beamLength)
+                        setinputValue(e.target.value)
+                        changeToolValue(beamID, id, "actualPosition", (newPosition / (beamLength / actualbeamLength())) - getToolWidth() / 2)
+                        changeToolValue(beamID, id, "positionOnBeam", newPosition)
+                            ;
+                    }} />
+                {isShown &&
                     (
-                        <div style={{ border: "2px solid black", borderRadius: "8px", width: "60px" }}>
+                        <div style={{ border: "2px solid black", borderRadius: "8px", width: "60px", }}>
                             <button onClick={() => deleteTool(beamID, id)} className='btn btn-danger w-100' style={{ borderRadius: "0px" }}>
                                 <RiDeleteBin5Line />
                             </button>
-
-                            <button onClick={() => setIsShown(false)} className='btn btn-primary w-100' style={{ borderRadius: "0px" }}>
+                            <button onClick={() => setIsShown(false)} className='btn btn-primary w-100' style={{ borderRadius: "0px", height: "28px", display: "flex", justifyContent: "center", alignContent: "center" }}>
                                 <TbArrowBackUp />
                             </button>
                         </div>
-                    ) :
-                    (
-                        <input
-                            type="number"
-                            inputMode="numeric"
-                            min={0}
-                            className="form-control-sm"
-                            aria-label={`Change position of ${id}`}
-                            value={inputValue}
-                            id={`setLength${id}`}
-                            style={{ width: "60px", textAlign: "center", }}
-                            onChange={handleInputChange} // Handle input changes
-                            onBlur={(e) => {
-                                e.stopPropagation()
-                                let newPosition = (parseFloat(e.target.value)).toFixed(3)
-                                newPosition = Math.max(newPosition, 0)
-                                newPosition = Math.min(newPosition, props.beamLength)
-                                console.log(props.beamLength)
-                                setinputValue(e.target.value)
-                                changeToolValue(beamID, id, "actualPosition", (newPosition / (beamLength / actualbeamLength())) - getToolWidth() / 2)
-                                changeToolValue(beamID, id, "positionOnBeam", newPosition)
-                            }} />
                     )
                 }
+
             </div>
         </div>
     )
