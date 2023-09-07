@@ -89,7 +89,6 @@ export function DropablePreset(props) {
                     // endOnly: true
                 })
             ],
-            autoScroll: true,
             // dragMoveListener from the dragging demo above
             listeners: {
                 move: dragMoveListener,
