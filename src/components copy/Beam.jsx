@@ -3,6 +3,7 @@ import ToolBar, { actualbeamLength, getImg, getToolWidth } from './ToolBar';
 import { produce } from "immer";
 import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
+import { ImgDistributedLoad } from './Img';
 
 function InputBeamLength({ beam, onChange, updateScale }) {
 
@@ -210,9 +211,19 @@ function Beam() {
   };
 
 
-  // const changeDLSpan = (beamID, toolID, property, newValue) => {
-  //   changeToolValue(beamID, toolID, property, newValue)
-  // }
+  // changeDLSpan(beamID, id, "span", newSpan)
+  const changeDLSpan = (beamID, toolID, property, newValue) => {
+    changeToolValue(beamID, toolID, property, newValue)
+    console.log({
+      "beamID": beamID,
+      "toolID": toolID,
+      "property": property,
+      "newValue": newValue
+    })
+    const newImg = <ImgDistributedLoad width={newValue+16} spacing={20} />
+    changeToolValue(beamID, toolID, "img", newImg)
+
+  }
   const AllDivs = ({ beamID }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
@@ -223,7 +234,7 @@ function Beam() {
     let alldivs = Object.values(beam.tools).map((toolType) =>
       // console.log("newTool", beams[beamIndex])
       toolType.map((tool, index) =>
-        <DropableNew deleteTool={deleteTool} changeBeamValue={changeBeamValue} beamLength={beam.length} positionOnBeam={tool.positionOnBeam} beamID={beamID} id={tool.id} key={index} changeToolValue={changeToolValue} style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0, display: "flex", flexDirection: "column" }}>
+        <DropableNew changeDLSpan={changeDLSpan} dlspan={tool.id.split("_")[0] === "distributedLoad" ? tool.span : 1} deleteTool={deleteTool} changeBeamValue={changeBeamValue} beamLength={beam.length} positionOnBeam={tool.positionOnBeam} beamID={beamID} id={tool.id} key={index} changeToolValue={changeToolValue} style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0}}>
           <div style={{
             display: "flex", flexDirection: "row", justifyContent: "center",
           }}>

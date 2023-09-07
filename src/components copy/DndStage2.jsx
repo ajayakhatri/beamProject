@@ -5,8 +5,9 @@ import { TbArrowBackUp } from 'react-icons/tb';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 
 export function DropableNew(props) {
-    const { beamID, changeToolValue, beamLength, style, id, deleteTool } = props
+    const { beamID, changeToolValue, beamLength, style, id, deleteTool, dlspan, changeDLSpan } = props
     const [inputValue, setinputValue] = useState((props.positionOnBeam).toFixed(3))
+    const [dlspanValue, setdlspanValue] = useState((dlspan).toFixed(3))
     // console.log('handleEnd', inputValue);
     const toolsRef = useRef(null);
     const [isShown, setIsShown] = useState(false)
@@ -99,7 +100,13 @@ export function DropableNew(props) {
         touchAction: "none",
         userSelect: "none",
         height: "40px",
-        position: "absolute"
+        position: "absolute",
+        display: "flex",
+        flexDirection: "column",
+    }
+    if (id.split("_")[0] === "distributedLoad") {
+        combinedStyle["alignItems"] = "start"
+
     }
 
 
@@ -110,11 +117,15 @@ export function DropableNew(props) {
         }
         setinputValue(e.target.value)
     }
+    function handleSpanChange(e) {
+        if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
+            e.target.value = dlspanValue
+        }
+        setdlspanValue(e.target.value)
+    }
 
     return (
-        <div
-            // onMouseEnter={() => setIsShown(true)}
-            ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
+        <div ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
             <div id={`Svg${id}`}>
                 {props.children}
             </div>
@@ -122,24 +133,21 @@ export function DropableNew(props) {
                 id.split("_")[0] == "distributedLoad" && (<input
                     type="number"
                     inputMode="numeric"
-                    min={0}
+                    min={0.1}
                     // className="form-control-sm"  
                     aria-label={`Change position of ${id}`}
-                    value={inputValue}
-                    id={`setLength${id}`}
+                    value={dlspanValue}
+                    id={`setdlspan${id}`}
                     style={{ width: "60px", textAlign: "center", height: "22px" }}
-                    onChange={handleInputChange} // Handle input changes
-                    // Handle input changes
+                    onChange={handleSpanChange}
                     onBlur={(e) => {
                         e.stopPropagation()
-                        console.log(e.target.value)
-                        let newPosition = (parseFloat(e.target.value)).toFixed(3)
-                        console.log(newPosition)
-                        newPosition = Math.max(newPosition, 0)
-                        newPosition = Math.min(newPosition, props.beamLength)
+                        let newSpan = (parseFloat(e.target.value)).toFixed(3)
+                        newSpan = Math.max(newSpan, 0.1)
+                        newSpan = Math.min(newSpan, props.beamLength)
                         console.log(props.beamLength)
-                        setinputValue(e.target.value)
-                        changeToolValue(beamID, id, "span", newPosition)
+                        setdlspanValue(newSpan)
+                        changeDLSpan(beamID, id, "span", (newSpan / (beamLength / actualbeamLength())))
                     }} />)
             }
 

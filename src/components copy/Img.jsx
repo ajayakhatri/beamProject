@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const ImgDistributedLoad = ({ width,spacing }) => {
+export const ImgDistributedLoad = ({ width, spacing }) => {
     let w = width - 16
     const arrowSpacing = spacing
     const times = w % arrowSpacing === 0 ? w / arrowSpacing : Math.floor(w / arrowSpacing)
@@ -8,7 +8,6 @@ export const ImgDistributedLoad = ({ width,spacing }) => {
     const arrows = []
     for (let i = 1; i < times; i += 1) {
         arrows.push(<Arrow key={i} x={i * space + 8} />);
-        console.log(i)
     }
     return (
         <svg transform="translate(0,-32)" height="28px" width={width} style={{ position: 'absolute' }}>;
