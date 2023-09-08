@@ -5,7 +5,7 @@ export const ImgDistributedLoad = ({ width, spacing, loadStart = 5, loadEnd = 5 
     const a = { "x": 0, "y": loadStart }
     const b = { "x": w, "y": loadEnd }
     let fx = (x) => ((b.y - a.y) / (b.x - a.x)) * x + a.y
-    const height = 30
+    const height = 40
     const h = Math.max(a.y, b.y)
     const arrowSpacing = spacing
     const times = w % arrowSpacing === 0 ? w / arrowSpacing : Math.floor(w / arrowSpacing)
@@ -16,7 +16,7 @@ export const ImgDistributedLoad = ({ width, spacing, loadStart = 5, loadEnd = 5 
     }
 
     return (
-        <svg transform="translate(-8,-34)" height={height + "px"} width={width} style={{ position: 'absolute' }}>;
+        <svg transform="translate(-8,-45)" height={height + "px"} width={width} style={{ position: 'absolute' }}>;
             <polygon points={`8,${(height - (fx(0) * height / h))}  ${w + 8},${(height - (fx(w) * height / h))} ${w + 8},40 8,50`} fill="rgba(242, 135, 42, 0.405)" />
             {/* <rect x="8" y="0" width={width - 16} height="100%" fill="rgba(242, 135, 42, 0.405)" />; */}
             <line x1="8" y1={a.y > b.y ? 0 : (100 - ((a.y / b.y)) * 100) + "%"} x2={width - 8} y2={a.y < b.y ? 0 : (100 - ((b.y / a.y)) * 100) + "%"} stroke="black" strokeWidth="1" />
@@ -39,7 +39,7 @@ export const ImgHingedSupport = () => {
 }
 export const ImgPointLoad = () => {
     return (
-        <svg transform="scale(0.8) translate(0,-73)" height="60px" style={{ zIndex: "1" }} xmlns="http://www.w3.org/2000/svg" width="16">
+        <svg transform="scale(1) translate(0,-65)" height="60px" style={{ zIndex: "1" }} xmlns="http://www.w3.org/2000/svg" width="16">
             <Arrow x={8} />
         </svg>
     )

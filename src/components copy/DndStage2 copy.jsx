@@ -223,7 +223,7 @@ export function DropableNew(props) {
                                     min={0.01}
                                     value={loadStart}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-72px" }}
+                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-60px" }}
                                     onChange={handleChangeLoadStart}
                                     onBlur={(e) => {
                                         e.stopPropagation()
@@ -238,7 +238,7 @@ export function DropableNew(props) {
                                     min={0.01}
                                     value={loadEnd}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-72px", right: `-${dlSpanValue}px` }}
+                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-60px", right: `-${dlSpanValue}px` }}
                                     onChange={handleChangeLoadEnd}
                                     onBlur={(e) => {
                                         e.stopPropagation()

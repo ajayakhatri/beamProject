@@ -45,8 +45,8 @@ export const BeamBar = ({ beamID, addTool, scale, children }) => {
                     e.stopImmediatePropagation()
                     const target = interact.getElementRect(e.target);
                     const relatedTarget = interact.getElementRect(e.relatedTarget);
-                    const actualPosition = relatedTarget.left - target.left
-                    const positionOnBeam = (relatedTarget.left - target.left + relatedTarget.width / 2) * localBeamscaleRef.current
+                    const actualPosition = parseFloat(relatedTarget.left) - parseFloat(target.left)
+                    const positionOnBeam = (parseFloat(relatedTarget.left) - parseFloat(target.left) + parseFloat(relatedTarget.width) / 2) * parseFloat(localBeamscaleRef.current)
                     console.log("scale:beamLength / beam_Length", localBeamscaleRef.current)
                     console.log("actualPosition", actualPosition)
                     console.log("positiononBeam", positionOnBeam)
@@ -56,7 +56,7 @@ export const BeamBar = ({ beamID, addTool, scale, children }) => {
                     e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
                     console.log(localBeamscale)
-                    addTool(beamID, e.relatedTarget.id.split("_")[0], actualPosition, positionOnBeam, e.relatedTarget.id.split("_")[0] === "distributedLoad" ? localBeamscaleRef.current : 1)
+                    addTool(beamID, e.relatedTarget.id.split("_")[0], actualPosition < 0 ? -25 : actualPosition, positionOnBeam < 0 ? 0 : positionOnBeam, e.relatedTarget.id.split("_")[0] === "distributedLoad" ? localBeamscaleRef.current : 1)
                 },
                 ondropdeactivate: function (e) {
                     e.stopPropagation();
@@ -107,7 +107,7 @@ export function DropablePreset(props) {
         };
     }, []);
     return (
-        <div ref={toolsRef} id={id} key={id} style={{ zIndex: "1", touchAction: "none", border: "1px solid black", width: getToolWidth() + "px", height: "40px", margin: 0, padding: 0 }}
+        <div ref={toolsRef} id={id} key={id} style={{ zIndex: "1", touchAction: "none", width: getToolWidth() + "px", height: "40px", margin: 0, padding: 0 }}
             className={`Tools_Beam_${id.split("_")[id.split("_").length - 1]}`} >
             {props.children}
         </div>

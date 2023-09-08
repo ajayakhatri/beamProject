@@ -6,13 +6,23 @@
     background-color: rgba(255, 99, 71, 0.5);
 }
 
-.dl-colour{
+.dl-colour {
     background-color: rgba(242, 135, 42, 0.405);
 }
+
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     margin: 0;
+}
+
+
+
+/* Optionally, you can style the input as you wish */
+input[type=number] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }

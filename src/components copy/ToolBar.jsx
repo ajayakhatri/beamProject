@@ -18,8 +18,14 @@ export function getToolWidth() {
     return 50;
 }
 export function actualbeamLength() {
-    return 400;
+    var x = window.matchMedia("(max-width: 725px)")
+    if (x.matches) { // If media query matches
+        return 400;
+    } else {
+        return 600;
+    }
 }
+
 export function getDroppables(beamID) {
 
     return [
@@ -56,7 +62,7 @@ function ToolBar({ beamID }) {
     const DroppablesDivs = Droppables.map((tool) =>
         <DropablePreset id={tool.id} key={tool.id}>
             <div style={{
-                display: "flex", flexDirection: "row", justifyContent: "center",
+                display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ? "30px" : null,
             }}>
                 {tool.img}
             </div>
@@ -64,7 +70,7 @@ function ToolBar({ beamID }) {
     )
 
     return (
-        <div className='d-flex gap-2 justify-content-center mb-5'>
+        <div className='d-flex gap-4 justify-content-center mb-5 border border-2 border-primary border-top-0'>
             {DroppablesDivs}
         </div>
     );

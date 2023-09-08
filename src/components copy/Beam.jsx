@@ -4,6 +4,7 @@ import { produce } from "immer";
 import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
 import { ImgDistributedLoad } from './Img';
+import Switch from './Switch';
 
 function InputBeamLength({ beam, onChange, updateScale }) {
 
@@ -242,6 +243,11 @@ function Beam() {
     // changeToolValue(beamID, toolID, "actualPosition", newImg)
     // changeToolValue(beamID, toolID, "img", newImg)
   }
+
+  const [loadSet, setloadSet] = useState(true)
+  const [lengthSet, setlengthSet] = useState(true)
+  const [dlSpanSet, setdlSpanSet] = useState(true)
+
   const AllDivs = ({ beamID }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
@@ -252,6 +258,7 @@ function Beam() {
     let alldivs = Object.values(beam.tools).map((toolType) =>
       toolType.map((tool, index) =>
         <DropableNew
+          status={{ "loadSet": loadSet, "lengthSet": lengthSet, "dlSpanSet": dlSpanSet }} setstatus={[setloadSet, setlengthSet, setdlSpanSet]}
           id={tool.id} key={index}
           toolType={tool.id.split("_")[0]}
           changeDLSpan={changeDLSpan}
@@ -277,22 +284,36 @@ function Beam() {
 
 
 
+
   return (
     <div>
-      <h2>Beams</h2>
+      <div className='d-flex justify-content-between' >
+        <h2 className='fs-1'>Beams</h2>
+        {beams.length > 0 && (
+          <div style={{ fontSize: "16px" }}>
+            <Switch label={"Loads"} status={loadSet} setstatus={setloadSet} />
+            <Switch label={"Length"} status={lengthSet} setstatus={setlengthSet} />
+            <Switch label={"DL Span"} status={dlSpanSet} setstatus={setdlSpanSet} />
+          </div>
+        )}
+      </div>
       {beams.map((beam) => (
         <div key={beam.id} className='border-1 border-black border p-5 mb-4 position-relative' style={{ borderRadius: "8px" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
+
           <ToolBar beamID={beam.id} />
-          {/* <span style={{left: "100%",paddingBottom:"20px",paddingLeft:"100%", position:"relative", backgroundColor:"red", height:"100px"}}>jdfdfj</span> */}
-          <BeamBar beamID={beam.id} addTool={addTool} scale={beamscale} >
-            <AllDivs beamID={beam.id} />
-          </BeamBar>
+          <div style={{ marginTop: "100px" }}>
+
+            <BeamBar beamID={beam.id} addTool={addTool} scale={beamscale} >
+              <AllDivs beamID={beam.id} />
+            </BeamBar>
+          </div>
           <InputBeamLength beam={beam} onChange={changeBeamValue} updateScale={updateScale} />
           <div className='d-flex justify-content-end gap-2 mt-3'>
             <button onClick={() => deleteBeam(beam.id)}>Delete</button>
             <button onClick={() => printInfo(beam.id)}>Info</button>
             <button onClick={() => console.clear()}>clear</button>
+            <button onClick={() => console.clear()}>Hide Loads</button>
             <button onClick={() => changeToolValue(beam.id, "rollerSupport_1_1", "isUp", true)}>change</button>
           </div>
           {beam.length}
