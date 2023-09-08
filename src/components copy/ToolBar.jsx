@@ -18,9 +18,9 @@ export function getToolWidth() {
     return 50;
 }
 export function actualbeamLength() {
-    var x = window.matchMedia("(max-width: 725px)")
+    var x = window.matchMedia("(max-width: 625px)")
     if (x.matches) { // If media query matches
-        return 400;
+        return 350;
     } else {
         return 600;
     }
