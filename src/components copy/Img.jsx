@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const ImgDistributedLoad = ({ width, spacing, loadStart=5, loadEnd=5}) => {
+export const ImgDistributedLoad = ({ width, spacing, loadStart = 5, loadEnd = 5 }) => {
     let w = width - 16
     const a = { "x": 0, "y": loadStart }
     const b = { "x": w, "y": loadEnd }
@@ -17,22 +17,15 @@ export const ImgDistributedLoad = ({ width, spacing, loadStart=5, loadEnd=5}) =>
 
     return (
         <svg transform="translate(-8,-34)" height={height + "px"} width={width} style={{ position: 'absolute' }}>;
-            <rect x="8" y="0" width={width - 16} height="100%" fill="rgba(242, 135, 42, 0.405)" />;
+            <polygon points={`8,${(height - (fx(0) * height / h))}  ${w + 8},${(height - (fx(w) * height / h))} ${w + 8},40 8,50`} fill="rgba(242, 135, 42, 0.405)" />
+            {/* <rect x="8" y="0" width={width - 16} height="100%" fill="rgba(242, 135, 42, 0.405)" />; */}
             <line x1="8" y1={a.y > b.y ? 0 : (100 - ((a.y / b.y)) * 100) + "%"} x2={width - 8} y2={a.y < b.y ? 0 : (100 - ((b.y / a.y)) * 100) + "%"} stroke="black" strokeWidth="1" />
             {/* <Arrow x={8} /> */}
             <g transform="translate(8)">
-
                 {arrows}
-                {/* <Arrow x={width - 16} /> */}
             </g>
         </svg>
-        // <svg transform="translate(-8,-34)" height="30px" width={width} style={{ position: 'absolute' }}>;
-        //     <rect x="8" y="1" width={width - 16} height="100%" fill="rgba(242, 135, 42, 0.405)" />;
-        //     <line x1="8" y1="0" x2={width - 8} y2="0" stroke="black" strokeWidth="2" />
-        //     <Arrow x={8} />
-        //     {arrows}
-        //     <Arrow x={width - 8} />
-        // </svg>
+
     )
 }
 export const ImgRollerSupport = () => {
