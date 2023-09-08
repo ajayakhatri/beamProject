@@ -298,7 +298,7 @@ function Beam() {
         )}
       </div>
       {beams.map((beam) => (
-        <div key={beam.id} className='border-1 border-black border p-5 mb-4 position-relative' style={{ borderRadius: "8px" }}>
+        <div key={beam.id} className='border-1 border-black border py-5 px-3 mb-4 position-relative' style={{ borderRadius: "8px" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
 
           <ToolBar beamID={beam.id} />
