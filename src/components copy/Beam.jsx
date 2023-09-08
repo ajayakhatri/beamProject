@@ -170,17 +170,16 @@ function Beam() {
   }
 
 
-  const addTool = (beamID, toolType, actualPosition, positionOnBeam) => {
+  const addTool = (beamID, toolType, actualPosition, positionOnBeam, scale) => {
     const toolWidth = getToolWidth()
     console.log("Adding tool.....", {
       "toolType": toolType,
       "position": actualPosition,
       "ToolWidth": toolWidth,
+      "scale": scale,
     })
 
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
-    console.log(beamscale, "bealeDiv")
-    console.log(beams[beamIndex].scale, "beamm].scale")
 
     setBeams((previousBeams) => {
       return produce(previousBeams, (draftBeams) => {
@@ -198,9 +197,13 @@ function Beam() {
             value: 0,
           };
           if (toolType === "distributedLoad") {
-            newTool["span"] = 50
+            newTool["span"] = 0.4 * beam.length
+            console.log("scale", scale)
+            newTool["img"] = <ImgDistributedLoad width={(0.4 * beam.length) / scale} spacing={20} loadEnd={5} loadStart={5} />
+            newTool["loadStart"] = 5
+            newTool["loadEnd"] = 5
           }
-          if (toolType !== "rollerSupport" || toolType !== "hingedSupport") {
+          else if (toolType !== "rollerSupport" || toolType !== "hingedSupport") {
             newTool["load"] = 5
           }
           beam.tools[toolType].push(newTool); // Update the beam object directly
@@ -212,17 +215,32 @@ function Beam() {
 
 
   // changeDLSpan(beamID, id, "span", newSpan)
-  const changeDLSpan = (beamID, toolID, property, newValue) => {
-    changeToolValue(beamID, toolID, property, newValue)
+  const changeDLSpan = (beamID, toolID, property, newSpanValue, scale, loadStart, loadEnd) => {
+    if (property === "span") {
+      changeToolValue(beamID, toolID, property, parseFloat(newSpanValue))
+    } else if (property === "loadStart") {
+      changeToolValue(beamID, toolID, property, parseFloat(loadStart))
+    } else {
+      changeToolValue(beamID, toolID, property, parseFloat(loadEnd))
+    }
     console.log({
       "beamID": beamID,
       "toolID": toolID,
       "property": property,
-      "newValue": newValue
+      "newValue": newSpanValue,
+      "scale": scale,
     })
-    const newImg = <ImgDistributedLoad width={newValue+16} spacing={20} />
+    const beamIndex = beams.findIndex((beam) => beam.id === beamID);
+    const toollist = beams[beamIndex].tools[toolID.split("_")[0]]
+    const toolIndex = toollist.findIndex((tool) => tool.id === toolID);
+    // const loadStart = property === "loadStart" ? newLoad : toollist[toolIndex]["loadStart"]
+    // const loadEnd = property === "loadEnd" ? newLoad : toollist[toolIndex]["loadEnd"]
+    console.log({ 'loadEnd': loadEnd, 'loadStart': loadStart })
+    console.log(toollist[toolIndex]["loadStart"], "loadStart")
+    const newImg = <ImgDistributedLoad width={newSpanValue / scale + 16} spacing={20} loadEnd={loadEnd} loadStart={loadStart} />
     changeToolValue(beamID, toolID, "img", newImg)
-
+    // changeToolValue(beamID, toolID, "actualPosition", newImg)
+    // changeToolValue(beamID, toolID, "img", newImg)
   }
   const AllDivs = ({ beamID }) => {
     const toolWidth = getToolWidth()
@@ -232,11 +250,22 @@ function Beam() {
     console.log(beamscale, "beammscaleDiv")
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
-      // console.log("newTool", beams[beamIndex])
       toolType.map((tool, index) =>
-        <DropableNew changeDLSpan={changeDLSpan} dlspan={tool.id.split("_")[0] === "distributedLoad" ? tool.span : 1} deleteTool={deleteTool} changeBeamValue={changeBeamValue} beamLength={beam.length} positionOnBeam={tool.positionOnBeam} beamID={beamID} id={tool.id} key={index} changeToolValue={changeToolValue} style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0}}>
+        <DropableNew
+          id={tool.id} key={index}
+          toolType={tool.id.split("_")[0]}
+          changeDLSpan={changeDLSpan}
+          dlspan={tool.id.split("_")[0] === "distributedLoad" ? parseFloat(tool.span) : 1}
+          load={tool.isUp ? tool.id.split("_")[0] === "distributedLoad" ? { "loadStart": tool.loadStart, "loadEnd": tool.loadEnd } : tool.load : 1}
+          deleteTool={deleteTool}
+          changeBeamValue={changeBeamValue}
+          beamLength={beam.length}
+          positionOnBeam={tool.positionOnBeam}
+          beamID={beamID}
+          changeToolValue={changeToolValue}
+          style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0 }}>
           <div style={{
-            display: "flex", flexDirection: "row", justifyContent: "center",
+            display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
             {tool.img}
           </div>
@@ -255,6 +284,7 @@ function Beam() {
         <div key={beam.id} className='border-1 border-black border p-5 mb-4 position-relative' style={{ borderRadius: "8px" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
           <ToolBar beamID={beam.id} />
+          {/* <span style={{left: "100%",paddingBottom:"20px",paddingLeft:"100%", position:"relative", backgroundColor:"red", height:"100px"}}>jdfdfj</span> */}
           <BeamBar beamID={beam.id} addTool={addTool} scale={beamscale} >
             <AllDivs beamID={beam.id} />
           </BeamBar>
@@ -280,21 +310,21 @@ function Beam() {
 export default Beam;
 
 
-  // function MakeNewTools({ beamID }) {
-  //   const beamIndex = beams.findIndex((beam) => beam.id === beamID);
-  //   let beam = beams[beamIndex]
-  //   const toolWidth = getToolWidth()
-  //   let newToolsDiv = Object.values(beam.tools).map((toolType) =>
-  //     toolType.map((tool) =>
-  //       <DropableNew beamID={beam.id} id={tool.id} key={tool.id} style={{ width: toolWidth + "px", left: tool.position }}>
-  //         <div style={{
-  //           scale: "1.8", display: "flex", flexDirection: "row", justifyContent: "center",
-  //           marginTop: tool.isUp ? "-44px" : "0px",
-  //         }}>
-  //           {tool.img}
-  //         </div>
-  //       </DropableNew >
-  //     )
-  //   )
-  //   return newToolsDiv
-  // }
+// function MakeNewTools({ beamID }) {
+//   const beamIndex = beams.findIndex((beam) => beam.id === beamID);
+//   let beam = beams[beamIndex]
+//   const toolWidth = getToolWidth()
+//   let newToolsDiv = Object.values(beam.tools).map((toolType) =>
+//     toolType.map((tool) =>
+//       <DropableNew beamID={beam.id} id={tool.id} key={tool.id} style={{ width: toolWidth + "px", left: tool.position }}>
+//         <div style={{
+//           scale: "1.8", display: "flex", flexDirection: "row", justifyContent: "center",
+//           marginTop: tool.isUp ? "-44px" : "0px",
+//         }}>
+//           {tool.img}
+//         </div>
+//       </DropableNew >
+//     )
+//   )
+//   return newToolsDiv
+// }

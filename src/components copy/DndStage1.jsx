@@ -55,7 +55,8 @@ export const BeamBar = ({ beamID, addTool, scale, children }) => {
                     e.target.classList.remove('drop-enter')
                     e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
-                    addTool(beamID, e.relatedTarget.id.split("_")[0], actualPosition, positionOnBeam)
+                    console.log(localBeamscale)
+                    addTool(beamID, e.relatedTarget.id.split("_")[0], actualPosition, positionOnBeam, e.relatedTarget.id.split("_")[0] === "distributedLoad" ? localBeamscaleRef.current : 1)
                 },
                 ondropdeactivate: function (e) {
                     e.stopPropagation();
@@ -67,9 +68,13 @@ export const BeamBar = ({ beamID, addTool, scale, children }) => {
     }, [scale, localBeamscale]);
 
     return (
-        <div ref={beamRef} id={`Beam_${beamID}`} className='my-3 d-flex drop-no-enter' style={{ position: "relative", width: beam_Length + "px", height: "70px", borderTop: "solid 3px" }}>
-            {children}
-        </div>
+        <>
+            <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
+                position: "relative", width: beam_Length + "px", height: "70px", borderTop: "solid 3px", /* This hides the overflowing content */
+            }}>
+                {children}
+            </div>
+        </>
     )
 }
 
