@@ -1,6 +1,8 @@
 import React from 'react'
+import { hexToRGBA } from './utility';
 
-export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, loadStart = 5, loadEnd = 5 }) => {
+export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, loadStart = 5, loadEnd = 5, color = "rgba(242, 135, 42, 0.405)" }) => {
+    let newcolor = hexToRGBA(color, 0.7);
     let width = newSpanValue / scale + 16
     let w = width - 16
     const a = { "x": 0, "y": loadStart }
@@ -18,7 +20,7 @@ export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, load
 
     return (
         <svg transform="translate(-8,-45)" height={height + "px"} width={width} style={{ position: 'absolute' }}>;
-            <polygon points={`8,${(height - (fx(0) * height / h))}  ${w + 8},${(height - (fx(w) * height / h))} ${w + 8},40 8,50`} fill="rgba(242, 135, 42, 0.405)" />
+            <polygon points={`8,${(height - (fx(0) * height / h))}  ${w + 8},${(height - (fx(w) * height / h))} ${w + 8},40 8,50`} fill={newcolor} />
             {/* <rect x="8" y="0" width={width - 16} height="100%" fill="rgba(242, 135, 42, 0.405)" />; */}
             <line x1="8" y1={a.y > b.y ? 0 : (100 - ((a.y / b.y)) * 100) + "%"} x2={width - 8} y2={a.y < b.y ? 0 : (100 - ((b.y / a.y)) * 100) + "%"} stroke="black" strokeWidth="1" />
             {/* <Arrow x={8} /> */}

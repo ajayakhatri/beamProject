@@ -2,7 +2,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
 import { getToolWidth } from './ToolBar';
 
-export const BeamBar = ({ beamID, addTool, scale, children, actualBeamLength }) => {
+export const BeamBar = (props) => {
+    const beamID = props.beamID
+    const addTool = props.addTool
+    const children = props.children
+    const scale = parseFloat(props.scale)
+    const actualBeamLength = parseFloat(props.actualBeamLength)
     const [localBeamscale, setLocalBeamscale] = useState(scale);
     const localBeamscaleRef = useRef(localBeamscale);
 

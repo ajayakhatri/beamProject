@@ -5,6 +5,7 @@ import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
 import { ImgDistributedLoad } from './Img';
 import Switch from './Switch';
+import { getRandomColorHex } from './utility';
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
 
@@ -252,9 +253,11 @@ function Beam() {
           };
           if (toolType === "distributedLoad") {
             newTool["span"] = 0.4 * beam.length
+            const color = getRandomColorHex()
+            newTool["color"] = color
             console.log("scale", scale)
             console.log("beam.length", beam.length)
-            newTool["img"] = <ImgDistributedLoad newSpanValue={(0.4 * beam.length)} scale={scale} spacing={20} loadEnd={5} loadStart={5} />
+            newTool["img"] = <ImgDistributedLoad newSpanValue={(0.4 * beam.length)} scale={scale} spacing={20} loadEnd={5} loadStart={5} color={color} />
             newTool["loadStart"] = 5
             newTool["loadEnd"] = 5
           }
@@ -288,14 +291,12 @@ function Beam() {
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     const toollist = beams[beamIndex].tools[toolID.split("_")[0]]
     const toolIndex = toollist.findIndex((tool) => tool.id === toolID);
-    // const loadStart = property === "loadStart" ? newLoad : toollist[toolIndex]["loadStart"]
-    // const loadEnd = property === "loadEnd" ? newLoad : toollist[toolIndex]["loadEnd"]
+
+    const color = property === "loadStart" ? newLoad : toollist[toolIndex]["color"]
     console.log({ 'loadEnd': loadEnd, 'loadStart': loadStart })
     console.log(toollist[toolIndex]["loadStart"], "loadStart")
-    const newImg = <ImgDistributedLoad newSpanValue={newSpanValue} scale={scale} spacing={20} loadEnd={loadEnd} loadStart={loadStart} />
+    const newImg = <ImgDistributedLoad newSpanValue={newSpanValue} scale={scale} spacing={20} loadEnd={loadEnd} loadStart={loadStart} color={color} />
     changeToolValue(beamID, toolID, "img", newImg)
-    // changeToolValue(beamID, toolID, "actualPosition", newImg)
-    // changeToolValue(beamID, toolID, "img", newImg)
   }
 
   const [loadSet, setloadSet] = useState(true)
@@ -325,13 +326,14 @@ function Beam() {
           beamLength={beam.length}
           positionOnBeam={tool.positionOnBeam}
           //style
+          color={tool.id.split("_")[0] === "distributedLoad" ? tool.color : null}
           style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0 }}>
           <div style={{
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
 
             {tool.id.split("_")[0] === "distributedLoad" ?
-              <ImgDistributedLoad newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} />
+              <ImgDistributedLoad newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} color={tool.color} />
               : tool.img}
           </div>
         </DropableNew >
