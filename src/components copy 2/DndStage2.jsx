@@ -1,16 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
-import { getToolWidth } from './ToolBar';
+import { actualbeamLength, getToolWidth } from './ToolBar';
 import { TbArrowBackUp } from 'react-icons/tb';
 import { RiDeleteBin5Line } from 'react-icons/ri';
+import { useStateValue } from './StateContext';
 
 export function DropableNew(props) {
-    const { status, actualBeamLength, beamID, beamLength, style, id, dlspan, toolType, load } = props
-    const [changeDLSpan, deleteTool, changeBeamValue, changeToolValue] = props.changefunctions
-
+    const { status, setstatus, beamID, changeToolValue, beamLength, style, id, deleteTool, dlspan, changeDLSpan, toolType, load } = props
     const [inputValue, setinputValue] = useState((props.positionOnBeam).toFixed(3))
     const [dlSpanValue, setdlspanValue] = useState((dlspan).toFixed(3))
     const localDlSpanRef = useRef(dlSpanValue);
+    // console.log('handleEnd', inputValue);
     const toolsRef = useRef(null);
     const [isShown, setIsShown] = useState(false)
     const [isShowDlLoadInput, setIsShowDlLoadInput] = useState(true)
@@ -24,9 +24,6 @@ export function DropableNew(props) {
         // setdlspanValue(dlspan);
         localDlSpanRef.current = dlSpanValue; // Update the ref whenever dlSpanValue changes
     }, [dlspan, dlSpanValue]);
-    // useEffect(() => {
-    //     changeDLSpan(beamID, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
-    // }, [props.positionOnBeam]);
     useEffect(() => {
         loadStartRef.current = loadStart;
     }, [loadStartRef, loadStart]);
@@ -89,7 +86,7 @@ export function DropableNew(props) {
         setinputValue(positionOnBeam)
         console.log(localDlSpanRef.current)
         if (toolType === "distributedLoad") {
-            changeDLSpan(beamID, id, "span", parseFloat(localDlSpanRef.current), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
+            changeDLSpan(beamID, id, "span", parseFloat(localDlSpanRef.current), beamLength / actualbeamLength(), loadStartRef.current, loadEndRef.current)
         }
     }
 
@@ -107,7 +104,7 @@ export function DropableNew(props) {
         // const sliderRect = interact.getElementRect(e.target);
         // const barRect = interact.getElementRect(e.target.parentElement);
         const actualPosition = sliderRect.left - barRect.left
-        const positionOnBeam = (sliderRect.left - barRect.left + sliderRect.width / 2) * props.beamLength / actualBeamLength
+        const positionOnBeam = (sliderRect.left - barRect.left + sliderRect.width / 2) * props.beamLength / actualbeamLength()
         // const positionOnBeam = (sliderRect.left - barRect.left + sliderRect.width / 2)
         // console.log({
         //     "sliderRect.left": sliderRect.left,
@@ -160,13 +157,9 @@ export function DropableNew(props) {
         if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
             e.target.value = dlSpanValue
         }
-        // if ((e.target.value === "0" || e.target.value === "")) {
-        //     e.target.value = dlSpanValue
-        // }
         // let newSpaan = Math.max(e.target.value, "")
-        let newSpan = Math.min(e.target.value, props.beamLength)
-        // newSpan = Math.max(newSpan, 0.1)
-        console.log(newSpan)
+        let newSpaan = Math.min(e.target.value, props.beamLength)
+        console.log(newSpaan)
         // setdlspanValue(newSpaan)
         setdlspanValue(e.target.value)
     }
@@ -186,8 +179,6 @@ export function DropableNew(props) {
         }
         setloadEnd(parseFloat(e.target.value))
     }
-    const a = dlSpanValue
-    const [margin, setmargin] = useState(a)
     return (
         <div ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
             <div id={`Svg${id}`}>
@@ -197,6 +188,33 @@ export function DropableNew(props) {
             {
                 toolType == "distributedLoad" && (
                     <>
+                        <input
+                            type="number"
+                            inputMode="numeric"
+                            min={0.1}
+                            className="form-control-sm dlSpanSet"
+                            aria-label={`Change span of ${id}`}
+                            value={dlSpanValue}
+                            id={`setdlspan${id}`}
+                            style={{ display: status.dlSpanSet ? "block" : "none", width: "60px", textAlign: "center", height: "22px", marginLeft: `${getToolWidth() + 8}px` }}
+                            onChange={handleSpanChange}
+                            onBlur={(e) => {
+                                e.stopPropagation()
+                                const positionOnBeam = inputValue
+                                console.log(props.beamLength)
+                                console.log("newSpan", beamLength)
+                                console.log("newSpan", dlSpanValue)
+                                console.log("newSpan", localDlSpanRef.current)
+                                if (parseFloat(positionOnBeam) + parseFloat(dlSpanValue) > parseFloat(beamLength)) {
+                                    console.log(parseFloat(beamLength) - parseFloat(positionOnBeam))
+                                    changeToolValue(beamID, id, "actualPosition", (- getToolWidth() / 2))
+                                    changeToolValue(beamID, id, "positionOnBeam", 0)
+                                    setdlspanValue(Math.max((parseFloat(beamLength) - parseFloat(positionOnBeam)), 0.1))
+                                    changeDLSpan(beamID, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualbeamLength(), loadStartRef.current, loadEndRef.current)
+                                } else {
+                                    changeDLSpan(beamID, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualbeamLength(), loadStartRef.current, loadEndRef.current)
+                                }
+                            }} />
                         {status.loadSet && (
                             <>
                                 <input
@@ -210,7 +228,7 @@ export function DropableNew(props) {
                                     onBlur={(e) => {
                                         e.stopPropagation()
                                         setloadStart(e.target.value.length === 0 ? 0 : parseFloat(e.target.value))
-                                        changeDLSpan(beamID, id, "loadStart", parseFloat(localDlSpanRef.current), beamLength / actualBeamLength, e.target.value.length === 0 ? 0 : parseFloat(e.target.value), loadEndRef.current)
+                                        changeDLSpan(beamID, id, "loadStart", parseFloat(localDlSpanRef.current), beamLength / actualbeamLength(), e.target.value.length === 0 ? 0 : parseFloat(e.target.value), loadEndRef.current)
                                     }
                                     }
                                 />
@@ -220,7 +238,7 @@ export function DropableNew(props) {
                                     min={0.01}
                                     value={loadEnd}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-72px", right: `-${margin / (beamLength / actualBeamLength)}px` }}
+                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-72px", right: `-${dlSpanValue}px` }}
                                     onChange={handleChangeLoadEnd}
                                     onBlur={(e) => {
                                         e.stopPropagation()
@@ -232,52 +250,18 @@ export function DropableNew(props) {
                                                 "loadEndRef.current": parseFloat(loadEndRef.current)
                                             }
                                         )
-                                        changeDLSpan(beamID, id, "loadEnd", parseFloat(localDlSpanRef.current), beamLength / actualBeamLength, loadStartRef.current, e.target.value.length === 0 ? 0 : parseFloat(e.target.value))
+                                        changeDLSpan(beamID, id, "loadEnd", parseFloat(localDlSpanRef.current), beamLength / actualbeamLength(), loadStartRef.current, e.target.value.length === 0 ? 0 : parseFloat(e.target.value))
                                     }
                                     }
                                 />
 
                             </>
                         )}
-                        {/* DL span input */}
-                        <input
-                            type="number"
-                            inputMode="numeric"
-                            min={0.1}
-                            className="form-control-sm dlSpanSet"
-                            aria-label={`Change span of ${id}`}
-                            value={dlSpanValue}
-                            id={`setdlspan${id}`}
-                            style={{ display: status.dlSpanSet ? "block" : "none", width: "60px", textAlign: "center", height: "22px", marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}
-                            onChange={handleSpanChange}
-                            onBlur={(e) => {
-                                e.stopPropagation()
-                                const positionOnBeam = inputValue
-                                console.log(props.beamLength)
-                                console.log("newSpan", beamLength)
-                                console.log("newSpan", isNaN(parseFloat(dlSpanValue)))
-                                console.log("newSpan", localDlSpanRef.current)
-                                // e.target.value < 0 || e.target.value === "") ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value
-                                localDlSpanRef.current = isNaN(parseFloat(dlSpanValue)) || dlSpanValue.length === 0 ? 0.1 : localDlSpanRef.current
-                                setdlspanValue(localDlSpanRef.current)
-                                console.log("dff", localDlSpanRef.current)
-                                if (parseFloat(positionOnBeam) + parseFloat(dlSpanValue) > parseFloat(beamLength)) {
-                                    console.log(parseFloat(beamLength) - parseFloat(positionOnBeam))
-                                    changeToolValue(beamID, id, "actualPosition", (- getToolWidth() / 2))
-                                    changeToolValue(beamID, id, "positionOnBeam", 0)
-                                    setdlspanValue(Math.max((parseFloat(beamLength) - parseFloat(positionOnBeam)), 0.1))
-                                    changeDLSpan(beamID, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
-                                } else {
-                                    changeDLSpan(beamID, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
-                                }
-                                setmargin((dlSpanValue > beamLength) ? beamLength : dlSpanValue)
-                            }} />
                     </>
                 )}
 
 
             <div style={{ position: "absolute", marginTop: "32px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
-                {/* Position Input */}
                 <input
                     type="number"
                     inputMode="numeric"
@@ -296,10 +280,10 @@ export function DropableNew(props) {
                         console.log(newPosition)
                         newPosition = Math.max(newPosition, 0)
                         newPosition = Math.min(newPosition, props.beamLength)
-                        console.log(((e.target.value < 0 || e.target.value === "") ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value))
-                        setinputValue(e.target.value < 0 || isNaN(e.target.value) ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value)
-                        changeToolValue(beamID, id, "actualPosition", (((e.target.value < 0 || e.target.value === "") ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value) / (beamLength / actualBeamLength)) - getToolWidth() / 2)
-                        changeToolValue(beamID, id, "positionOnBeam", ((e.target.value < 0 || e.target.value === "") ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value))
+                        console.log(props.beamLength)
+                        setinputValue(e.target.value)
+                        changeToolValue(beamID, id, "actualPosition", (newPosition / (beamLength / actualbeamLength())) - getToolWidth() / 2)
+                        changeToolValue(beamID, id, "positionOnBeam", newPosition)
                             ;
                     }} />
                 {isShown &&

@@ -1,7 +1,6 @@
 import React from 'react'
 
-export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, loadStart = 5, loadEnd = 5 }) => {
-    let width = newSpanValue / scale + 16
+export const ImgDistributedLoad = ({ width, spacing, loadStart = 5, loadEnd = 5 }) => {
     let w = width - 16
     const a = { "x": 0, "y": loadStart }
     const b = { "x": w, "y": loadEnd }

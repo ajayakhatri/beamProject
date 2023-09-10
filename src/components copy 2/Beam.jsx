@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
-import ToolBar, { getImg, getToolWidth } from './ToolBar';
+import React, { useState } from 'react';
+import ToolBar, { actualbeamLength, getImg, getToolWidth } from './ToolBar';
 import { produce } from "immer";
 import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
 import { ImgDistributedLoad } from './Img';
 import Switch from './Switch';
 
-function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
+function InputBeamLength({ beam, onChange, updateScale }) {
 
   const [inputValue, setInputValue] = useState(beam.length);
 
   return (
-    <div className='d-flex justify-content-between' style={{ width: actualBeamLength }}>
+    <div className='d-flex justify-content-between'>
       |<span className="text-primary">&#8592;</span>
       <div className="border-primary" style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed" }}></div>
       <div className="input-group input-group-sm mb-3" style={{ minWidth: "180px" }} >
@@ -29,11 +29,10 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
             }
             const newValue = (e.target.value < 0 ? e.target.value * -1 : e.target.value);
             setInputValue(newValue);
-            const scale = newValue / actualBeamLength
+            const scale = newValue / actualbeamLength()
             updateScale(beam.id, newValue === "" || isNaN(newValue) ? 1 : scale)
             onChange(beam.id, "scale", newValue === "" || isNaN(newValue) ? 1 : scale);
             onChange(beam.id, "length", newValue === "" || isNaN(newValue) ? 1 : newValue);
-            // changeDLSpan(beam.id, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
           }}
           onBlur={(e) => {
             setInputValue(e.target.value === "" || isNaN(e.target.value) ? 1 : e.target.value);
@@ -54,60 +53,12 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
 
 
 function Beam() {
-  const mediaQueryRef = useRef(null);
-  const [actualBeamLength, setactualBeamLength] = useState(10);
-
-
-  useEffect(() => {
-    mediaQueryRef.current = window.matchMedia("(max-width: 800px)");
-    console.log(mediaQueryRef.current)
-    // Function to handle changes in the media query
-    const handleMediaQueryChange = (event) => {
-      if (event.matches) {
-        console.log(window.innerWidth)
-        // Media query matches (screen width is less than 900px)
-        setactualBeamLength(window.innerWidth - 60); // Adjust component as needed
-      } else {
-        setactualBeamLength(800); // Adjust component as needed
-        // Media query does not match (screen width is 900px or greater)
-      }
-    };
-
-    // Initial check of the media query
-    handleMediaQueryChange(mediaQueryRef.current);
-
-    // Add event listener for media query changes
-    mediaQueryRef.current.addListener(handleMediaQueryChange);
-
-    // Cleanup by removing the event listener when the component unmounts
-    return () => {
-      mediaQueryRef.current.removeListener(handleMediaQueryChange);
-    };
-  }, []);
-
-
-  function checkBeamLength(x) {
-    setactualBeamLength(x > 800 ? 800 : x - 60);
-  }
-  useEffect(() => {
-    const handleWindowResize = () => {
-      console.log(window.innerWidth);
-      checkBeamLength(window.innerWidth)
-    };
-
-    window.addEventListener('resize', handleWindowResize);
-    window.addEventListener('load', handleWindowResize);
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-      window.removeEventListener('load', handleWindowResize);
-    };
-  });
-
+  // const [calcBeamLength, setCalcBeamLength] = useState(beam.length);
 
   const [beams, setBeams] = useState([
     {
       id: 1,
-      length: 10,
+      length: 400,
       scale: 1,
       unit: "m",
       tools: {
@@ -118,7 +69,7 @@ function Beam() {
   function addBeam() {
     const newBeam = {
       id: beams.length + 1,
-      length: 10,
+      length: 400,
       scale: 1,
       unit: "m",
       tools: {
@@ -198,7 +149,7 @@ function Beam() {
       })
     );
   }
-  // const [beamscale, setbeamscale] = useState(10/actualBeamLength)
+  const [beamscale, setbeamscale] = useState(1)
 
   const updateScale = (beamID, newScale) => {
     setBeams((prevBeams) => {
@@ -207,15 +158,11 @@ function Beam() {
         if (beamIndex !== -1) {
           const beam = draft[beamIndex];
           const preScale = beam.scale;
-          // setbeamscale(newScale)
-          // console.log("setbeamscale", beamscale)
+          setbeamscale(newScale)
+          console.log("setbeamscale", beamscale)
           Object.values(beam.tools).forEach((toolType) => {
             toolType.forEach((tool) => {
               tool.positionOnBeam = (tool.positionOnBeam * newScale) / preScale;
-              console.log("sdfdf", beams)
-              // if (tool.id.split("_")[0] === "distributedLoad"){
-              //   tool.span=
-              // }
             });
           });
         }
@@ -253,8 +200,7 @@ function Beam() {
           if (toolType === "distributedLoad") {
             newTool["span"] = 0.4 * beam.length
             console.log("scale", scale)
-            console.log("beam.length", beam.length)
-            newTool["img"] = <ImgDistributedLoad newSpanValue={(0.4 * beam.length)} scale={scale} spacing={20} loadEnd={5} loadStart={5} />
+            newTool["img"] = <ImgDistributedLoad width={(0.4 * beam.length) / scale} spacing={20} loadEnd={5} loadStart={5} />
             newTool["loadStart"] = 5
             newTool["loadEnd"] = 5
           }
@@ -292,7 +238,7 @@ function Beam() {
     // const loadEnd = property === "loadEnd" ? newLoad : toollist[toolIndex]["loadEnd"]
     console.log({ 'loadEnd': loadEnd, 'loadStart': loadStart })
     console.log(toollist[toolIndex]["loadStart"], "loadStart")
-    const newImg = <ImgDistributedLoad newSpanValue={newSpanValue} scale={scale} spacing={20} loadEnd={loadEnd} loadStart={loadStart} />
+    const newImg = <ImgDistributedLoad width={newSpanValue / scale + 16} spacing={20} loadEnd={loadEnd} loadStart={loadStart} />
     changeToolValue(beamID, toolID, "img", newImg)
     // changeToolValue(beamID, toolID, "actualPosition", newImg)
     // changeToolValue(beamID, toolID, "img", newImg)
@@ -302,37 +248,33 @@ function Beam() {
   const [lengthSet, setlengthSet] = useState(true)
   const [dlSpanSet, setdlSpanSet] = useState(true)
 
-  const AllDivs = ({ beamID, scale }) => {
+  const AllDivs = ({ beamID }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     let beam = beams[beamIndex]
-    console.log(scale, "beammIndex].scale")
-    // console.log(beamscale, "beammscaleDiv")
+    console.log(beams[beamIndex].scale, "beammIndex].scale")
+    console.log(beamscale, "beammscaleDiv")
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
       toolType.map((tool, index) =>
         <DropableNew
-          status={{ "loadSet": loadSet, "lengthSet": lengthSet, "dlSpanSet": dlSpanSet }}
-          // setstatus={[setloadSet, setlengthSet, setdlSpanSet]}
+          status={{ "loadSet": loadSet, "lengthSet": lengthSet, "dlSpanSet": dlSpanSet }} setstatus={[setloadSet, setlengthSet, setdlSpanSet]}
           id={tool.id} key={index}
           toolType={tool.id.split("_")[0]}
-          actualBeamLength={actualBeamLength}
-          beamID={beamID}
-          load={tool.isUp ? tool.id.split("_")[0] === "distributedLoad" ? { "loadStart": tool.loadStart, "loadEnd": tool.loadEnd } : tool.load : 1}
-          changefunctions={[changeDLSpan, deleteTool, changeBeamValue, changeToolValue]}
-          //Length
+          changeDLSpan={changeDLSpan}
           dlspan={tool.id.split("_")[0] === "distributedLoad" ? parseFloat(tool.span) : 1}
+          load={tool.isUp ? tool.id.split("_")[0] === "distributedLoad" ? { "loadStart": tool.loadStart, "loadEnd": tool.loadEnd } : tool.load : 1}
+          deleteTool={deleteTool}
+          changeBeamValue={changeBeamValue}
           beamLength={beam.length}
           positionOnBeam={tool.positionOnBeam}
-          //style
+          beamID={beamID}
+          changeToolValue={changeToolValue}
           style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0 }}>
           <div style={{
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
-
-            {tool.id.split("_")[0] === "distributedLoad" ?
-              <ImgDistributedLoad newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} />
-              : tool.img}
+            {tool.img}
           </div>
         </DropableNew >
       )
@@ -345,37 +287,38 @@ function Beam() {
 
   return (
     <div>
-      <div>actualBeamLength: {actualBeamLength}</div>
       <div className='d-flex justify-content-between' >
         <h2 className='fs-1'>Beams</h2>
         {beams.length > 0 && (
-          <div style={{ fontSize: "16px", minWidth: "140px" }}>
+          <div style={{ fontSize: "16px" }}>
             <Switch label={"Loads"} status={loadSet} setstatus={setloadSet} />
             <Switch label={"Length"} status={lengthSet} setstatus={setlengthSet} />
-            <Switch label={"DLSpan"} status={dlSpanSet} setstatus={setdlSpanSet} />
+            <Switch label={"DL Span"} status={dlSpanSet} setstatus={setdlSpanSet} />
           </div>
         )}
       </div>
       {beams.map((beam) => (
         <div key={beam.id} className='border-1 border-black border py-5 px-3 mb-4 position-relative' style={{ borderRadius: "8px" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
-          <div className='mt-4'>
-            <ToolBar beamID={beam.id} />
-          </div>
-          <div style={{ marginTop: "100px", display: "flex", justifyContent: "center" }}>
-            <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength} >
-              <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength} />
+
+          <ToolBar beamID={beam.id} />
+          <div style={{ marginTop: "100px" }}>
+
+            <BeamBar beamID={beam.id} addTool={addTool} scale={beamscale} >
+              <AllDivs beamID={beam.id} />
             </BeamBar>
           </div>
-          <InputBeamLength beam={beam} onChange={changeBeamValue} updateScale={updateScale} actualBeamLength={actualBeamLength} />
+          <InputBeamLength beam={beam} onChange={changeBeamValue} updateScale={updateScale} />
           <div className='d-flex justify-content-end gap-2 mt-3'>
-            <button className='btn btn-outline-primary p-1' onClick={() => deleteBeam(beam.id)}>Delete</button>
-            <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
-            <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
+            <button onClick={() => deleteBeam(beam.id)}>Delete</button>
+            <button onClick={() => printInfo(beam.id)}>Info</button>
+            <button onClick={() => console.clear()}>clear</button>
+            <button onClick={() => console.clear()}>Hide Loads</button>
+            <button onClick={() => changeToolValue(beam.id, "rollerSupport_1_1", "isUp", true)}>change</button>
           </div>
-          {/* {beam.length}
+          {beam.length}
           {beam.unit}
-          {beam.scale} */}
+          {beam.scale}
         </div>
       ))}
       <button onClick={addBeam}>Add Beam</button>
@@ -387,3 +330,22 @@ function Beam() {
 
 export default Beam;
 
+
+// function MakeNewTools({ beamID }) {
+//   const beamIndex = beams.findIndex((beam) => beam.id === beamID);
+//   let beam = beams[beamIndex]
+//   const toolWidth = getToolWidth()
+//   let newToolsDiv = Object.values(beam.tools).map((toolType) =>
+//     toolType.map((tool) =>
+//       <DropableNew beamID={beam.id} id={tool.id} key={tool.id} style={{ width: toolWidth + "px", left: tool.position }}>
+//         <div style={{
+//           scale: "1.8", display: "flex", flexDirection: "row", justifyContent: "center",
+//           marginTop: tool.isUp ? "-44px" : "0px",
+//         }}>
+//           {tool.img}
+//         </div>
+//       </DropableNew >
+//     )
+//   )
+//   return newToolsDiv
+// }

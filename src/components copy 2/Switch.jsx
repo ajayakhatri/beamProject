@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 function Switch({ label, status, setstatus }) {
     const [isChecked, setIsChecked] = useState(status);
+
     return (
         <>
             <Form>

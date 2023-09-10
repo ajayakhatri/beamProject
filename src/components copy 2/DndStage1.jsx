@@ -1,14 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
-import { getToolWidth } from './ToolBar';
+import { actualbeamLength, getToolWidth } from './ToolBar';
 
-export const BeamBar = ({ beamID, addTool, scale, children, actualBeamLength }) => {
+export const BeamBar = ({ beamID, addTool, scale, children }) => {
     const [localBeamscale, setLocalBeamscale] = useState(scale);
     const localBeamscaleRef = useRef(localBeamscale);
 
+    const beam_Length = actualbeamLength()
     const beamRef = useRef(null);
 
-    console.log(localBeamscaleRef.current)
     useEffect(() => {
         setLocalBeamscale(scale);
         localBeamscaleRef.current = localBeamscale; // Update the ref whenever localBeamscale changes
@@ -47,7 +47,7 @@ export const BeamBar = ({ beamID, addTool, scale, children, actualBeamLength }) 
                     const relatedTarget = interact.getElementRect(e.relatedTarget);
                     const actualPosition = parseFloat(relatedTarget.left) - parseFloat(target.left)
                     const positionOnBeam = (parseFloat(relatedTarget.left) - parseFloat(target.left) + parseFloat(relatedTarget.width) / 2) * parseFloat(localBeamscaleRef.current)
-                    console.log("scale:beamLength / actualBeamLength", localBeamscaleRef.current)
+                    console.log("scale:beamLength / beam_Length", localBeamscaleRef.current)
                     console.log("actualPosition", actualPosition)
                     console.log("positiononBeam", positionOnBeam)
                     e.stopPropagation()
@@ -56,9 +56,7 @@ export const BeamBar = ({ beamID, addTool, scale, children, actualBeamLength }) 
                     e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
                     console.log(localBeamscale)
-                    console.log("localBeamscaleRef.current", localBeamscaleRef.current)
-
-                    addTool(beamID, e.relatedTarget.id.split("_")[0], (actualPosition < 0 ? -25 : actualPosition), positionOnBeam < 0 ? 0 : positionOnBeam, e.relatedTarget.id.split("_")[0] === "distributedLoad" ? localBeamscaleRef.current : localBeamscaleRef.current)
+                    addTool(beamID, e.relatedTarget.id.split("_")[0], actualPosition < 0 ? -25 : actualPosition, positionOnBeam < 0 ? 0 : positionOnBeam, e.relatedTarget.id.split("_")[0] === "distributedLoad" ? localBeamscaleRef.current : 1)
                 },
                 ondropdeactivate: function (e) {
                     e.stopPropagation();
@@ -72,7 +70,7 @@ export const BeamBar = ({ beamID, addTool, scale, children, actualBeamLength }) 
     return (
         <>
             <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
-                position: "relative", width: actualBeamLength + "px", height: "70px", borderTop: "solid 3px", /* This hides the overflowing content */
+                position: "relative", width: beam_Length + "px", height: "70px", borderTop: "solid 3px", /* This hides the overflowing content */
             }}>
                 {children}
             </div>

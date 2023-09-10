@@ -17,6 +17,14 @@ export function getImg(toolType) {
 export function getToolWidth() {
     return 50;
 }
+export function actualbeamLength() {
+    var x = window.matchMedia("(max-width: 625px)")
+    if (x.matches) { // If media query matches
+        return 350;
+    } else {
+        return 600;
+    }
+}
 
 export function getDroppables(beamID) {
 

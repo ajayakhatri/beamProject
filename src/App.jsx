@@ -6,7 +6,7 @@ import Beam from './components copy/Beam';
 function App() {
   return (
     <div>
-      <div className='mt-3 d-flex justify-content-center'>
+      <div className='mt-2 d-flex justify-content-center'>
         <Beam />
       </div>
     </div>
