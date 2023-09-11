@@ -28,16 +28,24 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
             if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
               e.target.value = inputValue
             }
-            const newValue = (e.target.value < 0 ? e.target.value * -1 : e.target.value);
-            setInputValue(newValue);
-            const scale = newValue / actualBeamLength
-            updateScale(beam.id, newValue === "" || isNaN(newValue) ? 1 : scale)
-            onChange(beam.id, "scale", newValue === "" || isNaN(newValue) ? 1 : scale);
-            onChange(beam.id, "length", newValue === "" || isNaN(newValue) ? 1 : newValue);
-            // changeDLSpan(beam.id, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
+            setInputValue(e.target.value);
+            const newValue = (e.target.value.length === 0 ? 1 : parseFloat(e.target.value));
+            const scale = newValue / parseFloat(actualBeamLength)
+            console.log("Check on Length Change", {
+              "scale": scale,
+              "newValue": newValue,
+              "check": e.target.value.length === 0 ? 1 : parseFloat(e.target.value),
+            })
+
+            const newLength = e.target.value.length === 0 || newValue === 0 ? beam.length : newValue
+            const newScale = e.target.value.length === 0 || newValue === 0 ? beam.scale : scale
+
+            updateScale(beam.id, newScale, newLength)
+            onChange(beam.id, "scale", newScale);
+            onChange(beam.id, "length", newLength);
           }}
           onBlur={(e) => {
-            setInputValue(e.target.value === "" || isNaN(e.target.value) ? 1 : e.target.value);
+            setInputValue(e.target.value.length === 0 || parseFloat(e.target.value) === 0 ? 1 : e.target.value);
           }}
         />
         <select style={{ maxWidth: "80px", width: "80px" }} className="form-select form-select-sm" onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
@@ -61,11 +69,9 @@ function Beam() {
 
   useEffect(() => {
     mediaQueryRef.current = window.matchMedia("(max-width: 800px)");
-    console.log(mediaQueryRef.current)
     // Function to handle changes in the media query
     const handleMediaQueryChange = (event) => {
       if (event.matches) {
-        console.log(window.innerWidth)
         // Media query matches (screen width is less than 900px)
         setactualBeamLength(window.innerWidth - 60); // Adjust component as needed
       } else {
@@ -92,7 +98,7 @@ function Beam() {
   }
   useEffect(() => {
     const handleWindowResize = () => {
-      console.log(window.innerWidth);
+      // console.log(window.innerWidth);
       checkBeamLength(window.innerWidth)
     };
 
@@ -201,7 +207,7 @@ function Beam() {
   }
   // const [beamscale, setbeamscale] = useState(10/actualBeamLength)
 
-  const updateScale = (beamID, newScale) => {
+  const updateScale = (beamID, newScale, newLength) => {
     setBeams((prevBeams) => {
       return produce(prevBeams, (draft) => {
         const beamIndex = draft.findIndex((beam) => beam.id === beamID);
@@ -213,10 +219,13 @@ function Beam() {
           Object.values(beam.tools).forEach((toolType) => {
             toolType.forEach((tool) => {
               tool.positionOnBeam = (tool.positionOnBeam * newScale) / preScale;
-              console.log("sdfdf", beams)
-              // if (tool.id.split("_")[0] === "distributedLoad"){
-              //   tool.span=
-              // }
+              if (tool.id.split("_")[0] === "distributedLoad") {
+                console.log("(tool.span + tool.positionOnBeam) > beam.length", tool.span, "+", tool.positionOnBeam, ">", newLength)
+                if ((tool.span + tool.positionOnBeam) > newLength) {
+                  console.log("tool.span = newLength - tool.positionOnBeam", tool.span, "=", newLength, "-", tool.positionOnBeam)
+                  tool.span = (newLength - tool.positionOnBeam) < 0 ? tool.span : newLength - tool.positionOnBeam
+                }
+              }
             });
           });
         }
@@ -252,12 +261,22 @@ function Beam() {
             value: 0,
           };
           if (toolType === "distributedLoad") {
-            newTool["span"] = 0.4 * beam.length
             const color = getRandomColorHex()
             newTool["color"] = color
-            console.log("scale", scale)
-            console.log("beam.length", beam.length)
-            newTool["img"] = <ImgDistributedLoad newSpanValue={(0.4 * beam.length)} scale={scale} spacing={20} loadEnd={5} loadStart={5} color={color} />
+            const newSpan = 0.2 * beam.length
+            console.log("On Adding Tool",
+              {
+                "scale": scale,
+                "beam.length": beam.length,
+                "newSpan": newSpan
+              })
+            // const newSpan = ((0.4 * beam.length) + positionOnBeam) > beam.length ? (beam.length - positionOnBeam) : (0.4 * beam.length)
+            if ((newSpan + parseFloat(positionOnBeam)) > beam.length) {
+              newTool["actualPosition"] = -25 + (beam.length - newSpan) / scale
+              newTool["positionOnBeam"] = beam.length - newSpan
+            }
+            newTool["span"] = newSpan
+            newTool["img"] = <ImgDistributedLoad newSpanValue={newSpan} scale={scale} spacing={20} loadEnd={5} loadStart={5} color={color} />
             newTool["loadStart"] = 5
             newTool["loadEnd"] = 5
           }
@@ -270,7 +289,6 @@ function Beam() {
     });
 
   };
-
 
   // changeDLSpan(beamID, id, "span", newSpan)
   const changeDLSpan = (beamID, toolID, property, newSpanValue, scale, loadStart, loadEnd) => {
@@ -290,6 +308,7 @@ function Beam() {
     })
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     const toollist = beams[beamIndex].tools[toolID.split("_")[0]]
+
     const toolIndex = toollist.findIndex((tool) => tool.id === toolID);
 
     const color = property === "loadStart" ? newLoad : toollist[toolIndex]["color"]
@@ -303,19 +322,20 @@ function Beam() {
   const [lengthSet, setlengthSet] = useState(true)
   const [dlSpanSet, setdlSpanSet] = useState(true)
 
+
   const AllDivs = ({ beamID, scale }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     let beam = beams[beamIndex]
-    console.log(scale, "beammIndex].scale")
-    // console.log(beamscale, "beammscaleDiv")
+    // console.log(scale, "beammIndex].scale")
+    // console.log(beam.length, "beammscaleDiv")
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
-      toolType.map((tool, index) =>
+      toolType.map((tool) =>
         <DropableNew
+          key={tool.id}
           status={{ "loadSet": loadSet, "lengthSet": lengthSet, "dlSpanSet": dlSpanSet }}
-          // setstatus={[setloadSet, setlengthSet, setdlSpanSet]}
-          id={tool.id} key={index}
+          id={tool.id}
           toolType={tool.id.split("_")[0]}
           actualBeamLength={actualBeamLength}
           beamID={beamID}
@@ -331,8 +351,9 @@ function Beam() {
           <div style={{
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
-
+            {console.log("Span ON Render", tool.span)}
             {tool.id.split("_")[0] === "distributedLoad" ?
+              // (tool.span + tool.positionOnBeam) === beam.length ? (beam.length - tool.positionOnBeam) : tool.span
               <ImgDistributedLoad newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} color={tool.color} />
               : tool.img}
           </div>
@@ -375,13 +396,9 @@ function Beam() {
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
           </div>
-          {/* {beam.length}
-          {beam.unit}
-          {beam.scale} */}
         </div>
       ))}
       <button onClick={addBeam}>Add Beam</button>
-
     </div>
   )
 

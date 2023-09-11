@@ -88,7 +88,14 @@ export function DropableNew(props) {
         changeToolValue(beamID, id, "actualPosition", actualPosition)
         changeToolValue(beamID, id, "positionOnBeam", positionOnBeam)
         setinputValue(positionOnBeam)
-        console.log(localDlSpanRef.current)
+        console.log("On Ending Moving Tool", {
+            "localDlSpanRef.current": localDlSpanRef.current,
+            "beamLength": beamLength,
+            "scale": beamLength / actualBeamLength,
+            "actualPosition": actualPosition,
+            "positionOnBeam": positionOnBeam,
+            "beamLength - positionOnBeam": beamLength - positionOnBeam,
+        })
         if (toolType === "distributedLoad") {
             changeDLSpan(beamID, id, "span", localDlSpanRef.current, beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
         }
@@ -103,19 +110,16 @@ export function DropableNew(props) {
         }
         setIsShowDlLoadInput(false)
         const sliderRect = interact.getElementRect(e.target);
-        // console.log("e", e.target.parentElement)
         const barRect = interact.getElementRect(e.target.parentElement);
-        // const sliderRect = interact.getElementRect(e.target);
-        // const barRect = interact.getElementRect(e.target.parentElement);
         const actualPosition = sliderRect.left - barRect.left
         const positionOnBeam = (sliderRect.left - barRect.left + sliderRect.width / 2) * props.beamLength / actualBeamLength
-        // const positionOnBeam = (sliderRect.left - barRect.left + sliderRect.width / 2)
-        // console.log({
+        // console.log("On Moving Tool", {
+        //     "beamLength": beamLength,
         //     "sliderRect.left": sliderRect.left,
         //     "barRect.left": barRect.left,
-        //     "positionONBeam": sliderRect.left - barRect.left
+        //     "positionOnBeam": positionOnBeam,
+        //     "beamLength - positionOnBeam": beamLength - positionOnBeam,
         // })
-        // console.log(sliderRect)
         var target = e.target
         var x = (parseFloat(target.getAttribute('data-x')) || 0) + e.dx
         target.style.transform = 'translate(' + x + 'px)'
@@ -125,7 +129,6 @@ export function DropableNew(props) {
         // console.log("sdfdf", `(${positionOnBeam} + ${dlSpanValue}) > ${beamLength}= `, (positionOnBeam + dlSpanValue) > beamLength)
         setinputValue(positionOnBeam)
         if (toolType == "distributedLoad" && positionOnBeam + dlSpanValue > beamLength) {
-            console.log(beamLength - positionOnBeam)
             setdlspanValue(Math.max((beamLength - positionOnBeam), 0.1))
         }
 
@@ -271,10 +274,11 @@ export function DropableNew(props) {
                                 onBlur={(e) => {
                                     e.stopPropagation()
                                     const positionOnBeam = inputValue
-                                    console.log(props.beamLength)
-                                    console.log("newSpan", beamLength)
-                                    console.log("newSpan", isNaN(dlSpanValue))
-                                    console.log("newSpan", localDlSpanRef.current)
+                                    console.log("On Changing span length", {
+                                        "isNaN(dlSpanValue)": isNaN(dlSpanValue),
+                                        "beamLength": beamLength,
+                                        "localDlSpanRef.current": localDlSpanRef.current,
+                                    })
                                     // e.target.value < 0 || e.target.value === "") ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value
                                     localDlSpanRef.current = isNaN(dlSpanValue) || dlSpanValue.length === 0 ? 0.1 : localDlSpanRef.current
                                     setdlspanValue(localDlSpanRef.current)

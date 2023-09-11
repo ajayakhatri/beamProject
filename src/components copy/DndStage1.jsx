@@ -13,7 +13,6 @@ export const BeamBar = (props) => {
 
     const beamRef = useRef(null);
 
-    console.log(localBeamscaleRef.current)
     useEffect(() => {
         setLocalBeamscale(scale);
         localBeamscaleRef.current = localBeamscale; // Update the ref whenever localBeamscale changes
