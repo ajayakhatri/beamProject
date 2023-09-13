@@ -44,6 +44,8 @@ class Beam:
         self.inertia = inertia
         self.node = self.gen_nodes()
         self.bar = self.gen_bars()
+        # print(self.bar)
+        # print(self.node)
         self.dof = 2
         # row is position and column is force if 0, if 1 then moment
         self.point_load = np.zeros_like(self.node)
@@ -160,7 +162,6 @@ class Beam:
             self.point_load[self.bar[i, 0], 1] += eq_load_ele[i, 1]
             self.point_load[self.bar[i, 1], 0] += eq_load_ele[i, 2]
             self.point_load[self.bar[i, 1], 1] += eq_load_ele[i, 3]
-
         # solution
 
         # returns index of non supported nodes
@@ -254,11 +255,12 @@ class Beam:
     def add_point_load(self, loadingList):
         for location, load in loadingList.items():
             self.point_load[(location, 0)] = load
+        print(self.point_load)
 
     def add_distributed_load(self, loadingList):
         for location, load_array in loadingList.items():
             self.distributed_load[location] = np.array(load_array)
-
+        print(self.distributed_load)
     def assign_support_values(self, index_value_list):
         for index in index_value_list:
             self.support[index] = np.array(0)
@@ -296,7 +298,7 @@ class Beam:
 # Structure input
 E: float = 30e6
 I: float = 500
-beam_1 = Beam(480, 21, E, I)
+beam_1 = Beam(50, 21, E, I)
 
 
 # Given dictionary 'a'
