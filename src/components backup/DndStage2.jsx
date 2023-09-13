@@ -5,8 +5,9 @@ import { TbArrowBackUp } from 'react-icons/tb';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 
 export function DropableNew(props) {
-    const { status, actualBeamLength, beamID, style, id, dlspan, toolType, load, color } = props
+    const { status, actualBeamLength, beamID, style, id, dlspan, toolType, load, color, unit } = props
     const [changeDLSpan, deleteTool, changeBeamValue, changeToolValue] = props.changefunctions
+
     const beamLength = parseFloat(props.beamLength);
     const [inputValue, setinputValue] = useState(parseFloat(parseFloat(props.positionOnBeam).toFixed(3)))
     const [dlSpanValue, setdlspanValue] = useState(parseFloat(parseFloat(dlspan).toFixed(3)))
@@ -65,11 +66,10 @@ export function DropableNew(props) {
                 }
             })
             .on(
-                'hold', function (e) {
+                'doubletap', function (e) {
                     changeshown(e)
                 })
             .pointerEvents({
-                holdDuration: 500,
                 allowFrom: `#Svg${id}`,
             })
         return () => {
@@ -257,98 +257,110 @@ export function DropableNew(props) {
                             </>
                         )}
                         {/* DL span input */}
-                        <div className='d-flex justify-content-between' style={{ width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
-                            |<span style={{ color: color }}>&#8592;</span>
-                            <div style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed", color: color }}></div>
-                            <input
-                                type="number"
-                                inputMode="numeric"
-                                min={0.1}
-                                className="form-control-sm dlSpanSet"
-                                aria-label={`Change span of ${id}`}
-                                value={dlSpanValue}
-                                id={`setdlspan${id}`}
-                                style={{ display: status.dlSpanSet ? "block" : "none", width: "50px", textAlign: "center", height: "22px" }}
-                                // style={{ display: status.dlSpanSet ? "block" : "none", width: "60px", textAlign: "center", height: "22px", marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}
-                                onChange={handleSpanChange}
-                                onBlur={(e) => {
-                                    e.stopPropagation()
-                                    const positionOnBeam = inputValue
-                                    console.log("On Changing span length", {
-                                        "isNaN(dlSpanValue)": isNaN(dlSpanValue),
-                                        "beamLength": beamLength,
-                                        "localDlSpanRef.current": localDlSpanRef.current,
-                                    })
-                                    // e.target.value < 0 || e.target.value === "") ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value
-                                    localDlSpanRef.current = isNaN(dlSpanValue) || dlSpanValue.length === 0 ? 0.1 : localDlSpanRef.current
-                                    setdlspanValue(localDlSpanRef.current)
-                                    console.log("dff", localDlSpanRef.current)
-                                    console.log("dff", dlSpanValue, ">", beamLength, dlSpanValue > beamLength)
-                                    if ((positionOnBeam + dlSpanValue) > beamLength) {
-                                        console.log(beamLength - positionOnBeam)
-                                        changeToolValue(beamID, id, "actualPosition", (- getToolWidth() / 2))
-                                        changeToolValue(beamID, id, "positionOnBeam", 0)
-                                        setdlspanValue(Math.max((beamLength - positionOnBeam), 0.1))
+                        {status.dlSpanSet && (
+                            <div className='d-flex justify-content-between' style={{ width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
+                                |<span style={{ color: color }}>&#8592;</span>
+                                <div style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed", color: color }}></div>
+                                <div className="btn" style={{ border: `1px solid ${color}`, borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", paddingRight: "0.5px" }}>
+                                    <input
+                                        type="number"
+                                        inputMode="numeric"
+                                        min={0.1}
+                                        className="dlSpanSet"
+                                        aria-label={`Change span of ${id}`}
+                                        value={dlSpanValue}
+                                        id={`setdlspan${id}`}
+                                        style={{ width: "40px", textAlign: "center", height: "22px", border: "none" }}
+                                        onChange={handleSpanChange}
+                                        onBlur={(e) => {
+                                            e.stopPropagation()
+                                            const positionOnBeam = inputValue
+                                            console.log("On Changing span length", {
+                                                "isNaN(dlSpanValue)": isNaN(dlSpanValue),
+                                                "beamLength": beamLength,
+                                                "localDlSpanRef.current": localDlSpanRef.current,
+                                            })
+                                            // e.target.value < 0 || e.target.value === "") ? 0 : e.target.value > props.beamLength ? props.beamLength : e.target.value
+                                            localDlSpanRef.current = isNaN(dlSpanValue) || dlSpanValue.length === 0 ? 0.1 : localDlSpanRef.current
+                                            setdlspanValue(localDlSpanRef.current)
+                                            console.log("dff", localDlSpanRef.current)
+                                            console.log("dff", dlSpanValue, ">", beamLength, dlSpanValue > beamLength)
+                                            if ((positionOnBeam + dlSpanValue) > beamLength) {
+                                                console.log(beamLength - positionOnBeam)
+                                                changeToolValue(beamID, id, "actualPosition", (- getToolWidth() / 2))
+                                                changeToolValue(beamID, id, "positionOnBeam", 0)
+                                                setdlspanValue(Math.max((beamLength - positionOnBeam), 0.1))
 
-                                        changeDLSpan(beamID, id, "span", ((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
-                                    } else {
-                                        changeDLSpan(beamID, id, "span", ((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
-                                    }
-                                    setmargin((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current)
-                                }} />
-                            <div style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed", color: color }}></div>
-                            <span style={{ color: color }}>&#8594;</span>|
-                        </div>
+                                                changeDLSpan(beamID, id, "span", ((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
+                                            } else {
+                                                changeDLSpan(beamID, id, "span", ((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
+                                            }
+                                            setmargin((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current)
+                                        }} />{unit}
+                                </div>
+                                <div style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed", color: color }}></div>
+                                <span style={{ color: color }}>&#8594;</span>|
+                            </div>
+                        )}
                     </>
                 )}
 
-
             <div style={{ position: "absolute", marginTop: "32px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
                 {/* Position Input */}
-                <input
-                    type="number"
-                    inputMode="numeric"
-                    min={0}
-                    className="form-control-sm lengthSet"
-                    aria-label={`Change position of ${id}`}
-                    value={inputValue}
-                    id={`setLength${id}`}
-                    style={{ display: status.lengthSet ? "block" : "none", width: "60px", textAlign: "center", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}
-                    onChange={handleInputChange} // Handle input changes
-                    // Handle input changes
-                    onBlur={(e) => {
-                        e.stopPropagation()
-                        console.log(e.target.value)
-                        let newPosition = (parseFloat(e.target.value)).toFixed(3)
-                        console.log(newPosition)
-                        newPosition = Math.max(newPosition, 0)
-                        newPosition = Math.min(newPosition, props.beamLength)
-                        console.log(((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : parseFloat(e.target.value)))
-                        setinputValue((e.target.value.length === 0 || isNaN(e.target.value)) ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : parseFloat(e.target.value))
-                        changeToolValue(beamID, id, "actualPosition", (((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : e.target.value) / (beamLength / actualBeamLength)) - (getToolWidth() / 2))
-                        changeToolValue(beamID, id, "positionOnBeam", ((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : e.target.value))
-                            ;
-                    }} />
+                {status.lengthSet && (
+                    <div className="btn" style={{ border: "1px solid #0d6efd", borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", margin: "0px", paddingRight: "0.5px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
+                        <input
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            className="lengthSet mt-1"
+                            aria-label={`Change position of ${id}`}
+                            value={inputValue}
+                            id={`setLength${id}`}
+                            style={{ display: status.lengthSet ? "block" : "none", width: "50px", height: "20px", textAlign: "center", padding: "0px", margin: "0px", border: "none" }}
+                            onChange={handleInputChange} // Handle input changes
+                            // Handle input changes
+                            onBlur={(e) => {
+                                e.stopPropagation()
+                                console.log(e.target.value)
+                                let newPosition = (parseFloat(e.target.value)).toFixed(3)
+                                console.log(newPosition)
+                                newPosition = Math.max(newPosition, 0)
+                                newPosition = Math.min(newPosition, props.beamLength)
+                                console.log(((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : parseFloat(e.target.value)))
+                                setinputValue((e.target.value.length === 0 || isNaN(e.target.value)) ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : parseFloat(e.target.value))
+                                changeToolValue(beamID, id, "actualPosition", (((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : e.target.value) / (beamLength / actualBeamLength)) - (getToolWidth() / 2))
+                                changeToolValue(beamID, id, "positionOnBeam", ((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : e.target.value))
+                                    ;
+                            }} />
+                        {unit}
+                    </div>
+                )}
                 {isShown &&
                     (
-                        <div>
-                            <div style={{ border: "2px solid black", borderRadius: "8px", width: "60px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
-                                <button onClick={() => deleteTool(beamID, id)} className='btn btn-danger w-100' style={{ borderRadius: "0px" }}>
+                        <>
+                            <div style={{ border: "2px solid black", borderRadius: "8px", width: "70px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
+                                <button onClick={() => deleteTool(beamID, id)} className='btn btn-danger w-100' style={{ borderRadius: "0px", height: "30px" }}>
                                     <RiDeleteBin5Line />
                                 </button>
-                                <button onClick={() => setIsShown(false)} className='btn btn-primary w-100' style={{ borderRadius: "0px", height: "28px", display: "flex", justifyContent: "center", alignContent: "center" }}>
+                                <button onClick={() => setIsShown(false)} className='btn btn-primary w-100' style={{ borderRadius: "0px", height: "28px" }}>
                                     <TbArrowBackUp />
                                 </button>
+                                {toolType === "distributedLoad" && (
+                                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", backgroundColor: "white" }}>
+                                        Color:
+                                        <input type="color"
+                                            defaultValue={color}
+                                            onBlur={(e) => { console.log(e.target.value); changeToolValue(beamID, id, "color", e.target.value) }
+                                            } />
+                                    </div>
+                                )}
                             </div>
-                            {toolType === "distributedLoad" && (
-                                <input type="color" style={{ marginLeft: (`${getToolWidth() + 8}px`) }}
-                                    onBlur={(e) => { console.log(e.target.value); changeToolValue(beamID, id, "color", e.target.value) }
-                                    } />
-                            )}
-                        </div>
+                        </>
                     )
                 }
             </div>
+
         </div>
     )
 }

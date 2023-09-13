@@ -1,25 +1,33 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
-import { beamLength, getToolWidth } from './ToolBar';
-
-
-{/* beamID, addTool, beamLength, setBeamLength */}
+import { getToolWidth } from './ToolBar';
 
 export const BeamBar = (props) => {
+    const beamID = props.beamID
+    const addTool = props.addTool
+    const children = props.children
+    const scale = parseFloat(props.scale)
+    const actualBeamLength = parseFloat(props.actualBeamLength)
+    const [localBeamscale, setLocalBeamscale] = useState(scale);
+    const localBeamscaleRef = useRef(localBeamscale);
 
     const beamRef = useRef(null);
 
     useEffect(() => {
-        const beamElement = beamRef.current;
+        setLocalBeamscale(scale);
+        localBeamscaleRef.current = localBeamscale; // Update the ref whenever localBeamscale changes
+    }, [scale, localBeamscale]);
 
+
+    useEffect(() => {
+        const beamElement = beamRef.current;
         interact(beamElement)
             .dropzone({
-                accept: `.Tools_Beam_${props.beamID}`,
+                accept: `.Tools_Beam_${beamID}`,
                 overlap: 0.2,
-
                 ondropactivate: function (e) {
-                    e.stopImmediatePropagation()
                     e.stopPropagation();
+                    e.stopImmediatePropagation()
                 },
                 ondragenter: function (e) {
                     e.stopPropagation();
@@ -31,23 +39,30 @@ export const BeamBar = (props) => {
                     e.stopPropagation();
                     e.stopImmediatePropagation()
                     console.log("leave", e)
+                    console.log("leave", localBeamscale)
                     e.target.classList.remove('drop-enter')
                     e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
                 },
                 ondrop: function (e) {
+                    e.stopPropagation()
+                    e.stopImmediatePropagation()
                     const target = interact.getElementRect(e.target);
                     const relatedTarget = interact.getElementRect(e.relatedTarget);
-                    let position = relatedTarget.left - target.left
-                    position = Math.min(target.width - relatedTarget.width / 2, position)
-                    position = Math.max(- relatedTarget.width / 2, position)
-                    console.log(position)
+                    const actualPosition = parseFloat(relatedTarget.left) - parseFloat(target.left)
+                    const positionOnBeam = (parseFloat(relatedTarget.left) - parseFloat(target.left) + parseFloat(relatedTarget.width) / 2) * parseFloat(localBeamscaleRef.current)
+                    console.log("scale:beamLength / actualBeamLength", localBeamscaleRef.current)
+                    console.log("actualPosition", actualPosition)
+                    console.log("positiononBeam", positionOnBeam)
                     e.stopPropagation()
                     e.stopImmediatePropagation()
                     e.target.classList.remove('drop-enter')
                     e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
-                    props.addTool(props.beamID, e.relatedTarget.id.split("_")[0], position)
+                    console.log(localBeamscale)
+                    console.log("localBeamscaleRef.current", localBeamscaleRef.current)
+
+                    addTool(beamID, e.relatedTarget.id.split("_")[0], (actualPosition < 0 ? -25 : actualPosition), positionOnBeam < 0 ? 0 : positionOnBeam, e.relatedTarget.id.split("_")[0] === "distributedLoad" ? localBeamscaleRef.current : localBeamscaleRef.current)
                 },
                 ondropdeactivate: function (e) {
                     e.stopPropagation();
@@ -56,20 +71,21 @@ export const BeamBar = (props) => {
                     e.target.classList.add('drop-no-enter')
                 }
             });
-
-        return () => {
-            // Clean up any e listeners or resources if needed
-        };
-    }, []);
+    }, [scale, localBeamscale]);
 
     return (
-        <div ref={beamRef} id={`Beam_${props.beamID}`} className='my-3 d-flex drop-no-enter' style={{ position: "relative", width: beamLength() + "px", height: "43px", borderTop: "solid 3px" }}>
-            {props.children}
-        </div>
+        <>
+            <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
+                position: "relative", width: actualBeamLength + "px", height: "70px", borderTop: "solid 3px", /* This hides the overflowing content */
+            }}>
+                {children}
+            </div>
+        </>
     )
 }
 
 export function DropablePreset(props) {
+    const { id } = props
     const toolsRef = useRef(null);
 
     useEffect(() => {
@@ -84,7 +100,6 @@ export function DropablePreset(props) {
                     // endOnly: true
                 })
             ],
-            autoScroll: true,
             // dragMoveListener from the dragging demo above
             listeners: {
                 move: dragMoveListener,
@@ -98,8 +113,8 @@ export function DropablePreset(props) {
         };
     }, []);
     return (
-        <div ref={toolsRef} id={props.id} key={props.id} style={{ zIndex: "1", touchAction: "none", border: "1px solid black", width: getToolWidth() + "px", height: "40px", margin: 0, padding: 0 }}
-            className={`Tools_Beam_${props.id.split("_")[props.id.split("_").length - 1]}`} >
+        <div ref={toolsRef} id={id} key={id} style={{ zIndex: "1", touchAction: "none", width: getToolWidth() + "px", height: "40px", margin: 0, padding: 0 }}
+            className={`Tools_Beam_${id.split("_")[id.split("_").length - 1]}`} >
             {props.children}
         </div>
     )

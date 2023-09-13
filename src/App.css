@@ -18,8 +18,17 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
+/* Styles for screens smaller than 800px */
+@media screen and (max-width: 801px) {
+    input[type=number] {
+        font-size: 13px !important;
+        margin: 0px !important;
+    }
+}
+
 html {
     user-select: none;
+    /* margin: 2px; */
 }
 
 /* Optionally, you can style the input as you wish */

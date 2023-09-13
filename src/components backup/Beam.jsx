@@ -3,7 +3,7 @@ import ToolBar, { getImg, getToolWidth } from './ToolBar';
 import { produce } from "immer";
 import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
-import { ImgDistributedLoad } from './Img';
+import { ImgDistributedLoad, ImgHingedSupport, ImgPointLoad, ImgRollerSupport } from './Img';
 import Switch from './Switch';
 import { getRandomColorHex } from './utility';
 
@@ -12,15 +12,15 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
   const [inputValue, setInputValue] = useState(beam.length);
 
   return (
-    <div className='d-flex justify-content-between' style={{ width: actualBeamLength }}>
+    <div className='d-flex justify-content-between mt-1' style={{ width: actualBeamLength }}>
       |<span className="text-primary">&#8592;</span>
       <div className="border-primary" style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed" }}></div>
-      <div className="input-group input-group-sm mb-3" style={{ minWidth: "180px" }} >
+      <div className="input-group input-group-sm mb-3" style={{ minWidth: "180px", border: "1px dotted #0d6efd" }} >
         <input
           type="number"
           inputMode="numeric"
           min={1}
-          className="form-control"
+          className="form-control "
           aria-label={`Enter beam length for Beam ${beam.id}`}
           value={inputValue}
           onChange={(e) => {
@@ -73,7 +73,7 @@ function Beam() {
     const handleMediaQueryChange = (event) => {
       if (event.matches) {
         // Media query matches (screen width is less than 900px)
-        setactualBeamLength(window.innerWidth - 60); // Adjust component as needed
+        setactualBeamLength(window.innerWidth - 100); // Adjust component as needed
       } else {
         setactualBeamLength(800); // Adjust component as needed
         // Media query does not match (screen width is 900px or greater)
@@ -94,7 +94,7 @@ function Beam() {
 
 
   function checkBeamLength(x) {
-    setactualBeamLength(x > 800 ? 800 : x - 60);
+    setactualBeamLength(x > 950 ? 800 : x - 100);
   }
   useEffect(() => {
     const handleWindowResize = () => {
@@ -118,6 +118,7 @@ function Beam() {
       scale: 1,
       unit: "m",
       tools: {
+
       },
     }
   ]);
@@ -141,6 +142,7 @@ function Beam() {
     const distributedLoad = beams[beamIndex]?.tools?.distributedLoad || [];
     const beamHingedSupport = beams[beamIndex]?.tools?.hingedSupport || [];
     console.log(`----Info of beam ${beamID}----`)
+    console.log("Beams", beams)
     console.log("Roller Supports", beamRollerSupport.length, beamRollerSupport)
     console.log("Point Loads", beamPointLoad.length, beamPointLoad)
     console.log("Distributed Load", distributedLoad.length, distributedLoad)
@@ -334,6 +336,7 @@ function Beam() {
       toolType.map((tool) =>
         <DropableNew
           key={tool.id}
+          unit={beam.unit}
           status={{ "loadSet": loadSet, "lengthSet": lengthSet, "dlSpanSet": dlSpanSet }}
           id={tool.id}
           toolType={tool.id.split("_")[0]}
@@ -380,7 +383,7 @@ function Beam() {
         )}
       </div>
       {beams.map((beam) => (
-        <div key={beam.id} className='border-1 border-black border py-5 px-3 mb-4 position-relative' style={{ borderRadius: "8px" }}>
+        <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative' style={{ borderRadius: "8px", padding: "0px 40px" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
           <div className='mt-4'>
             <ToolBar beamID={beam.id} />
