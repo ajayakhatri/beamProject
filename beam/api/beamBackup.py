@@ -166,7 +166,7 @@ class Beam:
 
         # returns index of non supported nodes
         free_dof = self.support.flatten().nonzero()[0]
-        
+        print("df",self.support)
         # returns stiffness matrix of non supported nodes
         kff = global_matrix[np.ix_(free_dof, free_dof)]
         
@@ -255,15 +255,16 @@ class Beam:
     def add_point_load(self, loadingList):
         for location, load in loadingList.items():
             self.point_load[(location, 0)] = load
-        print(self.point_load)
+        # print(self.point_load)
 
     def add_distributed_load(self, loadingList):
         for location, load_array in loadingList.items():
             self.distributed_load[location] = np.array(load_array)
-        print(self.distributed_load)
     def assign_support_values(self, index_value_list):
         for index in index_value_list:
             self.support[index] = np.array(0)
+        print("dd",self.support)
+        print("dd")
 
     def add_values(self, value):
         self.add_point_load(value["point_load_input"])

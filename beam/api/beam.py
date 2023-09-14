@@ -63,15 +63,47 @@ class Beam:
 # }
 # # node no
 # support_1_input = [(0,), (10, 0), (20,)]
+    def dl_to_node(self,list_d,span):
+        dl={}
+        for list in list_d:
+                    y1=list[2][1]
+                    y2=list[2][2]
+                    x1=list[1]
+                    x2=list[1]+list[2][0]   
+                    y=lambda x:round(((y2-y1)/(x2-x1))*(x-x1)+(y1),6)
+
+                    s=x1
+                    l=[]
+                    if list[1]%span!=0:
+                        l.append(x1)
+                        # dl[x1]=[y(x1)]
+                        s=(int(list[1]/span)+1)*span
+
+                    e=x2
+                    if x2%span!=0:
+                        e=(int(x2/span))*span
+
+                    x=s
+                    while x<=e:
+                        l.append(x)
+                        x+=span 
+
+                    if x2%span!=0:
+                        l.append(x2)
+
+                    for i in range(len(l)-1):
+                        if l[i] in dl:
+                            dl[l[i]][0]=dl[l[i]][0]+y(l[i])
+                            dl[l[i]][1]=dl[l[i]][1]+y(l[i+1])
+                        else:
+                            dl[l[i]]=[y(l[i]),y(l[i+1])]
+
+                    if x2%span!=0:
+                        dl[x2]=[0]
+                    print(l)
+        return [["d",key, value] for key, value in dl.items()]
+    
     def gen_nodes(self,value):
-        p=value["point_load_input"]
-        d=value["distributed_load_input"]
-        s=value["support_input"]
-           
-        list_p = [["p",key, value] for key, value in p.items()]
-        list_d = [["d",key, value] for key, value in d.items()]
-        list_s = [["s",key, value] for key, value in s.items()]
-        combined_list=list_p+list_d+list_s
        
         # for i in range(len(sorted_pairs)):
         span: float = self.len_beam / (self.no_nodes - 1)
@@ -80,36 +112,26 @@ class Beam:
         cumm: float = 0
         baseline: float = 0
 
+        p=value["point_load_input"]
+        d=value["distributed_load_input"]
+        s=value["support_input"]
 
-        print(list_d)
-        # [['d', 50, [3, 0, 10]], ['d', 40, [13, 10, 10]]]
+        sorted_p = dict(sorted(p.items(), key=lambda x: x[0]))
+        # sorted_d = dict(sorted(d.items(), key=lambda x: x[0]))
+        sorted_s = dict(sorted(s.items(), key=lambda x: x[0]))
+   
+        list_p = [["p",key, value] for key, value in sorted_p.items()]
+        # list_d = [["d",key, value] for key, value in sorted_d.items()]
+        list_d = d
+        list_d = self.dl_to_node(list_d,span)
+        list_s = [["s",key, value] for key, value in sorted_s.items()]
+        combined_list=list_p+list_d+list_s
 
-        for list in list_d:
-            y1=list[2][1]
-            y2=list[2][2]
-            x1=list[1]
-            x2=list[1]+list[2][0]
-            
-            y=lambda x:((y2-y1)/(x2-x1))*(x-x1)+(y1)
-
-            
-            x=list[1]+span
-            if list[1]%span!=0:
-                x=(int(list[1]/span)+1)*span
-        
-
-            dl={list[1]:[list[2][1]]}
-            pre=list[2][1]
-            while x<=x2:
-                dl[x]=[y(x),y(x+span)]
-
-                x+=span
-
-                
-            
+        # print("list_d 122",list_d)
+        # [['d', 50, [3, 0, 10]], ['d', 40, [13, 10, 10]]]           
 # pointLoad_ = {9: -1e3, 50: -1e3}
 # distributedload_ =  {
-#     50: [3, 0, 10],
+#     50: [13, 0, 10],
 #     40: [13, 10, 10],
 # }
 # dictionary = {0:0, 12:1, 22:0}
@@ -133,6 +155,7 @@ class Beam:
         barcount: int=0
         nnode=self.no_nodes
         x=self.no_nodes
+        added_nodes=0
         while i <= nnode:
             array.append([cumm, baseline])
             # if(cumm+span)
@@ -143,40 +166,41 @@ class Beam:
 
             if len(atnode)!=0:
                 for list in atnode:
-                    print("a",list)
+                    # print("at node",list)
                     if list[0]=="p":
                         pf[barcount]=list[2]
                     if list[0]=="d":
                         df[barcount]=list[2]
                     if list[0]=="s":
                         sf[barcount]=list[2]
-
             if len(inbetweenlist)!=0:
                 x+= len(inbetweenlist)
                 pointer=-1
                 for list in inbetweenlist:
                     if list[1]!=pointer:
                         barcount += 1
+                        added_nodes += 1
+                        array.append([list[1], baseline])
+                        bars.append([barcount, barcount + 1])
+                        print(list[1], "barcount",barcount)
                     pointer=list[1]
                     
-                    bars.append([barcount, barcount + 1])
-                    array.append([list[1], baseline])
 
-                    print(barcount,list[1])
+                    print(barcount,list[1],list[2])
                     if list[0]=="p":
                         pf[barcount]=list[2]
-                    if list[0]=="d":
-                        df[barcount]=list[2]
                     if list[0]=="s":
                         sf[barcount]=list[2]
-
+                    if list[0]=="d" and len(list[2])==2:
+                        df[barcount]=list[2]
             cumm += span
             barcount += 1
             i += 1
-        # print(combined_list)
-        print("pf",pf)
-        print("df",df)
-        print("sf",sf)
+        print("added_nodes",added_nodes)
+        # # print(combined_list)
+        # print("pf",pf)
+        # print("df",df)
+        # print("sf",sf)
         def transform_dict_to_list(dictionary):
             result = []
             for key, value in dictionary.items():
@@ -187,7 +211,7 @@ class Beam:
             return result
         elements_list = {
             "point_load_input": pf,
-            # "distributed_load_input": df,
+            "distributed_load_input": df,
             "support_input": transform_dict_to_list(sf),
         }
         # self.add_point_load(pf)
@@ -224,10 +248,11 @@ class Beam:
         n_dof = self.dof * n_node
 
 
+        print("d",self.node)
+        print("d",self.bar)
         # Calculate the differences in y-coordinates between the second node and the first node of each bar
         d = self.node[self.bar[:, 1], :] - self.node[self.bar[:, 0], :]
-        # print("d",d)
-
+        return
         # Calculate the lengths of the beam elements using the Euclidean distance formula
         length = np.sqrt((d**2).sum(axis=1))
 
@@ -376,16 +401,20 @@ class Beam:
 
     def add_point_load(self, loadingList):
         for location, load in loadingList.items():
-            self.point_load[(location, 0)] = load
+            self.point_load[(location, 0)] = load*-1
+        print(self.point_load)
         
     def add_distributed_load(self, loadingList):
         for location, load_array in loadingList.items():
-            self.distributed_load[location] = np.array(load_array)
+            self.distributed_load[location] = np.array(load_array)*-1
+        # print(self.distributed_load)
             
 
     def assign_support_values(self, index_value_list):
         for index in index_value_list:
             self.support[index] = np.array(0)
+        print("dd",self.support)
+        print("dd")
     def add_values(self, value):
         self.add_point_load(value["point_load_input"])
         self.add_distributed_load(value["distributed_load_input"])
@@ -438,17 +467,26 @@ class Beam:
 
 # Given dictionary 'a'
 # node no
-pointLoad_ = {9: -1e3, 50: -1e3}
-
+# pointLoad_ = {9: -1e3, 50: -1e3}
+# pointLoad_ = {12.5: -1e3, 37.5: -1e3}
+pointLoad_ = {4: 10, 9: 11,17:21}
 # beam element no
 # positionOnBeam [span ls le ]
-distributedload_ = {
-    50: [3, 0, 10],
-    40: [13, 10, 10],
-}
-# node no
-support_= {0:0, 12:1, 22:0}
+distributedload_ = [
+    ["d",0, [4, 22, 0]],
+    ["d",0, [4, 5, 18]],
+    ["d",6, [5, 20, 13]],
+    ["d",20, [5, 13, 13]]
+    # 37.5: [12.5, 0, 50],
+    # 20: [11, 10, 10],
+]
+# list_d=[['d', 3, [14, 0, 40]],['d', 7, [15, 10, 30]]]
 
+# ["d",key, value]
+# node no
+# support_= {0:0, 25:1, 50:0}
+support_= {0:0,4:1,14:0, 20:1, 25:0}
+# 17:1 is roller
 
 value_ = {
     "point_load_input": pointLoad_,
@@ -458,7 +496,7 @@ value_ = {
 # Structure input
 E: float = 30e6
 I: float = 500
-beam_1 = Beam(60, 21, E, I,value_)
+beam_1 = Beam(25, 30, E, I,value_)
 
 
 
@@ -489,7 +527,7 @@ beam_1 = Beam(60, 21, E, I,value_)
 beam_1.analysis()
 result = beam_1.results()
 
-# beam_1.plot(1)
+beam_1.plot(1)
 
 plots = beam_1.plots_json()
 
