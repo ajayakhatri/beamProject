@@ -38,18 +38,29 @@ import React, { useState, useEffect } from "react";
 //         })
 //     }
 // });
-export const sendDataToBackend = async (arrangedData) => {
-    const dataa = arrangedData
+export const sendDataToBackend = async (arrangedData, setPlot, beamLength) => {
+    const dataToSend = arrangedData
+    console.log(" data:", {
+        "point_load_input": dataToSend["point_load_input"],
+        "distributed_load_input": dataToSend["distributed_load_input"],
+        "support_input": dataToSend["support_input"],
+        "beam_length": beamLength,
+    })
     try {
-        const { data } = await axios({
+        const response = await axios({
             method: 'post',
             url: 'url/',
             data: {
-                "field1": dataa,
+                "point_load_input": dataToSend["point_load_input"],
+                "distributed_load_input": dataToSend["distributed_load_input"],
+                "support_input": dataToSend["support_input"],
             }
         });
 
-        console.log(data);
+        console.log("sdsd", response.data);
+        console.log("🚀 ~ file: sendDataToBackend.jsx:75 ~ SendData ~ beamLength:", typeof beamLength)
+
+        setPlot(response.data)
     } catch (err) {
         if (err.response.status === 404) {
             console.log('Resource could not be found!');
@@ -60,13 +71,13 @@ export const sendDataToBackend = async (arrangedData) => {
 };
 
 
-export const SendData = ({ beams, beamID }) => {
+export const SendData = ({ beams, beamID, setPlot, beamLength }) => {
     // console.log(beams)
-
     const [arrangedData, setarrangedData] = useState({
         "point_load_input": {},
         "distributed_load_input": {},
         "support_input": [],
+        // "beamLength": beamLength,
     })
 
     const changeResponse = (tochange, newData) => {
@@ -77,10 +88,9 @@ export const SendData = ({ beams, beamID }) => {
     };
 
     const arrangeData = (beams, beamID) => {
-        let point_load_input = {}
-        let distributed_load_input = {}
-        let support_input = []
-
+        let point_load_input = []
+        let distributed_load_input = []
+        let support_input = {}
         const beamIndex = beams.findIndex((beam) => beam.id === beamID);
 
         // pointLoad_input = {5: -1e3, 15: -1e3}
@@ -89,19 +99,25 @@ export const SendData = ({ beams, beamID }) => {
             Object.values(beam.tools).forEach((toolType) => {
                 toolType.forEach(tool => {
                     if (tool.id.split("_")[0] === "pointLoad") {
-                        point_load_input[tool.positionOnBeam] = tool.load
+                        point_load_input.push([tool.positionOnBeam, tool.load])
                     }
-
+                    // # distributedload_ = [
+                    //     # ["d", 0, [5, 5000, 1000]],
+                    //     # ["d", 5, [5, 10000, 5000]],
+                    //     # ]
+                    //     # support_ = {2.5: 1, 7.5: 1, 10: 0}
+                    //     # pointLoad_ = [[3, 12000], [6, 15000]]
                     // 15: [0, -10],
                     if (tool.id.split("_")[0] === "distributedLoad") {
-                        distributed_load_input[tool.positionOnBeam] = [tool.span, tool.loadStart, tool.loadEnd]
+                        distributed_load_input.push(["d", tool.positionOnBeam, [tool.span, tool.loadStart, tool.loadEnd]])
                     }
 
                     if (tool.id.split("_")[0] === "hingedSupport") {
-                        support_input.push([tool.positionOnBeam, 0])
+                        support_input[tool.positionOnBeam] = 1
                     }
                     if (tool.id.split("_")[0] === "rollerSupport") {
-                        support_input.push([tool.positionOnBeam,])
+                        support_input[tool.positionOnBeam] = 1
+                        // support_input.push([tool.positionOnBeam,])
                     }
 
                 });
@@ -109,6 +125,7 @@ export const SendData = ({ beams, beamID }) => {
             });
         }
 
+        // changeResponse("beamLength", beams[beamIndex].length)
         changeResponse("point_load_input", point_load_input)
         changeResponse("distributed_load_input", distributed_load_input)
         changeResponse("support_input", support_input)
@@ -125,13 +142,14 @@ export const SendData = ({ beams, beamID }) => {
     // Call the arrangeData function before sending the data to the backend
     useEffect(() => {
         arrangeData(beams, beamID);
+        sendDataToBackend(arrangedData, setPlot,beamLength)
     }, [beams, beamID]);
 
     return (
         <button className='btn btn-outline-primary p-1' onClick={(e) => {
             e.preventDefault()
             // arrangeData(beams, beamID)
-            sendDataToBackend(arrangedData)
+            sendDataToBackend(arrangedData, setPlot, beamLength)
         }}>
             sendDataToBackend</button>
     );

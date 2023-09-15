@@ -1,56 +1,50 @@
 import React from 'react';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-import { faker } from '@faker-js/faker';
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto';
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
 
-export const options = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'top',
-        },
-        title: {
-            display: true,
-            text: 'Chart.js Bar Chart',
-        },
-    },
+
+export const MyChart = ({ plot, setPlot }) => {
+    let bendingMoment = plot.bendingMoment
+    let deformation = plot.deformation
+    let original = plot.original
+    let shearForce = plot.shearForce
+
+    let x_original = Object.keys(original).map(parseFloat);
+    let y_original = Object.values(original).map(parseFloat);
+    let y_bendingMoment = Object.values(bendingMoment).map(parseFloat);
+    let x_bendingMoment = Object.keys(bendingMoment).map(parseFloat);
+    // let y_bendingMoment = Object.values(bendingMoment).map(parseFloat);
+    console.log("🚀 ~ y_bendingMoment:", x_bendingMoment)
+    console.log("🚀 ~ file: Chart.jsx:16 ~ MyChart ~ y_bendingMoment:", y_bendingMoment)
+
+
+
+    const chartData = {
+        labels: x_bendingMoment,
+        datasets: [
+            {
+                label: 'Original',
+                data: y_original,
+                fill: false,
+                borderColor: 'rgba(75,192,192,1)',
+                tension: 0.1,
+            },
+            {
+                label: 'BMD',
+                data: y_bendingMoment,
+                fill: true,
+                borderColor: 'rgba(192,75,192,1)',
+                tension: 0.1,
+            },
+        ],
+    };
+
+
+    return (
+        <div>
+            <Line data={chartData} />
+        </div>
+    );
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Dataset 1',
-            data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-        {
-            label: 'Dataset 2',
-            data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-    ],
-};
-
-export function MyChart() {
-    return <Bar options={options} data={data} />;
-}

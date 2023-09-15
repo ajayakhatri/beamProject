@@ -8,6 +8,7 @@ import Switch from './Switch';
 import { getRandomColorHex } from './utility';
 import BeamsData from '../dataFlow/BeamsData';
 import { SendData } from '../dataFlow/sendDataToBackend';
+import { MyChart } from './chart';
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
 
@@ -367,10 +368,14 @@ function Beam() {
     return alldivs;
   }
 
-
+  const [plot, setPlot] = useState(null)
   return (
     <div>
-      <BeamsData />
+      {
+        plot &&
+        <MyChart plot={plot} setPlot={setPlot} />
+      }
+      {/* <BeamsData /> */}
       <div>actualBeamLength: {actualBeamLength}</div>
       <div className='d-flex justify-content-between' >
         <h2 className='fs-1'>Beams</h2>
@@ -398,7 +403,7 @@ function Beam() {
             <button className='btn btn-outline-primary p-1' onClick={() => deleteBeam(beam.id)}>Delete</button>
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
-            <SendData beams={beams} beamID={beam.id} />
+            <SendData beams={beams} beamID={beam.id} setPlot={setPlot} beamLength={parseFloat(beam.length)} />
           </div>
 
         </div>
