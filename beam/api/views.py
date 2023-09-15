@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from .serializers import  BeamModelSerializer
 
 from .models import BeamModel
-from .beam import Beam
+from .beamApp import Beam
 import json
 
 
