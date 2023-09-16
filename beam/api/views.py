@@ -21,7 +21,7 @@ def my_view(request):
         distributedload_ = data.get("distributed_load_input", None)
         support_ = data.get("support_input", None)
         # minspan = data.get("minspan", None)
-        beamLength = data.get("beamLength")
+        beamLength = data.get("beam_length")
         # E = data.get("E", None)
         # I = data.get("I", None)
         # unit = data.get("unit", None)
@@ -38,7 +38,9 @@ def my_view(request):
 
         E: float = 210e9
         I: float = 4.73e-6
-
+        if  len(pointLoad_)==0 and len(distributedload_)==0 and len(support_)==0 :
+            return JsonResponse({"ERROR":"Beam is empty"})
+        
         no_nodes, bars, n,value_= arrangeData(distributedload_,support_,pointLoad_,minspan,leng)
         beam_1 = Beam(leng, no_nodes, E, I, bars, n)
         beam_1.add_values(value_)

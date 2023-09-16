@@ -90,14 +90,14 @@ export function DropableNew(props) {
         changeToolValue(beamID, id, "actualPosition", actualPosition)
         changeToolValue(beamID, id, "positionOnBeam", positionOnBeam)
         setinputValue(positionOnBeam)
-        console.log("On Ending Moving Tool", {
-            "localDlSpanRef.current": localDlSpanRef.current,
-            "beamLength": beamLength,
-            "scale": beamLength / actualBeamLength,
-            "actualPosition": actualPosition,
-            "positionOnBeam": positionOnBeam,
-            "beamLength - positionOnBeam": beamLength - positionOnBeam,
-        })
+        // console.log("On Ending Moving Tool", {
+        //     "localDlSpanRef.current": localDlSpanRef.current,
+        //     "beamLength": beamLength,
+        //     "scale": beamLength / actualBeamLength,
+        //     "actualPosition": actualPosition,
+        //     "positionOnBeam": positionOnBeam,
+        //     "beamLength - positionOnBeam": beamLength - positionOnBeam,
+        // })
         if (toolType === "distributedLoad") {
             changeDLSpan(beamID, id, "span", localDlSpanRef.current, beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
         }
@@ -114,10 +114,11 @@ export function DropableNew(props) {
         const sliderRect = interact.getElementRect(e.target);
         const barRect = interact.getElementRect(e.target.parentElement);
         const actualPosition = sliderRect.left - barRect.left
-        const positionOnBeam = (sliderRect.left - barRect.left + sliderRect.width / 2) * props.beamLength / actualBeamLength
+        const positionOnBeam = parseFloat(((sliderRect.left - barRect.left + sliderRect.width / 2) * beamLength / actualBeamLength).toFixed(3))
         // console.log("On Moving Tool", {
-        //     "beamLength": beamLength,
+        //     "beamLength":  beamLength,
         //     "sliderRect.left": sliderRect.left,
+        //     "sliderElement": sliderRect.width,
         //     "barRect.left": barRect.left,
         //     "positionOnBeam": positionOnBeam,
         //     "beamLength - positionOnBeam": beamLength - positionOnBeam,
@@ -328,11 +329,11 @@ export function DropableNew(props) {
                                 let newPosition = (parseFloat(e.target.value)).toFixed(3)
                                 console.log(newPosition)
                                 newPosition = Math.max(newPosition, 0)
-                                newPosition = Math.min(newPosition, props.beamLength)
-                                console.log(((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : parseFloat(e.target.value)))
-                                setinputValue((e.target.value.length === 0 || isNaN(e.target.value)) ? 0 : (parseFloat(e.target.value) > props.beamLength) ? props.beamLength : parseFloat(e.target.value))
-                                changeToolValue(beamID, id, "actualPosition", (((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? parseFloat(props.beamLength) : parseFloat(e.target.value)) / (beamLength / parseFloat(actualBeamLength))) - (getToolWidth() / 2))
-                                changeToolValue(beamID, id, "positionOnBeam", ((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > props.beamLength) ? parseFloat(props.beamLength) : parseFloat(e.target.value)))
+                                newPosition = Math.min(newPosition, beamLength)
+                                console.log(((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > beamLength) ? beamLength : parseFloat(e.target.value)))
+                                setinputValue((e.target.value.length === 0 || isNaN(e.target.value)) ? 0 : (parseFloat(e.target.value) > beamLength) ? beamLength : parseFloat(e.target.value))
+                                changeToolValue(beamID, id, "actualPosition", (((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > beamLength) ? parseFloat(beamLength) : parseFloat(e.target.value)) / (beamLength / parseFloat(actualBeamLength))) - (getToolWidth() / 2))
+                                changeToolValue(beamID, id, "positionOnBeam", ((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > beamLength) ? parseFloat(beamLength) : parseFloat(e.target.value)))
                                     ;
                             }} />
                         {unit}

@@ -6,9 +6,9 @@ import { BeamBar } from './DndStage1';
 import { ImgDistributedLoad } from './Img';
 import Switch from './Switch';
 import { getRandomColorHex } from './utility';
-import BeamsData from '../dataFlow/BeamsData';
 import { SendData } from '../dataFlow/sendDataToBackend';
-import { MyChart } from './chart';
+import { MyChart } from './Chart';
+import { Result } from 'postcss';
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
 
@@ -316,7 +316,7 @@ function Beam() {
 
     const toolIndex = toollist.findIndex((tool) => tool.id === toolID);
 
-    const color = property === "loadStart" ? newLoad : toollist[toolIndex]["color"]
+    const color = property === "loadStart" ? null : toollist[toolIndex]["color"]
     console.log({ 'loadEnd': loadEnd, 'loadStart': loadStart })
     console.log(toollist[toolIndex]["loadStart"], "loadStart")
     const newImg = <ImgDistributedLoad newSpanValue={newSpanValue} scale={scale} spacing={20} loadEnd={loadEnd} loadStart={loadStart} color={color} />
@@ -369,11 +369,12 @@ function Beam() {
   }
 
   const [plot, setPlot] = useState(null)
+
   return (
     <div>
       {
         plot &&
-        <MyChart plot={plot} setPlot={setPlot} />
+        <MyChart plot={plot} setPlot={setPlot} beams={beams}/>
       }
       {/* <BeamsData /> */}
       <div>actualBeamLength: {actualBeamLength}</div>
@@ -403,6 +404,7 @@ function Beam() {
             <button className='btn btn-outline-primary p-1' onClick={() => deleteBeam(beam.id)}>Delete</button>
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
+            {/* <SendData arrangedData={arrangedData} beamLength={beam.length} setPlot={setPlot} /> */}
             <SendData beams={beams} beamID={beam.id} setPlot={setPlot} beamLength={parseFloat(beam.length)} />
           </div>
 
