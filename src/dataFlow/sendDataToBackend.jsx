@@ -2,7 +2,7 @@ import axios from "./axios.jsx";
 import React, { useState, useEffect, useRef } from "react";
 
 
-export const SendData = ({ beams, beamID, setPlot, beamLength }) => {
+export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
     const [localBeams, setlocalBeams] = useState(beams)
     const beamsRef = useRef(localBeams);
 
@@ -68,9 +68,10 @@ export const SendData = ({ beams, beamID, setPlot, beamLength }) => {
             console.log("🚀 ~ file: sendDataToBackend.jsx:75 ~ SendData ~ beamLength:", typeof beamLength)
             if (response.data.ERROR === "Beam is empty") {
                 console.log("Response from Backend:", response.data.ERROR);
-                setPlot(null)
+
+                setPlot({ ...plot, [beamID]: null });
             } else {
-                setPlot(response.data)
+                setPlot({ ...plot, [beamID]: response.data });
             }
         } catch (error) {
             console.log("Error: ", error.message);

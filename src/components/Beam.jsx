@@ -7,7 +7,7 @@ import { ImgDistributedLoad } from './Img';
 import Switch from './Switch';
 import { getRandomColorHex } from './utility';
 import { SendData } from '../dataFlow/sendDataToBackend';
-import { MyChart } from './Chart';
+import { MyChart, MyCharts } from './Chart';
 import { Result } from 'postcss';
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
@@ -368,14 +368,16 @@ function Beam() {
     return alldivs;
   }
 
-  const [plot, setPlot] = useState(null)
+  const [plot, setPlot] = useState({})
 
   return (
     <div>
       {
+        console.log("plpot",plot)
+      /* {
         plot &&
         <MyChart plot={plot} setPlot={setPlot} beams={beams}/>
-      }
+      } */}
       {/* <BeamsData /> */}
       <div>actualBeamLength: {actualBeamLength}</div>
       <div className='d-flex justify-content-between' >
@@ -405,9 +407,14 @@ function Beam() {
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
             {/* <SendData arrangedData={arrangedData} beamLength={beam.length} setPlot={setPlot} /> */}
-            <SendData beams={beams} beamID={beam.id} setPlot={setPlot} beamLength={parseFloat(beam.length)} />
+            <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)} />
           </div>
-
+            {
+        plot[beam.id] &&<>
+      
+      <MyCharts plot={plot[beam.id]} setPlot={setPlot} beams={beams} beamID={beam.id}/>
+        </>
+      }
         </div>
       ))}
       <button onClick={addBeam}>Add Beam</button>

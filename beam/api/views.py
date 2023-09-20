@@ -3,7 +3,7 @@ from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import  BeamModelSerializer
+from .serializers import BeamModelSerializer
 
 from .models import BeamModel
 from .beamApp import Beam
@@ -11,11 +11,12 @@ import json
 import numpy as np
 from django.core import serializers
 
+
 @api_view(["POST", "GET"])
 def my_view(request):
     if request.method == "POST":
         # Retrieve the data from the request
-        # field1 = request.data["field1"]
+
         data = json.loads(request.body)
         pointLoad_ = data.get("point_load_input", None)
         distributedload_ = data.get("distributed_load_input", None)
@@ -26,28 +27,29 @@ def my_view(request):
         # I = data.get("I", None)
         # unit = data.get("unit", None)
 
-
         # distributedload_ = [
         # ["d", 0, [5, 5000, 1000]],
         # ["d", 5, [5, 10000, 5000]],
         # ]
         # support_ = {2.5: 1, 7.5: 1, 10: 0}
         # pointLoad_ = [[3, 12000], [6, 15000]]
-        minspan = 0.4
+        minspan = 0.05 * beamLength
         leng = beamLength
 
         E: float = 210e9
         I: float = 4.73e-6
-        if  len(pointLoad_)==0 and len(distributedload_)==0 and len(support_)==0 :
-            return JsonResponse({"ERROR":"Beam is empty"})
-        
-        no_nodes, bars, n,value_= arrangeData(distributedload_,support_,pointLoad_,minspan,leng)
+        if len(pointLoad_) == 0 and len(distributedload_) == 0 and len(support_) == 0:
+            return JsonResponse({"ERROR": "Beam is empty"})
+
+        no_nodes, bars, n, value_ = arrangeData(
+            distributedload_, support_, pointLoad_, minspan, leng
+        )
         beam_1 = Beam(leng, no_nodes, E, I, bars, n)
         beam_1.add_values(value_)
 
         beam_1.analysis()
         beam_1.plot()
-        
+
         # result = beam_1.results()
         # plots = beam_1.plots_json()
         plots = beam_1.p
@@ -58,7 +60,7 @@ def my_view(request):
         # data = json.loads(plots)
         return JsonResponse(plots)
         # return JsonResponse(plots,safe=False)
-        return render(request, "api/index.html",data)
+        return render(request, "api/index.html", data)
     else:
         return render(request, "api/index.html")
 
@@ -68,9 +70,7 @@ def getit(request):
     try:
         # Assuming data is sent as JSON
         data = json.loads(request.body)
-        my_data = data.get(
-            "field1"
-        ) 
+        my_data = data.get("field1")
         # Process the received data
 
         # Return a JSON response with the processed data
@@ -112,7 +112,6 @@ def taskAddBeam(request):
         length=length, nodes=nodes, elasticity=elasticity, inertia=inertia
     )
     return Response({"message": f"Beam {beam_instance.pk} created successfully."})
-
 
 
 pointLoad_input = []
@@ -163,6 +162,7 @@ def getBeams(request):
     serializer = BeamModelSerializer(beams, many=True)
     return Response(serializer.data)
 
+
 @api_view(["GET"])
 def removeBeam(request):
     beams = BeamModel.objects.all()
@@ -170,12 +170,7 @@ def removeBeam(request):
     return Response(serializer.data)
 
 
-
-
-
-
-
-def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
+def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
     sum_dict = {}
     for sublist in pointLoad_input:
         key = sublist[0]
@@ -186,26 +181,26 @@ def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
             sum_dict[key] = value
     pointLoad_ = sum_dict
 
-    s={}
-    support_=support_
+    s = {}
+    support_ = support_
     for key in support_:
-        s[float(key)]=support_[key]
-    support_=s
-    print(support_)
-
+        s[float(key)] = support_[key]
+    support_ = s
+    # print(support_)
 
     a = []
     for dl in distributedload_:
         if dl[2][1] != dl[2][2]:
             min_value = min(dl[2][1], dl[2][2])
             a.append(["d", dl[1], [dl[2][0], min_value, min_value]])
-            a.append(["d", dl[1], [dl[2][0], dl[2][1] - min_value, dl[2][2] - min_value]])
+            a.append(
+                ["d", dl[1], [dl[2][0], dl[2][1] - min_value, dl[2][2] - min_value]]
+            )
         else:
             a.append(dl)
 
-
     def dl_to_node(list_d, minspan):
-        n ={}
+        n = {}
         a = {}
         span = minspan
         for list in list_d:
@@ -243,7 +238,6 @@ def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
                 else:
                     a[x2] = ["d", a[x2][1] + y(x2)]
         return n, a
-
 
     n, a = dl_to_node(a, minspan)
     for i in pointLoad_:
@@ -289,7 +283,6 @@ def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
     for i in n:
         location2node[i] = node
         node += 1
-    print(location2node)
     for i in list_n:
         if i[0] in pointLoad_:
             pf[location2node[i[0]] - 1] = -1 * pointLoad_[i[0]]
@@ -297,8 +290,6 @@ def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
             sf[location2node[i[0]] - 1] = support_[i[0]]
         if i[0] in dldict_:
             df[location2node[i[0]] - 1] = dldict_[i[0]]
-    print(pf)
-
 
     list_df = [[key, value] for key, value in df.items()]
     list_pf = [[key, ["p", value]] for key, value in pf.items()]
@@ -314,15 +305,12 @@ def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
     for i in range(len(list_df) - 1):
         if list_df[i][0] == list_df[i + 1][0] - 1:
             dff[list_df[i][0]] = [-1 * list_df[i][1][1], -1 * list_df[i + 1][1][1]]
-    print(dff)
-
 
     def gen_bars(no_nodes):
         bars = []
         for i in range(no_nodes - 1):
             bars.append([i + 1, i + 2])
         return np.array(bars).astype(int)
-
 
     def transform_dict_to_list(dictionary):
         result = []
@@ -332,7 +320,6 @@ def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
             else:
                 result.append((key,))
         return result
-
 
     sff = transform_dict_to_list(sf)
     bars = gen_bars(no_nodes)
@@ -350,7 +337,6 @@ def arrangeData(distributedload_,support_,pointLoad_input,minspan,leng):
         bar[1] = bar[1] - 1
     n = np.array(array).astype(float)
     print("N", n)
-    print("N", bars)
-    
-    return no_nodes,bars, n,value_
+    # print("N", bars)
 
+    return no_nodes, bars, n, value_
