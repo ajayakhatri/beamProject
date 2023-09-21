@@ -51,16 +51,14 @@ def my_view(request):
         beam_1.plot()
 
         # result = beam_1.results()
-        # plots = beam_1.plots_json()
-        plots = beam_1.p
+        plots = beam_1.plots
 
         calculation = BeamModel(plots=plots)
         calculation.save()
 
         # data = json.loads(plots)
         return JsonResponse(plots)
-        # return JsonResponse(plots,safe=False)
-        return render(request, "api/index.html", data)
+     
     else:
         return render(request, "api/index.html")
 

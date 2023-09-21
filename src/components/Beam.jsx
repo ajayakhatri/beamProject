@@ -67,7 +67,15 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
 
 function Beam() {
   const mediaQueryRef = useRef(null);
-  const [actualBeamLength, setactualBeamLength] = useState(10);
+  
+  function calculateInitialBeamLength() {
+    if (window.matchMedia("(max-width: 800px)").matches) {
+      return window.innerWidth - 100;
+    } else {
+      return 800;
+    }
+  }
+  const [actualBeamLength, setactualBeamLength] = useState(calculateInitialBeamLength());
 
 
   useEffect(() => {
@@ -118,7 +126,7 @@ function Beam() {
     {
       id: 1,
       length: 10,
-      scale: 1,
+      scale: 10 / actualBeamLength,
       unit: "m",
       tools: {
 
@@ -130,7 +138,7 @@ function Beam() {
     const newBeam = {
       id: beams.length + 1,
       length: 10,
-      scale: 1,
+      scale: 10 / actualBeamLength,
       unit: "m",
       tools: {
       },
@@ -220,9 +228,9 @@ function Beam() {
           const beam = draft[beamIndex];
           const preScale = beam.scale;
           // setbeamscale(newScale)
-          // console.log("setbeamscale", beamscale)
           Object.values(beam.tools).forEach((toolType) => {
             toolType.forEach((tool) => {
+              console.log("tool.positionOnBeam = (tool.positionOnBeam * newScale) / preScale", tool.positionOnBeam, "=", newScale ,"/", preScale,"=",(tool.positionOnBeam * newScale) / preScale)
               tool.positionOnBeam = (tool.positionOnBeam * newScale) / preScale;
               if (tool.id.split("_")[0] === "distributedLoad") {
                 console.log("(tool.span + tool.positionOnBeam) > beam.length", tool.span, "+", tool.positionOnBeam, ">", newLength)
@@ -412,7 +420,7 @@ function Beam() {
             {
         plot[beam.id] &&<>
       
-      <MyCharts plot={plot[beam.id]} setPlot={setPlot} beams={beams} beamID={beam.id}/>
+      <MyCharts plot={plot[beam.id]} actualBeamLength={actualBeamLength}/>
         </>
       }
         </div>

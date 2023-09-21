@@ -60,9 +60,9 @@ export const BeamBar = (props) => {
                     e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
                     console.log(localBeamscale)
-                    console.log("localBeamscaleRef.current", localBeamscaleRef.current)
+            
 
-                    addTool(beamID, e.relatedTarget.id.split("_")[0], (actualPosition < 0 ? -25 : actualPosition), positionOnBeam < 0 ? 0 : positionOnBeam, e.relatedTarget.id.split("_")[0] === "distributedLoad" ? localBeamscaleRef.current : localBeamscaleRef.current)
+                    addTool(beamID, e.relatedTarget.id.split("_")[0], (actualPosition < 0 ? -25 : actualPosition), positionOnBeam < 0 ? 0 : positionOnBeam, localBeamscaleRef.current)
                 },
                 ondropdeactivate: function (e) {
                     e.stopPropagation();

@@ -35,10 +35,10 @@ class Beam:
         self.force = np.zeros([len(self.bar), 2 * self.dof])
         self.displacement = np.zeros([len(self.bar), 2 * self.dof])
         self.plots = {
-            "original": [],
-            "deformation": [],
-            "shearForce": [],
-            "bendingMoment": [],
+            "original": [[],[]],
+            "deformation": [[],[]],
+            "shearForce": [[],[]],
+            "bendingMoment": [[],[]],
         }
         self.p = {
             "original": {},
@@ -167,7 +167,8 @@ class Beam:
             xi, xf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
             yi, yf = self.node[self.bar[i, 0], 1], self.node[self.bar[i, 1], 1]
             axs[0].plot([xi, xf], [yi, yf], "b", linewidth=1)
-            self.plots["original"].append([[xi, xf], [yi, yf]])
+            self.plots["original"][0].extend([xi, xf])
+            self.plots["original"][1].extend([yi, yf])
             self.p["original"][xi] = yi
             self.p["original"][xf] = yf
 
@@ -177,7 +178,8 @@ class Beam:
             dyf = self.node[self.bar[i, 1], 1] + self.displacement[i, 2] * scale
             axs[0].plot([dxi, dxf], [dyi, dyf], "r", linewidth=2)
             axs[0].text(dxi, dyi, str(round(dyi / scale, 4)), rotation=90)
-            self.plots["deformation"].append([[dxi, dxf], [dyi, dyf]])
+            self.plots["deformation"][0].extend([dxi, dxf])
+            self.plots["deformation"][1].extend([dyi, dyf])
             self.p["deformation"][dxi] = dyi
             self.p["deformation"][dxf] = dyf
 
@@ -195,7 +197,8 @@ class Beam:
             axs[1].plot([m_xi, m_xi, m_xf, m_xf], [0, m_yi, m_yf, 0], "r", linewidth=2)
             axs[1].fill([m_xi, m_xi, m_xf, m_xf], [0, m_yi, m_yf, 0], "c", alpha=0.3)
             axs[1].text(m_xi, m_yi, str(round(m_yi, 4)), rotation=90)
-            self.plots["bendingMoment"].append([[m_xi, m_xf], [m_yi, m_yf]])
+            self.plots["bendingMoment"][0].extend([m_xi, m_xf])
+            self.plots["bendingMoment"][1].extend([m_yi, m_yf])
             self.p["bendingMoment"][m_xi] = -1 * m_yi
             self.p["bendingMoment"][m_xf] = -1 * m_yf
 
@@ -205,6 +208,8 @@ class Beam:
             myi, myf = self.node[self.bar[i, 0], 1], self.node[self.bar[i, 1], 1]
             axs[1].plot([mxi, mxf], [myi, myf], "b", linewidth=1)
 
+        x_coordinates = []
+        y_coordinates = []
         for i in range(ne):
             m_xi, m_xf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
             m_yi = -self.force[i, 0]
@@ -214,12 +219,16 @@ class Beam:
                 [m_xi, m_xi, m_xf, m_xf], [0, m_yi, m_yf, 0], "orange", alpha=0.3
             )
             axs[2].text(m_xi, m_yi, str(round(m_yi, 4)), rotation=90)
-            self.plots["shearForce"].append([[m_xi, m_xf], [m_yi, m_yf]])
+            self.plots["shearForce"][0].extend([m_xi, m_xf])
+            self.plots["shearForce"][1].extend([m_yi, m_yf])
 
-            self.p["shearForce"][m_xi] = 0
+            # self.p["shearForce"][m_xi] = 0
+            x_coordinates.extend([m_xi, m_xi, m_xf, m_xf])
+            y_coordinates.extend([0, m_yi, m_yf, 0])
             self.p["shearForce"][m_xi] = m_yi
             self.p["shearForce"][m_xf] = m_yf
-            self.p["shearForce"][m_xf] = 0
+        
+            # self.p["shearForce"][m_xf] = 0
         # deformation= {0.0: 0.02386654648646018, 0.5: 0.020587834323300167, 1.0: 0.01713189305849245, 1.5: 0.013058271670190651, 2.0: 0.007662248523440576, 2.5: 0.0, 3.0: -0.010341658906339346, 3.5: -0.021238076361623292, 4.0: -0.030990369853015794, 4.5: -0.038289770629887594, 5.0: -0.04194601224034433, 5.5: -0.04099791519849724, 6.0: -0.03501923827141905, 6.5: -0.024504964512232347, 7.0: -0.011775326982449284, 7.5: 0.0, 8.0: 0.008128497390852281, 8.5: 0.013367845816974236, 9.0: 0.01701580275344892, 9.5: 0.01996113544078776, 10.0: 0.022715081672205272}
 
         # shearForce= {0.0: -1.1641532182693481e-10, 0.5: 2400.000000000058, 1.0: 4599.999999999884, 1.5: 6599.999999999942, 2.0: 8400.0, 2.5: -25500.0, 3.0: -12099.999999999884, 3.5: -10900.000000000116, 4.0: -9900.000000000233, 4.5: -9099.999999999942, 5.0: -6000.000000000335, 5.5: -874.9999999998836, 6.0: 18749.999999999767, 6.5: 23124.999999999767, 7.0: 27250.0, 7.5: -15624.999999999767, 8.0: -11999.999999999767, 8.5: -8624.999999999942, 9.0: -5499.999999999884, 9.5: -2625.0000000001164, 10.0: 0}
@@ -455,14 +464,14 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
 
 distributedload_ = []
 support_ = {0: 1, 10: 1}
-pointLoad_input = [[5, 50]]
+pointLoad_input = [[3, 5]]
 # distributedload_ = [
 #     ["d", 0, [5, 5000, 1000]],
 #     ["d", 5, [5, 10000, 5000]],
 # ]
 # support_ = {2.5: 1, 7.5: 1}
 # pointLoad_input = [[3, 12000], [6, 15000]]
-minspan = 0.3
+minspan = 0.05*10
 leng = 10
 
 E: float = 210e9
