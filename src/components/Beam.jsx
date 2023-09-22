@@ -335,7 +335,83 @@ function Beam() {
   const [lengthSet, setlengthSet] = useState(true)
   const [dlSpanSet, setdlSpanSet] = useState(true)
 
+  const PositionDimension=({beam,actualBeamLength})=>{
+    const toolWidth = getToolWidth()
+    let positionA=0
+    let positionB=0
+    let leftA=0
+    let leftB=0
+    let i=0
+    const tools=beam.tools
+    const positions = [];
+    const positionsBeam = [];
+    const toolTypes = Object.values(beam.tools);
+    for (let toolType of toolTypes) {
+      toolType.forEach(tool => {
+        positions.push(parseFloat(tool.actualPosition));
+        positionsBeam.push(parseFloat(tool.positionOnBeam));
+      });
+    }
+    
+    positions.sort((a, b) => a - b);
+    console.log("positions",positions);
+    positionsBeam.sort((a, b) => a - b);
+    console.log("positions",positionsBeam);
 
+    let alldivs = Object.values(beam.tools).map((toolType) =>
+    toolType.slice().sort((a, b) => parseFloat(a.positionOnBeam) - parseFloat(b.positionOnBeam))
+    .map((tool) =>{
+      console.log("bedore toolType",toolType),
+    console.log("toolType",toolType)
+    const isLastTool = i === positions.length - 1;
+    leftA=leftB
+    leftB=positions[i]+toolWidth/2
+    positionA=positionB
+    positionB=positionsBeam[i]
+    i+=1
+      return (
+        <>
+        {(positionB-positionA)!==0 && (
+        <div 
+        className='d-flex justify-content-between mt-1'
+        style={{
+          width:leftB-leftA,
+          left: leftA, 
+          position: "absolute",
+          }}>
+          |
+          <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
+         {(positionB-positionA).toFixed(3)+ beam.unit}
+        <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
+        {(isLastTool && beam.length-positionB===0) &&(
+          "|"
+        )}
+        </div>
+        )}
+        {isLastTool && beam.length-positionB!==0 &&(
+          <div 
+          className='d-flex justify-content-between mt-1'
+          style={{
+            width:(actualBeamLength-positions[i-1]-toolWidth/2).toFixed(3)+"px",
+            left: leftB, 
+            position: "absolute",
+           }}>
+          |
+          <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
+         {(beam.length-positionB).toFixed(3)+ beam.unit}
+        <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
+        |
+        </div>
+        )}
+          </>
+     )
+    }))
+
+    return (<div className='d-flex justify-content-center flex-row position-relative' style={{fontSize:"12px",marginBottom:50+"px"}}>
+      {alldivs}
+    </div>)
+    // )
+  }
   const AllDivs = ({ beamID, scale }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
@@ -361,8 +437,8 @@ function Beam() {
           positionOnBeam={tool.positionOnBeam}
           //style
           color={tool.id.split("_")[0] === "distributedLoad" ? tool.color : null}
-          style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0 }}>
-          <div style={{
+          style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0}}>
+          <div style={{ marginTop: tool.isUp? "-20px":0 ,
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
             {tool.id.split("_")[0] === "distributedLoad" ?
@@ -404,13 +480,16 @@ function Beam() {
           <div className='mt-4'>
             <ToolBar beamID={beam.id} />
           </div>
-          <div style={{ marginTop: "100px", display: "flex", justifyContent: "center" }}>
+          <div style={{ marginTop: "150px", display: "flex",flexDirection:"column", justifyContent: "center" }}>
             <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength} >
               <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength} />
             </BeamBar>
+            {lengthSet&&
+          <PositionDimension beam={beam} actualBeamLength={actualBeamLength}/>
+            }
           </div>
-          <InputBeamLength beam={beam} onChange={changeBeamValue} updateScale={updateScale} actualBeamLength={actualBeamLength} />
-          <div className='d-flex justify-content-end gap-2 mt-3'>
+          <InputBeamLength beam={beam}  onChange={changeBeamValue} updateScale={updateScale} actualBeamLength={actualBeamLength} />
+          <div className='d-flex justify-content-end gap-2 mt-5'>
             <button className='btn btn-outline-primary p-1' onClick={() => deleteBeam(beam.id)}>Delete</button>
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>

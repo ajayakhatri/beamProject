@@ -24,7 +24,7 @@ export const BeamBar = (props) => {
         interact(beamElement)
             .dropzone({
                 accept: `.Tools_Beam_${beamID}`,
-                overlap: 0.2,
+                overlap: 0.001,
                 ondropactivate: function (e) {
                     e.stopPropagation();
                     e.stopImmediatePropagation()
@@ -74,13 +74,17 @@ export const BeamBar = (props) => {
     }, [scale, localBeamscale]);
 
     return (
-        <>
+        <div>
+        
             <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
-                position: "relative", width: actualBeamLength + "px", height: "70px", borderTop: "solid 3px", /* This hides the overflowing content */
+                position: "relative", width: actualBeamLength + "px", height: "70px",    
             }}>
+                <div className='d-flex drop-no-enter' style={{
+                    position: "absolute ", width: actualBeamLength + "px", height: "20px",marginTop:"-20px", backgroundColor:"white", border:"solid 2px"
+                }}></div>
                 {children}
             </div>
-        </>
+        </div>
     )
 }
 

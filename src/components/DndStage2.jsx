@@ -22,6 +22,7 @@ export function DropableNew(props) {
     const [loadEnd, setloadEnd] = useState(parseFloat(toolType == "distributedLoad" ? load.loadEnd : 1))
     const loadStartRef = useRef(loadStart);
     const loadEndRef = useRef(loadEnd);
+    const [showleninput, setshowleninput] = useState(false)
 
     useEffect(() => {
         // setdlspanValue(dlspan);
@@ -60,18 +61,17 @@ export function DropableNew(props) {
                     }),
                 ],
                 listeners: {
-                    start: function (e) {
-                        // setIsShown(false)
-                    },
                     move: handleMove,
                     end: handleEnd
                 }
             })
             .on(
-                'doubletap', function (e) {
+                'hold', function (e) {
                     changeshown(e)
+                    setshowleninput(false)
                 })
             .pointerEvents({
+                holdDuration: 500,
                 allowFrom: `#Svg${id}`,
             })
         return () => {
@@ -82,6 +82,7 @@ export function DropableNew(props) {
     function handleEnd(e) {
         e.stopPropagation();
         e.stopImmediatePropagation()
+        setshowleninput(false)
         setIsShowDlLoadInput(true)
         let actualPosition = parseFloat(e.target.getAttribute("data-actualPosition"))
         let positionOnBeam = parseFloat(e.target.getAttribute("data-positionOnBeam"))
@@ -110,6 +111,7 @@ export function DropableNew(props) {
         if (e.target.parentElement === null || e.target === null) {
             return
         }
+        setshowleninput(true)
         setIsShowDlLoadInput(false)
         const sliderRect = interact.getElementRect(e.target);
         const barRect = interact.getElementRect(e.target.parentElement);
@@ -148,10 +150,12 @@ export function DropableNew(props) {
         position: "absolute",
         display: "flex",
         flexDirection: "column",
+        fontSize:"13px",
     }
     if (toolType === "distributedLoad") {
         combinedStyle["alignItems"] = "center"
     }
+
 
 
 
@@ -187,21 +191,28 @@ export function DropableNew(props) {
     const a = dlSpanValue
     const [margin, setmargin] = useState(a)
     return (
-        <div ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
-            <div id={`Svg${id}`}>
+        <div  ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
+            <div onClick={()=> {setshowleninput(!showleninput)}}id={`Svg${id}`}>
                 {props.children}
             </div>
             {
                 toolType == "pointLoad" && (
                     <>
-                        {status.loadSet && (
+                       {status.loadSet && !showleninput &&(
+                        <>
+                        <div style={{display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-112px" }}>
+                            {loadStart}
+                        </div>
+                        </>
+                    )}
+                        {status.loadSet && showleninput &&(
                             <input
                                 type="number"
                                 inputMode="numeric"
                                 min={0.01}
                                 value={loadStart}
                                 className="dlLoadSet loadSet"
-                                style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
+                                style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-112px" }}
                                 onChange={handleChangeLoadStart}
                                 onBlur={(e) => {
                                     e.stopPropagation()
@@ -217,7 +228,17 @@ export function DropableNew(props) {
             {
                 toolType == "distributedLoad" && (
                     <>
-                        {status.loadSet && (
+                    {status.loadSet && !showleninput &&(
+                        <>
+                        <div style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}>
+                            {loadStart}
+                        </div>
+                        <div style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}>
+                           {loadEnd}
+                        </div>
+                        </>
+                    )}
+                        {status.loadSet && showleninput&& (
                             <>
                                 <input
                                     type="number"
@@ -225,7 +246,7 @@ export function DropableNew(props) {
                                     min={0.01}
                                     value={loadStart}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-72px" }}
+                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-108px" }}
                                     onChange={handleChangeLoadStart}
                                     onBlur={(e) => {
                                         e.stopPropagation()
@@ -240,7 +261,7 @@ export function DropableNew(props) {
                                     min={0.01}
                                     value={loadEnd}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-72px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}
+                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-108px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}
                                     onChange={handleChangeLoadEnd}
                                     onBlur={(e) => {
                                         e.stopPropagation()
@@ -260,10 +281,18 @@ export function DropableNew(props) {
                             </>
                         )}
                         {/* DL span input */}
+                    
                         {status.dlSpanSet && (
-                            <div className='d-flex justify-content-between' style={{ width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
+                            <div className='d-flex justify-content-between mt-3' style={{ width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
                                 |<span style={{ color: color }}>&#8592;</span>
-                                <div style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed", color: color }}></div>
+                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px dashed", color: color }}></div>
+                                {!showleninput &&(
+                                       <div style={{ width: "40px", textAlign: "center", height: "22px", border: "none" }}>
+                             {dlSpanValue}{unit}
+                                   </div>
+                                )}
+                                
+                                {showleninput&& (
                                 <div className="btn" style={{ border: `1px solid ${color}`, borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", paddingRight: "0.5px" }}>
                                     <input
                                         type="number"
@@ -299,9 +328,11 @@ export function DropableNew(props) {
                                                 changeDLSpan(beamID, id, "span", ((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
                                             }
                                             setmargin((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current)
-                                        }} />{unit}
-                                </div>
-                                <div style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed", color: color }}></div>
+                                        }} />
+                                        {unit}
+                                        </div>
+                                )}
+                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px dashed", color: color }}></div>
                                 <span style={{ color: color }}>&#8594;</span>|
                             </div>
                         )}
@@ -310,7 +341,7 @@ export function DropableNew(props) {
 
             <div style={{ position: "absolute", marginTop: "32px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
                 {/* Position Input */}
-                {status.lengthSet && (
+                {status.lengthSet && showleninput && (
                     <div className="btn" style={{ border: "1px solid #0d6efd", borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", margin: "0px", paddingRight: "0.5px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
                         <input
                             type="number"
@@ -320,7 +351,7 @@ export function DropableNew(props) {
                             aria-label={`Change position of ${id}`}
                             value={inputValue}
                             id={`setLength${id}`}
-                            style={{ display: status.lengthSet ? "block" : "none", width: "50px", height: "20px", textAlign: "center", padding: "0px", margin: "0px", border: "none" }}
+                            style={{ width: "50px", height: "20px", textAlign: "center", padding: "0px", margin: "0px", border: "none" }}
                             onChange={handleInputChange} // Handle input changes
                             // Handle input changes
                             onBlur={(e) => {
