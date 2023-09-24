@@ -284,8 +284,9 @@ export function DropableNew(props) {
                     
                         {status.dlSpanSet && (
                             <div className='d-flex justify-content-between mt-3' style={{ width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
-                                |<span style={{ color: color }}>&#8592;</span>
-                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px dashed", color: color }}></div>
+                                <div className='strikethrough'>|</div>
+
+                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
                                 {!showleninput &&(
                                        <div style={{ width: "40px", textAlign: "center", height: "22px", border: "none" }}>
                              {dlSpanValue}{unit}
@@ -332,8 +333,8 @@ export function DropableNew(props) {
                                         {unit}
                                         </div>
                                 )}
-                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px dashed", color: color }}></div>
-                                <span style={{ color: color }}>&#8594;</span>|
+                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
+                                <div className='strikethrough'>|</div>
                             </div>
                         )}
                     </>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Line, Scatter } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 import 'chart.js/auto';
 
 

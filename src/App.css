@@ -42,3 +42,31 @@ input[type=number] {
     border-radius: 4px;
 }
 
+.strikethrough {
+    position: relative;
+  }
+.strikethrough:before {
+    position: absolute;
+    width: 10px;
+    content: "";
+    left: -100%;
+    top: 50%;
+    right: 0;
+    border-top: 1px solid;
+    border-color: inherit;
+    
+    -webkit-transform:rotate(-45deg);
+    -moz-transform:rotate(-45deg);
+    -ms-transform:rotate(-45deg);
+    -o-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+  }
+  .mirror-image {
+    transform: scaleX(-1);
+    filter: FlipH;
+    -webkit-transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+  }
+  

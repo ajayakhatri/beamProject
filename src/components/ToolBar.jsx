@@ -1,16 +1,14 @@
-import React, { useState, useRef } from 'react';
-import { BiSolidCircle } from 'react-icons/bi';
-import { BsFillTriangleFill, BsArrowDown } from 'react-icons/bs';
-import { BeamBar, DropablePreset } from './DndStage1';
-import { ImgDistributedLoad, ImgHingedSupport, ImgPointLoad, ImgRollerSupport } from './Img';
+import React from 'react';
+import { DropablePreset } from './DndStage1';
+import { ImgDistributedLoad, ImgHingedSupport, ImgPointLoad, ImgRollerSupport,ImgFixedSupportOnBeam } from './Img';
+import FixedEnds from './FixedEnds';
 
 export function getImg(toolType) {
     const img = {
-        // "pointLoad": <BsArrowDown />,
         "pointLoad": <ImgPointLoad />,
         "distributedLoad": <ImgDistributedLoad width={80} spacing={20} />,
         "rollerSupport": <ImgRollerSupport />,
-        "hingedSupport": <ImgHingedSupport />
+        "hingedSupport": <ImgHingedSupport />,
     }
     return img[toolType]
 }
@@ -18,7 +16,7 @@ export function getToolWidth() {
     return 50;
 }
 
-export function getDroppables(beamID) {
+function getDroppables(beamID) {
 
     return [
         {
@@ -48,23 +46,39 @@ export function getDroppables(beamID) {
     ]
 }
 
-function ToolBar({ beamID }) {
+function ToolBar({ beamID,
+    changeOrAddBeamProperty,
+deleteBeamProperty,
+    checkedLeft,
+    setCheckedLeft,
+    checkedRight,
+    setCheckedRight }) {
     const Droppables = getDroppables(beamID)
 
     const DroppablesDivs = Droppables.map((tool) =>
-        <DropablePreset id={tool.id} key={tool.id}>
+    <div key={tool.id} style={{border:"1px solid", width:"70px",height:"70px", borderRadius:"10px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}>
+        <DropablePreset id={tool.id} >
             <div style={{
-                display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ? "30px" : null,
+                display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ? "50px" : null,
             }}>
                 {tool.img}
             </div>
         </DropablePreset>
+            </div>
     )
 
     return (
         <div className='d-flex gap-4 justify-content-center mb-5 border border-2 border-primary border-top-0'>
             {DroppablesDivs}
-        </div>
+                <FixedEnds beamID={beamID} 
+                changeOrAddBeamProperty={changeOrAddBeamProperty}
+                deleteBeamProperty={deleteBeamProperty}
+                checkedLeft={checkedLeft}
+                setCheckedLeft={setCheckedLeft}
+                checkedRight={checkedRight}
+                setCheckedRight={setCheckedRight}/>
+            </div>
+       
     );
 
 }

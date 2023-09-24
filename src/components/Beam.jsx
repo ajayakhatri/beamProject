@@ -7,24 +7,29 @@ import { ImgDistributedLoad } from './Img';
 import Switch from './Switch';
 import { getRandomColorHex } from './utility';
 import { SendData } from '../dataFlow/sendDataToBackend';
-import { MyChart, MyCharts } from './Chart';
-import { Result } from 'postcss';
+import { MyCharts } from './Chart';
+
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
 
   const [inputValue, setInputValue] = useState(beam.length);
 
   return (
-    <div className='d-flex justify-content-between mt-1' style={{ width: actualBeamLength }}>
-      |<span className="text-primary">&#8592;</span>
-      <div className="border-primary" style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed" }}></div>
-      <div className="input-group input-group-sm mb-3" style={{ minWidth: "180px", border: "1px dotted #0d6efd" }} >
+    <div  className='d-flex mt-1' style={{ width: actualBeamLength }}>
+      <div>
+       <div className='strikethrough' style={{}}>|</div>
+      </div>
+      
+      <div className="border-dark" style={{ width: "100%", marginTop: "13px", borderTop: "1px solid" }}></div>
+
+      <div className="input-group input-group-sm mb-3" style={{ maxWidth: "180px" }} >
         <input
           type="number"
           inputMode="numeric"
           min={1}
           className="form-control "
           aria-label={`Enter beam length for Beam ${beam.id}`}
+          style={{maxWidth:"100px"}}
           value={inputValue}
           onChange={(e) => {
             e.stopPropagation()
@@ -57,9 +62,13 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
           <option value="ft">ft</option>
           <option value="in.">in.</option>
         </select>
+
       </div>
-      <div className="border-primary" style={{ width: "100%", marginTop: "13px", borderTop: "1px dashed" }}></div>
-      <span className="text-primary">&#8594;</span>|
+    
+      <div className="border-dark" style={{ width: "100%", marginTop: "13px", borderTop: "1px solid" }}></div>
+      <div>
+       <div className='strikethrough' style={{}}>|</div>
+      </div>     
     </div>
   )
 }
@@ -109,7 +118,6 @@ function Beam() {
   }
   useEffect(() => {
     const handleWindowResize = () => {
-      // console.log(window.innerWidth);
       checkBeamLength(window.innerWidth)
     };
 
@@ -152,12 +160,16 @@ function Beam() {
     const beamPointLoad = beams[beamIndex]?.tools?.pointLoad || [];
     const distributedLoad = beams[beamIndex]?.tools?.distributedLoad || [];
     const beamHingedSupport = beams[beamIndex]?.tools?.hingedSupport || [];
+    const beamfixedSupportLeft = beams[beamIndex]?.fixedSupportLeft
+    const beamfixedSupportRight = beams[beamIndex]?.fixedSupportRight
     console.log(`----Info of beam ${beamID}----`)
     console.log("Beams", beams)
     console.log("Roller Supports", beamRollerSupport.length, beamRollerSupport)
     console.log("Point Loads", beamPointLoad.length, beamPointLoad)
     console.log("Distributed Load", distributedLoad.length, distributedLoad)
     console.log("Hinged Supports", beamHingedSupport.length, beamHingedSupport)
+    console.log("Beam Fixed Support Left", beamfixedSupportLeft)
+    console.log("Beam Fixed Support Right", beamfixedSupportRight)
     console.log("-------------")
   }
 
@@ -190,14 +202,27 @@ function Beam() {
     );
   }
 
-  function changeBeamValue(id, property, newValue) {
+  function changeOrAddBeamProperty(id, property, newValue) {
     setBeams((prevBeams) =>
       prevBeams.map((beam) =>
         beam.id === id ? { ...beam, [property]: newValue } : beam
       )
     );
   }
-
+  function deleteBeamProperty(id, propertyToDelete) {
+    setBeams((prevBeams) =>
+      prevBeams.map((beam) => {
+        if (beam.id === id) {
+          const updatedBeam = { ...beam };
+          delete updatedBeam[propertyToDelete];
+          return updatedBeam;
+        } else {
+          return beam;
+        }
+      })
+    );
+  }
+  
   const changeToolValue = (beamID, toolID, property, newValue) => {
     console.log(`changing....,${property} of ${toolID} of Beam_${beamID} to ${newValue}`)
     setBeams((prevBeams) =>
@@ -218,7 +243,6 @@ function Beam() {
       })
     );
   }
-  // const [beamscale, setbeamscale] = useState(10/actualBeamLength)
 
   const updateScale = (beamID, newScale, newLength) => {
     setBeams((prevBeams) => {
@@ -264,15 +288,15 @@ function Beam() {
           const beam = draftBeams[beamIndex]; // Get a reference to the beam
           beam.tools = beam.tools || {};
           beam.tools[toolType] = beam.tools[toolType] || [];
-
           const newTool = {
-            id: `${toolType}_${beamID}_${beam.tools[toolType].length + 1}`,
-            actualPosition: actualPosition,
-            positionOnBeam: positionOnBeam,
-            isUp: toolType === "rollerSupport" || toolType === "hingedSupport" ? false : true,
-            img: getImg(toolType),
-            value: 0,
-          };
+          }            
+            newTool["id"]= `${toolType}_${beamID}_${beam.tools[toolType].length + 1}`
+            newTool["actualPosition"]= actualPosition
+            newTool["positionOnBeam"]= positionOnBeam
+            newTool["isUp"]= toolType === "rollerSupport" || toolType === "hingedSupport" ? false : true
+            newTool["img"]= getImg(toolType)
+            newTool["value"]= 0
+         
           if (toolType === "distributedLoad") {
             const color = getRandomColorHex()
             newTool["color"] = color
@@ -293,7 +317,7 @@ function Beam() {
             newTool["loadStart"] = 5
             newTool["loadEnd"] = 5
           }
-          else if (toolType !== "rollerSupport" || toolType !== "hingedSupport") {
+          else if (toolType === "pointLoad") {
             newTool["load"] = 5
           }
           beam.tools[toolType].push(newTool); // Update the beam object directly
@@ -303,7 +327,6 @@ function Beam() {
 
   };
 
-  // changeDLSpan(beamID, id, "span", newSpan)
   const changeDLSpan = (beamID, toolID, property, newSpanValue, scale, loadStart, loadEnd) => {
     if (property === "span") {
       changeToolValue(beamID, toolID, property, parseFloat(newSpanValue))
@@ -335,6 +358,7 @@ function Beam() {
   const [lengthSet, setlengthSet] = useState(true)
   const [dlSpanSet, setdlSpanSet] = useState(true)
 
+
   const PositionDimension=({beam,actualBeamLength})=>{
     const toolWidth = getToolWidth()
     let positionA=0
@@ -347,7 +371,8 @@ function Beam() {
     const positionsBeam = [];
     const toolTypes = Object.values(beam.tools);
     for (let toolType of toolTypes) {
-      toolType.forEach(tool => {
+
+    toolType.forEach(tool => {
         positions.push(parseFloat(tool.actualPosition));
         positionsBeam.push(parseFloat(tool.positionOnBeam));
       });
@@ -359,6 +384,7 @@ function Beam() {
     console.log("positions",positionsBeam);
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
+
     toolType.slice().sort((a, b) => parseFloat(a.positionOnBeam) - parseFloat(b.positionOnBeam))
     .map((tool) =>{
       console.log("bedore toolType",toolType),
@@ -379,12 +405,15 @@ function Beam() {
           left: leftA, 
           position: "absolute",
           }}>
-          |
-          <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
+    <div className='strikethrough'>|</div>
+          
+          <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
          {(positionB-positionA).toFixed(3)+ beam.unit}
-        <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
+        <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
         {(isLastTool && beam.length-positionB===0) &&(
-          "|"
+    
+          <div className='strikethrough'>|</div>
+
         )}
         </div>
         )}
@@ -396,30 +425,30 @@ function Beam() {
             left: leftB, 
             position: "absolute",
            }}>
-          |
-          <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
+         <div className='strikethrough'>|</div>
+          
+          <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
          {(beam.length-positionB).toFixed(3)+ beam.unit}
-        <div className="border-primary" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px dashed" }}></div>
-        |
+        <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+        <div className='strikethrough'>|</div>
+        
         </div>
         )}
           </>
      )
     }))
-
     return (<div className='d-flex justify-content-center flex-row position-relative' style={{fontSize:"12px",marginBottom:50+"px"}}>
       {alldivs}
     </div>)
-    // )
   }
   const AllDivs = ({ beamID, scale }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     let beam = beams[beamIndex]
-    // console.log(scale, "beammIndex].scale")
-    // console.log(beam.length, "beammscaleDiv")
 
-    let alldivs = Object.values(beam.tools).map((toolType) =>
+
+    let alldivs = Object.values(beam.tools).map((toolType) => 
+    toolType!=="fixedSupportLeft" && toolType!=="fixedSupportRight" &&
       toolType.map((tool) =>
         <DropableNew
           key={tool.id}
@@ -430,7 +459,7 @@ function Beam() {
           actualBeamLength={actualBeamLength}
           beamID={beamID}
           load={tool.isUp ? tool.id.split("_")[0] === "distributedLoad" ? { "loadStart": tool.loadStart, "loadEnd": tool.loadEnd } : tool.load : 1}
-          changefunctions={[changeDLSpan, deleteTool, changeBeamValue, changeToolValue]}
+          changefunctions={[changeDLSpan, deleteTool, changeOrAddBeamProperty, changeToolValue]}
           //Length
           dlspan={tool.id.split("_")[0] === "distributedLoad" ? parseFloat(tool.span) : 1}
           beamLength={beam.length}
@@ -453,17 +482,11 @@ function Beam() {
   }
 
   const [plot, setPlot] = useState({})
+  const [checkedLeft, setCheckedLeft] = useState(false);
+  const [checkedRight, setCheckedRight] = useState(false);
 
   return (
     <div>
-      {
-        console.log("plpot",plot)
-      /* {
-        plot &&
-        <MyChart plot={plot} setPlot={setPlot} beams={beams}/>
-      } */}
-      {/* <BeamsData /> */}
-      <div>actualBeamLength: {actualBeamLength}</div>
       <div className='d-flex justify-content-between' >
         <h2 className='fs-1'>Beams</h2>
         {beams.length > 0 && (
@@ -478,22 +501,31 @@ function Beam() {
         <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative' style={{ borderRadius: "8px", padding: "0px 40px" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
           <div className='mt-4'>
-            <ToolBar beamID={beam.id} />
+            <ToolBar beamID={beam.id}
+              changeOrAddBeamProperty={changeOrAddBeamProperty}
+              deleteBeamProperty={deleteBeamProperty}
+              checkedLeft={checkedLeft}
+              setCheckedLeft={setCheckedLeft}
+              checkedRight={checkedRight}
+              setCheckedRight={setCheckedRight}
+            />
           </div>
           <div style={{ marginTop: "150px", display: "flex",flexDirection:"column", justifyContent: "center" }}>
-            <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength} >
+            <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength} 
+            checkedLeft={checkedLeft}
+            checkedRight={checkedRight}
+            >
               <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength} />
             </BeamBar>
             {lengthSet&&
           <PositionDimension beam={beam} actualBeamLength={actualBeamLength}/>
             }
           </div>
-          <InputBeamLength beam={beam}  onChange={changeBeamValue} updateScale={updateScale} actualBeamLength={actualBeamLength} />
+          <InputBeamLength beam={beam}  onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} />
           <div className='d-flex justify-content-end gap-2 mt-5'>
             <button className='btn btn-outline-primary p-1' onClick={() => deleteBeam(beam.id)}>Delete</button>
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
-            {/* <SendData arrangedData={arrangedData} beamLength={beam.length} setPlot={setPlot} /> */}
             <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)} />
           </div>
             {

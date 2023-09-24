@@ -44,10 +44,17 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
                     }
                 });
             });
+            if (beams[0].fixedSupportLeft===1) {
+                support_input[0] = 1
+            }
+            if (beam.fixedSupportRight===1) {
+                support_input[beam.length] = 10
+            }
         }
 
         const beamLengthToSend = beamLength
         console.log(" data:", {
+            "beam":beams,
             "point_load_input": point_load_input,
             "distributed_load_input": distributed_load_input,
             "support_input": support_input,

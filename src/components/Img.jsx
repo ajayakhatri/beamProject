@@ -66,3 +66,40 @@ function Arrow({ x, opacity = 1, height = "0%" }) {
         </>
     )
 }
+
+export const ImgFixedSupportOnBeam=({className})=>{
+    return(
+<svg  className={className} xmlns="http://www.w3.org/2000/svg" width="14" height="83" viewBox="0 0 14 83" fill="none">
+<line x1="13" x2="13" y2="83" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 21)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 5)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 29)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 13)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 63)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 46)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 37)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="15.402" y2="-1" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 54)" stroke="black" strokeWidth="2"/>
+<line y1="-1" x2="14.9793" y2="-1" transform="matrix(-0.801104 0.598526 -0.572443 -0.819945 12 71.3448)" stroke="black" strokeWidth="2"/>
+</svg>
+    )
+}
+export const ImgFixedSupport=({className})=>{
+    return(
+<svg className={className} xmlns="http://www.w3.org/2000/svg" width="35" height="61" viewBox="0 0 35 61" fill="none">
+<line x1="12.5" x2="12.5" y2="60" stroke="black"/>
+<line y1="-0.5" x2="15.402" y2="-0.5" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 4.82758)" stroke="black"/>
+<line y1="-0.5" x2="15.402" y2="-0.5" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 40.6897)" stroke="black"/>
+<line y1="-0.5" x2="15.402" y2="-0.5" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 22.069)" stroke="black"/>
+<line y1="-0.5" x2="15.402" y2="-0.5" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 13.1035)" stroke="black"/>
+<line y1="-0.5" x2="15.402" y2="-0.5" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 31.7241)" stroke="black"/>
+<line y1="-0.5" x2="14.9793" y2="-0.5" transform="matrix(-0.801104 0.598526 -0.572443 -0.819945 12 50.3448)" stroke="black"/>
+<line x1="12" y1="21.5" x2="29" y2="21.5" stroke="black"/>
+<line x1="13" y1="41.5" x2="29" y2="41.5" stroke="black"/>
+<line x1="29.5" y1="14" x2="29.5" y2="28" stroke="black"/>
+<line x1="29.2572" y1="27.4287" x2="24.2572" y2="30.4287" stroke="black"/>
+<line x1="24.0498" y1="30.5025" x2="34.0498" y2="31.5025" stroke="black"/>
+<line x1="34.2572" y1="31.4287" x2="29.2572" y2="34.4287" stroke="black"/>
+<line x1="29.5" y1="34" x2="29.5" y2="49" stroke="black"/>
+</svg>
+    )
+}

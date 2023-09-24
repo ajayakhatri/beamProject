@@ -1,8 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
 import { getToolWidth } from './ToolBar';
+import { ImgFixedSupportOnBeam } from './Img';
 
 export const BeamBar = (props) => {
+    const checkedLeft=props.checkedLeft
+    const checkedRight=props.checkedRight
     const beamID = props.beamID
     const addTool = props.addTool
     const children = props.children
@@ -79,9 +82,17 @@ export const BeamBar = (props) => {
             <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
                 position: "relative", width: actualBeamLength + "px", height: "70px",    
             }}>
-                <div className='d-flex drop-no-enter' style={{
-                    position: "absolute ", width: actualBeamLength + "px", height: "20px",marginTop:"-20px", backgroundColor:"white", border:"solid 2px"
-                }}></div>
+                <div  style={{position: "relative",width: actualBeamLength + "px", height: "20px",marginTop:"-20px", backgroundColor:"white", border:"solid 2px"
+                }}>
+                    {checkedLeft&& <div style={{ position: "absolute", top: "-35px", left: "-14px", width: "100%"}}>
+                        <ImgFixedSupportOnBeam />
+                        </div>
+                        }
+                        {checkedRight&& <div style={{ position: "absolute", top: "-35px", left: "100%", width: "100%"}}>
+                <ImgFixedSupportOnBeam  className={"mirror-image"} />
+                </div> 
+               }
+                </div>
                 {children}
             </div>
         </div>
