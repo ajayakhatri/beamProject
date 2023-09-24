@@ -374,11 +374,11 @@ function Beam() {
 
   const changeDLSpan = (beamID, toolID, property, newSpanValue, scale, loadStart, loadEnd) => {
     if (property === "span") {
-      changeToolValue(beamID, toolID, property, parseFloat(newSpanValue))
+      changeToolValue(beamID, toolID, property, parseFloat(newSpanValue.toFixed(3)))
     } else if (property === "loadStart") {
-      changeToolValue(beamID, toolID, property, parseFloat(loadStart))
+      changeToolValue(beamID, toolID, property, parseFloat(loadStart.toFixed(3)))
     } else {
-      changeToolValue(beamID, toolID, property, parseFloat(loadEnd))
+      changeToolValue(beamID, toolID, property, parseFloat(loadEnd.toFixed(3)))
     }
     console.log({
       "beamID": beamID,
@@ -532,6 +532,7 @@ function Beam() {
         <h2 className='fs-1'>Beams</h2>
         {beams.length > 0 && (
           <div style={{ fontSize: "16px", minWidth: "140px" }}>
+        
             <Switch label={"Loads"} status={loadSet} setstatus={setloadSet} />
             <Switch label={"Length"} status={lengthSet} setstatus={setlengthSet} />
             <Switch label={"DLSpan"} status={dlSpanSet} setstatus={setdlSpanSet} />

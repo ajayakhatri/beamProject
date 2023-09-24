@@ -121,11 +121,6 @@ export function DropablePreset(props) {
                 end: dragEndListener,
             }
         })
-
-
-        return () => {
-            // Clean up any e listeners or resources if needed
-        };
     }, []);
     return (
         <div ref={toolsRef} id={id} key={id} style={{ zIndex: "1", touchAction: "none", width: getToolWidth() + "px", height: "40px", margin: 0, padding: 0 }}

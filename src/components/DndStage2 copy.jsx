@@ -10,7 +10,7 @@ export function DropableNew(props) {
 
     const dlspan = parseFloat(props.dlspan);
     const actualBeamLength = parseFloat(props.actualBeamLength);
-    const beamLength = parseFloat((props.beamLength).toFixed(3));
+    const beamLength = parseFloat(props.beamLength);
     const [inputValue, setinputValue] = useState(parseFloat(parseFloat(props.positionOnBeam).toFixed(3)))
     const [dlSpanValue, setdlspanValue] = useState(parseFloat(parseFloat(dlspan).toFixed(3)))
     const localDlSpanRef = useRef(dlSpanValue);
@@ -157,6 +157,8 @@ export function DropableNew(props) {
     }
 
 
+
+
     function handleInputChange(e) {
         e.stopPropagation()
         if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
@@ -164,7 +166,6 @@ export function DropableNew(props) {
         }
         setinputValue(parseFloat(e.target.value))
     }
-
     function handleSpanChange(e) {
         e.stopPropagation()
         if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
@@ -172,7 +173,6 @@ export function DropableNew(props) {
         }
         setdlspanValue(parseFloat(e.target.value))
     }
-
     const handleChangeLoadStart = (e) => {
         e.stopPropagation()
         if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
@@ -188,39 +188,35 @@ export function DropableNew(props) {
         }
         setloadEnd(parseFloat(e.target.value))
     }
-
     const a = dlSpanValue
     const [margin, setmargin] = useState(a)
-    const [isPLInputVisible, setPLInputVisible] = useState(false)
-    const [isDLLeftInputVisible, setDLLeftInputVisible] = useState(false)
-    const [isDLRightInputVisible, setDLRightInputVisible] = useState(false)
-    const [isDLSpanInputVisible, setDLSpanInputVisible] = useState(false)
+    const [pointLoadLoadSet, setpointLoadLoadSet] = useState(false)
     return (
         <div  ref={toolsRef} id={id} key={id} style={combinedStyle} className={`SlidingTools_Beam_${beamID}`} >
             <div onClick={()=> {setshowleninput(!showleninput)}}id={`Svg${id}`}>
                 {props.children}
             </div>
             {
-                toolType == "pointLoad" && status.loadSet && (
+                toolType == "pointLoad" && (
                     <>
-                       {!isPLInputVisible?
-                        (
-                        <div onClick={() => setPLInputVisible(true)}  className='inputPointer'  style={{display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px" }}>
+                       {status.loadSet && !showleninput &&(
+                        <>
+                        <div style={{display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}>
                             {loadStart}
                         </div>
-                    ):(
+                        </>
+                    )}
+                        {status.loadSet && showleninput &&(
                             <input
                                 type="number"
                                 inputMode="numeric"
                                 min={0.01}
-                                autoFocus="true"
                                 value={loadStart}
                                 className="dlLoadSet loadSet"
-                                style={{ display: isShowDlLoadInput ? "block" : "none", width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
+                                style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
                                 onChange={handleChangeLoadStart}
                                 onBlur={(e) => {
                                     e.stopPropagation()
-                                    setPLInputVisible(false)
                                     setloadStart(e.target.value.length === 0 ? 0 : parseFloat(e.target.value))
                                     changeToolValue(beamID, id, "load", e.target.value.length === 0 ? 0.1 : parseFloat(e.target.value))
                                 }
@@ -231,50 +227,45 @@ export function DropableNew(props) {
                 )}
 
             {
-                /* DL load input */
-                toolType == "distributedLoad" && status.loadSet &&(
+                toolType == "distributedLoad" && (
                     <>
-                    { !isDLLeftInputVisible ?(
-                        <div onClick={()=>setDLLeftInputVisible(true)}  className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px" }}>
+                    {status.loadSet && !showleninput &&(
+                        <>
+                        <div style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}>
                             {loadStart}
                         </div>
-                    ):(
-
+                        <div style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}>
+                           {loadEnd}
+                        </div>
+                        </>
+                    )}
+                        {status.loadSet && showleninput&& (
+                            <>
                                 <input
                                     type="number"
-                                      autoFocus="true"
                                     inputMode="numeric"
                                     min={0.01}
                                     value={loadStart}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
+                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
                                     onChange={handleChangeLoadStart}
                                     onBlur={(e) => {
                                         e.stopPropagation()
-                                        setDLLeftInputVisible(false)
                                         setloadStart(e.target.value.length === 0 ? 0 : parseFloat(e.target.value))
                                         changeDLSpan(beamID, id, "loadStart", localDlSpanRef.current, beamLength / actualBeamLength, e.target.value.length === 0 ? 0 : parseFloat(e.target.value), loadEndRef.current)
                                     }
                                     }
                                 />
-                        )}
-                    { !isDLRightInputVisible ?(
-                        <div onClick={()=>setDLRightInputVisible(true)} className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}>
-                           {loadEnd}
-                        </div>
-                    ):(
                                 <input
                                     type="number"
-                                      autoFocus="true"
                                     inputMode="numeric"
                                     min={0.01}
                                     value={loadEnd}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}
+                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "40px", textAlign: "center", height: "25px", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}
                                     onChange={handleChangeLoadEnd}
                                     onBlur={(e) => {
                                         e.stopPropagation()
-                                        setDLRightInputVisible(false)
                                         setloadEnd(e.target.value.length === 0 ? 0 : parseFloat(e.target.value))
                                         console.log(
                                             {
@@ -287,22 +278,25 @@ export function DropableNew(props) {
                                     }
                                     }
                                 />
+
+                            </>
                         )}
-                        
                         {/* DL span input */}
                     
-                            <div className='d-flex justify-content-between' style={{ marginTop:"33px",zIndex:"10", width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
+                        {status.dlSpanSet && (
+                            <div className='d-flex justify-content-between mt-3' style={{ width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
                                 <div className='strikethrough'>|</div>
 
                                 <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
-                        {!isDLSpanInputVisible? (
-                             <div onClick={()=>setDLSpanInputVisible(true)}  className='inputPointer'>
+                                {!showleninput &&(
+                                       <div style={{ width: "40px", textAlign: "center", height: "22px", border: "none" }}>
                              {dlSpanValue}{unit}
                                    </div>
-                                ): (
+                                )}
+                                
+                                {showleninput&& (
                                 <div className="btn" style={{ border: `1px solid ${color}`, borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", paddingRight: "0.5px" }}>
                                     <input
-                                    autoFocus="true"
                                         type="number"
                                         inputMode="numeric"
                                         min={0.1}
@@ -310,11 +304,10 @@ export function DropableNew(props) {
                                         aria-label={`Change span of ${id}`}
                                         value={dlSpanValue}
                                         id={`setdlspan${id}`}
-                                        style={{ width: "60px", textAlign: "center", height: "22px", border: "none" }}
+                                        style={{ width: "40px", textAlign: "center", height: "22px", border: "none" }}
                                         onChange={handleSpanChange}
                                         onBlur={(e) => {
                                             e.stopPropagation()
-                                            setDLSpanInputVisible(false)
                                             const positionOnBeam = inputValue
                                             console.log("On Changing span length", {
                                                 "isNaN(dlSpanValue)": isNaN(dlSpanValue),
@@ -338,12 +331,13 @@ export function DropableNew(props) {
                                             }
                                             setmargin((localDlSpanRef.current > beamLength) ? beamLength : localDlSpanRef.current)
                                         }} />
+                                        {unit}
                                         </div>
                                 )}
                                 <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
                                 <div className='strikethrough'>|</div>
                             </div>
-                        
+                        )}
                     </>
                 )}
 
