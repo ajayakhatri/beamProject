@@ -82,7 +82,7 @@ export const BeamBar = (props) => {
             <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
                 position: "relative", width: actualBeamLength + "px", height: "70px",    
             }}>
-                <div  style={{position: "relative",width: actualBeamLength + "px", height: "20px",marginTop:"-20px", backgroundColor:"white", border:"solid 2px"
+                <div style={{position: "relative",width: actualBeamLength + "px", height: "20px",backgroundColor:"white", border:"solid 2px"
                 }}>
                     {checkedLeft&& <div style={{ position: "absolute", top: "-35px", left: "-14px", width: "100%"}}>
                         <ImgFixedSupportOnBeam />

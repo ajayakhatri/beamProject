@@ -141,7 +141,7 @@ function Beam() {
       },
     }
   ]);
-
+  
   function addBeam() {
     const newBeam = {
       id: beams.length + 1,
@@ -153,7 +153,16 @@ function Beam() {
     };
     setBeams([...beams, newBeam]);
   }
-
+  
+  const [supportPositions, setSupportPositions] = useState({})
+  function findPositionBySupportID(valueToFind) {
+    for (const key in supportPositions) {
+      if (supportPositions[key] === valueToFind) {
+        return key; // Return the first key that matches the value
+      }
+    }
+    return null; // Return null if the value is not found
+  }
   function printInfo(beamID) {
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     const beamRollerSupport = beams[beamIndex]?.tools?.rollerSupport || [];
@@ -170,9 +179,39 @@ function Beam() {
     console.log("Hinged Supports", beamHingedSupport.length, beamHingedSupport)
     console.log("Beam Fixed Support Left", beamfixedSupportLeft)
     console.log("Beam Fixed Support Right", beamfixedSupportRight)
+    console.log("Support Position", supportPositions)
     console.log("-------------")
   }
 
+
+  const addSupportPositions = (beamID,position,supportID) => {
+    if(supportPositions[position]!==supportID){
+    if(findPositionBySupportID(supportID)!==null){
+      removeSupportPositions(findPositionBySupportID(supportID))
+    }
+    if(position in supportPositions){
+      if(supportPositions[position]==="fixedSupportLeft"||supportPositions[position]==="fixedSupportRight"){
+        deleteTool(beamID,supportID)
+      }else{
+        deleteTool(beamID,supportPositions[position])
+      }
+    }
+    removeSupportPositions(position)
+    setSupportPositions(prevState => ({
+      ...prevState,  
+      [position]: supportID        
+    }));
+  };
+  }
+  
+  const removeSupportPositions = (position) => {
+      setSupportPositions(prevState => {
+        const newState = { ...prevState };
+        delete newState[position];
+        return newState;
+      });
+    };
+    
 
   function deleteBeam(id) {
     const updatedBeams = beams.filter((beam) => beam.id !== id);
@@ -189,7 +228,6 @@ function Beam() {
       produce(prevBeams, (draftBeams) => {
         const toolType = toolID.split("_")[0]
         const beamIndex = draftBeams.findIndex((beam) => beam.id === beamID);
-        // console.log(draftBeams)
         if (beamIndex !== -1) {
           const updatedTools = draftBeams[beamIndex].tools[toolType].filter((tool) => tool.id !== toolID);
           const updatedToolswithID = updatedTools.map((tool, index) => ({
@@ -201,6 +239,8 @@ function Beam() {
       })
     );
   }
+
+
 
   function changeOrAddBeamProperty(id, property, newValue) {
     setBeams((prevBeams) =>
@@ -225,6 +265,11 @@ function Beam() {
   
   const changeToolValue = (beamID, toolID, property, newValue) => {
     console.log(`changing....,${property} of ${toolID} of Beam_${beamID} to ${newValue}`)
+    if(property==="positionOnBeam"){
+      if(toolID.split("_")[0]==="hingedSupport"|| toolID.split("_")[0]==="rollerSupport"){
+        addSupportPositions(beamID,newValue,toolID)
+      }
+    }
     setBeams((prevBeams) =>
       produce(prevBeams, (draftBeams) => {
         const toolType = toolID.split("_")[0]
@@ -235,8 +280,6 @@ function Beam() {
             (tool) => tool.id === toolID
           );
           if (toolIndex !== -1) {
-            // console.log(newValue)
-            // console.log(draftBeams[beamIndex].tools[toolType][toolIndex][property])
             draftBeams[beamIndex].tools[toolType][toolIndex][property] = newValue;
           }
         }
@@ -319,6 +362,8 @@ function Beam() {
           }
           else if (toolType === "pointLoad") {
             newTool["load"] = 5
+          }else{
+            addSupportPositions(beamID,positionOnBeam,newTool["id"])
           }
           beam.tools[toolType].push(newTool); // Update the beam object directly
         }
@@ -379,16 +424,12 @@ function Beam() {
     }
     
     positions.sort((a, b) => a - b);
-    console.log("positions",positions);
     positionsBeam.sort((a, b) => a - b);
-    console.log("positions",positionsBeam);
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
 
     toolType.slice().sort((a, b) => parseFloat(a.positionOnBeam) - parseFloat(b.positionOnBeam))
     .map((tool) =>{
-      console.log("bedore toolType",toolType),
-    console.log("toolType",toolType)
     const isLastTool = i === positions.length - 1;
     leftA=leftB
     leftB=positions[i]+toolWidth/2
@@ -396,7 +437,7 @@ function Beam() {
     positionB=positionsBeam[i]
     i+=1
       return (
-        <>
+        <div key={tool.id}>
         {(positionB-positionA)!==0 && (
         <div 
         className='d-flex justify-content-between mt-1'
@@ -434,7 +475,7 @@ function Beam() {
         
         </div>
         )}
-          </>
+          </div>
      )
     }))
     return (<div className='d-flex justify-content-center flex-row position-relative' style={{fontSize:"12px",marginBottom:50+"px"}}>
@@ -467,7 +508,7 @@ function Beam() {
           //style
           color={tool.id.split("_")[0] === "distributedLoad" ? tool.color : null}
           style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0}}>
-          <div style={{ marginTop: tool.isUp? "-20px":0 ,
+          <div style={{ marginTop: tool.isUp? "4px":"23px" ,
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
             {tool.id.split("_")[0] === "distributedLoad" ?
@@ -508,6 +549,9 @@ function Beam() {
               setCheckedLeft={setCheckedLeft}
               checkedRight={checkedRight}
               setCheckedRight={setCheckedRight}
+              addSupportPositions={addSupportPositions}
+              removeSupportPositions={removeSupportPositions}
+              beamLength={beam.length}
             />
           </div>
           <div style={{ marginTop: "150px", display: "flex",flexDirection:"column", justifyContent: "center" }}>

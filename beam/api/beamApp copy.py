@@ -40,7 +40,12 @@ class Beam:
             "shearForce": [[],[]],
             "bendingMoment": [[],[]],
         }
-   
+        self.p = {
+            "original": {},
+            "deformation": {},
+            "shearForce": {},
+            "bendingMoment": {},
+        }
 
     def analysis(self):
         """
@@ -152,6 +157,7 @@ class Beam:
 
     def plot(self, scale=1):
         ne = len(self.bar)
+        fig, axs = plt.subplots(3)
 
         # Deformed Shape
         for i in range(ne):
@@ -159,6 +165,7 @@ class Beam:
             # xf= final position of ith beam element in x-axis
             xi, xf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
             yi, yf = self.node[self.bar[i, 0], 1], self.node[self.bar[i, 1], 1]
+            axs[0].plot([xi, xf], [yi, yf], "b", linewidth=1)
             self.plots["original"][0].extend([xi, xf])
             self.plots["original"][1].extend([yi, yf])
 
@@ -167,27 +174,67 @@ class Beam:
             dxi, dxf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
             dyi = self.node[self.bar[i, 0], 1] + self.displacement[i, 0] * scale
             dyf = self.node[self.bar[i, 1], 1] + self.displacement[i, 2] * scale
+            axs[0].plot([dxi, dxf], [dyi, dyf], "r", linewidth=2)
+            axs[0].text(dxi, dyi, str(round(dyi / scale, 4)), rotation=90)
             self.plots["deformation"][0].extend([dxi, dxf])
             self.plots["deformation"][1].extend([dyi, dyf])
      
 
         # Bending Moment
+        axs[1].invert_yaxis()
+        for i in range(ne):
+            mxi, mxf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
+            myi, myf = self.node[self.bar[i, 0], 1], self.node[self.bar[i, 1], 1]
+            axs[1].plot([mxi, mxf], [myi, myf], "b", linewidth=1)
+
         for i in range(ne):
             m_xi, m_xf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
             m_yi = -self.force[i, 1]
             m_yf = self.force[i, 3]
+            axs[1].plot([m_xi, m_xi, m_xf, m_xf], [0, m_yi, m_yf, 0], "r", linewidth=2)
+            axs[1].fill([m_xi, m_xi, m_xf, m_xf], [0, m_yi, m_yf, 0], "c", alpha=0.3)
+            axs[1].text(m_xi, m_yi, str(round(m_yi, 4)), rotation=90)
             self.plots["bendingMoment"][0].extend([m_xi, m_xf])
             self.plots["bendingMoment"][1].extend([m_yi, m_yf])
       
 
-        # Shear force   
+        # Shear force
+        for i in range(ne):
+            mxi, mxf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
+            myi, myf = self.node[self.bar[i, 0], 1], self.node[self.bar[i, 1], 1]
+            axs[1].plot([mxi, mxf], [myi, myf], "b", linewidth=1)
+
+      
         for i in range(ne):
             m_xi, m_xf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
             m_yi = -self.force[i, 0]
             m_yf = self.force[i, 2]
+            axs[2].plot([m_xi, m_xi, m_xf, m_xf], [0, m_yi, m_yf, 0], "r", linewidth=2)
+            axs[2].fill(
+                [m_xi, m_xi, m_xf, m_xf], [0, m_yi, m_yf, 0], "orange", alpha=0.3
+            )
+            axs[2].text(m_xi, m_yi, str(round(m_yi, 4)), rotation=90)
             self.plots["shearForce"][0].extend([m_xi, m_xf])
             self.plots["shearForce"][1].extend([m_yi, m_yf])
 
+ 
+       
+        def y(x):
+            a = []
+            for i in x:
+                a.append(x[i])
+            return x
+
+        deformation = y(self.p["deformation"])
+        bendingMoment = y(self.p["bendingMoment"])
+        x = []
+        for i in self.p["deformation"]:
+            x.append(i)
+
+        # print("self.p")
+        # print(self.p["deformation"])
+        # return self.p
+        return x, bendingMoment
 
     def add_point_load(self, loadingList):
         for location, load in loadingList.items():
@@ -204,6 +251,7 @@ class Beam:
         print("dd", self.support)
 
     def add_values(self, value):
+
         print("value", value)
         self.add_point_load(value["point_load_input"])
         self.add_distributed_load(value["distributed_load_input"])

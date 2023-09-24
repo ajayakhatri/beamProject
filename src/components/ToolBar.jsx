@@ -52,14 +52,17 @@ deleteBeamProperty,
     checkedLeft,
     setCheckedLeft,
     checkedRight,
-    setCheckedRight }) {
+    setCheckedRight,
+    addSupportPositions,
+    beamLength,
+    removeSupportPositions }) {
     const Droppables = getDroppables(beamID)
 
     const DroppablesDivs = Droppables.map((tool) =>
     <div key={tool.id} style={{border:"1px solid", width:"70px",height:"70px", borderRadius:"10px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}>
         <DropablePreset id={tool.id} >
             <div style={{
-                display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ? "50px" : null,
+                display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ? "55px" : "10px",marginLeft:tool.type==="distributedLoad"?"17px":null
             }}>
                 {tool.img}
             </div>
@@ -76,7 +79,10 @@ deleteBeamProperty,
                 checkedLeft={checkedLeft}
                 setCheckedLeft={setCheckedLeft}
                 checkedRight={checkedRight}
-                setCheckedRight={setCheckedRight}/>
+                setCheckedRight={setCheckedRight}
+                addSupportPositions={addSupportPositions}
+                beamLength={beamLength}
+                removeSupportPositions={removeSupportPositions}/>
             </div>
        
     );

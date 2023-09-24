@@ -9,11 +9,11 @@ deleteBeamProperty,
     checkedLeft,
     setCheckedLeft,
     checkedRight,
-    setCheckedRight}) {
+    setCheckedRight,
+    addSupportPositions,
+    beamLength,
+    removeSupportPositions}) {
 
-
-  const add=()=>{
-  }
   return (
       <>
       <ToggleButton
@@ -27,11 +27,13 @@ deleteBeamProperty,
         onChange={(e) => {setCheckedLeft(e.currentTarget.checked)
             if(e.currentTarget.checked){
                 changeOrAddBeamProperty(beamID, "fixedSupportLeft", 1)
-            }else{
+                addSupportPositions(beamID,0,"fixedSupportLeft")
+              }else{
                 deleteBeamProperty(beamID, "fixedSupportLeft")
-            }
-        }}
-        >        
+                removeSupportPositions(0)
+              }
+            }}
+            >        
       <ImgFixedSupport/>
       </ToggleButton>
       <ToggleButton
@@ -43,12 +45,14 @@ deleteBeamProperty,
         value="2"
         style={{width:"70px",height:"70px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}
         onChange={(e) => {setCheckedRight(e.currentTarget.checked)
-            if(e.currentTarget.checked){
-                changeOrAddBeamProperty(beamID, "fixedSupportRight", 1)
-            }else{
-                deleteBeamProperty(beamID, "fixedSupportRight")
-            }
-
+          if(e.currentTarget.checked){
+            changeOrAddBeamProperty(beamID, "fixedSupportRight", 1)
+            addSupportPositions(beamID,beamLength,"fixedSupportRight")
+          }else{
+            deleteBeamProperty(beamID, "fixedSupportRight")
+            removeSupportPositions(beamLength)
+          }
+          
         }}
         >        
       <ImgFixedSupport className="mirror-image"/>

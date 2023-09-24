@@ -45,10 +45,10 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
                 });
             });
             if (beams[0].fixedSupportLeft===1) {
-                support_input[0] = 1
+                support_input[0] = 0
             }
             if (beam.fixedSupportRight===1) {
-                support_input[beam.length] = 10
+                support_input[beam.length] = 0
             }
         }
 

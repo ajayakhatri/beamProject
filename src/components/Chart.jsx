@@ -116,7 +116,6 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength}) => {
                     data: y_original,
                     fill: false,
                     borderColor: 'rgba(75,192,192,1)',
-                    tension: 0.1,
                     showLine: true
                 },
                 {
@@ -124,7 +123,6 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength}) => {
                     data: y_bendingMoment,
                     fill: true,
                     borderColor: 'rgba(192,75,192,1)',
-                    tension: 0.1,
                     showLine: true
                 },
             ],
@@ -133,11 +131,10 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength}) => {
     };
     const options = {
       responsive: true,
-        maintainAspectRatio: false,
-      // responsive: false, // Disable automatic responsiveness
-      // height: 500, // Set the height of the chart (in pixels)
-      width: actualBeamLength, // Set the width of the chart (in pixels)
+      maintainAspectRatio: false,
+      width: actualBeamLength,
     };
+    
 
     const [chartData, setChartData] = useState(createChart());
 
@@ -152,8 +149,7 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength}) => {
     return (
         <div className='mt-3'>
           <div  style={{ minWidth: actualBeamLength+'px', minHeight:"200px"}}>
-
-        <Scatter  data={chartData} />
+        <Scatter  data={chartData} options={options} />
           </div>
         <div className='text-center m-4'><strong>fig: </strong>{label}</div>            
         </div>

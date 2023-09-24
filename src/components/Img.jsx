@@ -3,15 +3,7 @@ import { hexToRGBA } from './utility';
 
 export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, loadStart = 5, loadEnd = 5, color = "rgba(242, 135, 42, 0.405)" }) => {
     let newcolor = hexToRGBA(color, 0.7);
-    // let width = (newSpanValue <= 0 ? 30 : newSpanValue) / scale + 16
     let width = (newSpanValue) / scale + 16
-    // console.log("On Image Change",
-    //     {
-    //         "SpanValue": newSpanValue,
-    //         "newSpanValue": newSpanValue <= 0 ? 50 : newSpanValue,
-    //         "width": (newSpanValue) / scale + 16,
-    //         "scale": scale
-    //     })
     let w = width - 16
     const a = { "x": 0, "y": loadStart }
     const b = { "x": w, "y": loadEnd }

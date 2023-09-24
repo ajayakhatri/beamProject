@@ -334,7 +334,7 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
         bar[0] = bar[0] - 1
         bar[1] = bar[1] - 1
     n = np.array(array).astype(float)
-    print("N", n)
+    # print("N", n)
     # print("N", bars)
 
     return no_nodes, bars, n, value_
