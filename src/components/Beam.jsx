@@ -8,6 +8,7 @@ import Switch from './Switch';
 import { getRandomColorHex } from './utility';
 import { SendData } from '../dataFlow/sendDataToBackend';
 import { MyCharts } from './Chart';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
@@ -58,9 +59,7 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
         />
         <select style={{ maxWidth: "80px", width: "80px" }} className="form-select form-select-sm" onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
           <option defaultValue="">m</option>
-          <option value="cm">cm</option>
           <option value="ft">ft</option>
-          <option value="in.">in.</option>
         </select>
 
       </div>
@@ -165,9 +164,9 @@ function Beam() {
   }
   function printInfo(beamID) {
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
-    const beamRollerSupport = beams[beamIndex]?.tools?.rollerSupport || [];
     const beamPointLoad = beams[beamIndex]?.tools?.pointLoad || [];
     const distributedLoad = beams[beamIndex]?.tools?.distributedLoad || [];
+    const beamRollerSupport = beams[beamIndex]?.tools?.rollerSupport || [];
     const beamHingedSupport = beams[beamIndex]?.tools?.hingedSupport || [];
     const beamfixedSupportLeft = beams[beamIndex]?.fixedSupportLeft
     const beamfixedSupportRight = beams[beamIndex]?.fixedSupportRight
@@ -525,6 +524,8 @@ function Beam() {
   const [plot, setPlot] = useState({})
   const [checkedLeft, setCheckedLeft] = useState(false);
   const [checkedRight, setCheckedRight] = useState(false);
+  const [isFigAvailable, setIsFigAvailable] = useState(false);
+  const [showFigNotAvailable, setshowFigNotAvailable] = useState(false);
 
   return (
     <div>
@@ -568,14 +569,49 @@ function Beam() {
           </div>
           <InputBeamLength beam={beam}  onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} />
           <div className='d-flex justify-content-end gap-2 mt-5'>
+          {showFigNotAvailable&&
+                !(
+                  beam.tools?.rollerSupport?.length>=2 ||
+                  beam.tools?.hingedSupport?.length>=2||
+                  (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
+                  beam.fixedSupportLeft?true:false||
+                  beam.fixedSupportRight?true:false
+                )&&
+          <div>hello</div>}
+          <ToggleButton
+          id="toggle-check"
+          type="checkbox"
+          variant="outline-primary"
+          checked={isFigAvailable}
+          value="1"
+          onChange={(e) => 
+            (
+              beam.tools?.rollerSupport?.length>=2 ||
+              beam.tools?.hingedSupport?.length>=2||
+              (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
+              beam.fixedSupportLeft?true:false||
+              beam.fixedSupportRight?true:false
+            )? (setIsFigAvailable( e.currentTarget.checked),setshowFigNotAvailable(false)):(setIsFigAvailable(false),
+            setshowFigNotAvailable(true))
+          }
+        >
+          Diagrams
+        </ToggleButton>
             <button className='btn btn-outline-primary p-1' onClick={() => deleteBeam(beam.id)}>Delete</button>
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
             <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)} />
+            { console.log( beam.tools?.rollerSupport?.length>=2 ,
+                beam.tools?.hingedSupport?.length>=2,
+                (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2),
+                beam.fixedSupportLeft?true:false,
+                beam.fixedSupportRight?true:false,
+                )}
           </div>
             {
-        plot[beam.id] &&<>
-      
+        plot[beam.id] && isFigAvailable&&
+
+        <>
       <MyCharts plot={plot[beam.id]} actualBeamLength={actualBeamLength}/>
         </>
       }
