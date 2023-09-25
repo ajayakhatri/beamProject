@@ -7,8 +7,9 @@ function Switch({ label, status, setstatus }) {
         <>
             <Form>
                 <Form.Check
+                title={"switch-for-"+label}
                     type="switch"
-                    id="custom-switch"
+                    id={"switch-"+label}
                     label={isChecked ? `Hide ${label}` : `Show ${label}`}
                     checked={isChecked}
                     onChange={(e) => {

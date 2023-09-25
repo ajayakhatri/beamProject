@@ -1,5 +1,5 @@
 import axios from "./axios.jsx";
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 
 
 export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
@@ -17,7 +17,27 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
             beamsRef.current = localBeams;
         }
     }, [beams]);
-
+    const unitConversion=(unit)=>{
+        const factor=0
+        switch (unit) {
+            case "m":
+                factor=1
+                break;
+            case "cm":
+                factor=0.01
+                break;
+            case "ft":
+                factor=1
+                break;
+            case "in":
+                factor=1
+                break;
+        
+            default:
+                factor=1
+                break;
+        }
+    }
     const sendDataToBackend = async () => {
         const beamlist = beams
         let point_load_input = []
@@ -25,7 +45,7 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
         let support_input = {}
         const beamIndex = beamlist.findIndex((beam) => beam.id === beamID);
 
-        // pointLoad_input = {5: -1e3, 15: -1e3}
+        // eg: pointLoad_input = {5: -1e3, 15: -1e3}
         if (beamIndex !== -1) {
             const beam = beamlist[beamIndex]
             Object.values(beam.tools).forEach((toolType) => {
@@ -53,7 +73,7 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
         }
 
         const beamLengthToSend = beamLength
-        console.log(" data:", {
+        console.log(" sending data to backend:", {
             "beam":beams,
             "point_load_input": point_load_input,
             "distributed_load_input": distributed_load_input,
@@ -72,7 +92,6 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
                 }
             });
 
-            console.log("🚀 ~ file: sendDataToBackend.jsx:75 ~ SendData ~ beamLength:", typeof beamLength)
             if (response.data.ERROR === "Beam is empty") {
                 console.log("Response from Backend:", response.data.ERROR);
 
@@ -86,14 +105,5 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
     };
 
 
-
-    return (
-        <button className='btn btn-outline-primary p-1' onClick={(e) => {
-            e.preventDefault();
-            e.isPropagationStopped()
-            sendDataToBackend();
-        }}>
-            sendDataToBackend</button>
-    );
 };
 

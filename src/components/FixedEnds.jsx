@@ -17,7 +17,6 @@ deleteBeamProperty,
   return (
       <>
       <ToggleButton
-        className="mb-2"
         id="toggle-check-left"
         type="checkbox"
         variant="outline-secondary"
@@ -37,7 +36,6 @@ deleteBeamProperty,
       <ImgFixedSupport/>
       </ToggleButton>
       <ToggleButton
-        className="mb-2"
         id="toggle-check-right"
         type="checkbox"
         variant="outline-secondary"

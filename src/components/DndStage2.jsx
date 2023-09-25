@@ -5,9 +5,8 @@ import { TbArrowBackUp } from 'react-icons/tb';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 
 export function DropableNew(props) {
-    const { status, beamID, style, id, toolType, load, color, unit } = props
+    const { status, beamID, style, id, toolType, load, color, unit,loadUnit } = props
     const [changeDLSpan, deleteTool, changeBeamValue, changeToolValue] = props.changefunctions
-
     const dlspan = parseFloat(props.dlspan);
     const actualBeamLength = parseFloat(props.actualBeamLength);
     const beamLength = parseFloat((props.beamLength).toFixed(3));
@@ -25,12 +24,8 @@ export function DropableNew(props) {
     const [showleninput, setshowleninput] = useState(false)
 
     useEffect(() => {
-        // setdlspanValue(dlspan);
         localDlSpanRef.current = dlSpanValue; // Update the ref whenever dlSpanValue changes
     }, [dlspan, dlSpanValue]);
-    // useEffect(() => {
-    //     changeDLSpan(beamID, id, "span", ((dlSpanValue > beamLength) ? beamLength : dlSpanValue), beamLength / actualBeamLength, loadStartRef.current, loadEndRef.current)
-    // }, [props.positionOnBeam]);
     useEffect(() => {
         loadStartRef.current = loadStart;
     }, [loadStartRef, loadStart]);
@@ -205,15 +200,15 @@ export function DropableNew(props) {
                     <>
                        {!isPLInputVisible?
                         (
-                        <div onClick={() => setPLInputVisible(true)}  className='inputPointer'  style={{display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px" }}>
-                            {loadStart}
+                        <div onClick={() => setPLInputVisible(true)}  className='inputPointer' style={{display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px",border:!props.showInfoBorder&&"none" }}>
+                            {loadStart} {loadUnit}
                         </div>
                     ):(
                             <input
                                 type="number"
                                 inputMode="numeric"
                                 min={0.01}
-                                autoFocus="true"
+                                autoFocus={true}
                                 value={loadStart}
                                 className="dlLoadSet loadSet"
                                 style={{ display: isShowDlLoadInput ? "block" : "none", width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
@@ -235,14 +230,14 @@ export function DropableNew(props) {
                 toolType == "distributedLoad" && status.loadSet &&(
                     <>
                     { !isDLLeftInputVisible ?(
-                        <div onClick={()=>setDLLeftInputVisible(true)}  className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px" }}>
-                            {loadStart}
+                        <div onClick={()=>setDLLeftInputVisible(true)}  className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px",border:!props.showInfoBorder&&"none" }}>
+                            {loadStart} {loadUnit}/{unit}
                         </div>
                     ):(
 
                                 <input
                                     type="number"
-                                      autoFocus="true"
+                                    autoFocus={true}
                                     inputMode="numeric"
                                     min={0.01}
                                     value={loadStart}
@@ -259,13 +254,13 @@ export function DropableNew(props) {
                                 />
                         )}
                     { !isDLRightInputVisible ?(
-                        <div onClick={()=>setDLRightInputVisible(true)} className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}>
-                           {loadEnd}
+                        <div onClick={()=>setDLRightInputVisible(true)} className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px`,border:!props.showInfoBorder&&"none" }}>
+                           {loadEnd} {loadUnit}/{unit}
                         </div>
                     ):(
                                 <input
                                     type="number"
-                                      autoFocus="true"
+                                    autoFocus={true}
                                     inputMode="numeric"
                                     min={0.01}
                                     value={loadEnd}
@@ -296,13 +291,13 @@ export function DropableNew(props) {
 
                                 <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
                         {!isDLSpanInputVisible? (
-                             <div onClick={()=>setDLSpanInputVisible(true)}  className='inputPointer'>
-                             {dlSpanValue}{unit}
+                             <div onClick={()=>setDLSpanInputVisible(true)}  className='inputPointer' style={{border:!props.showInfoBorder&&"none"}}>
+                             {dlSpanValue+unit}
                                    </div>
                                 ): (
                                 <div className="btn" style={{ border: `1px solid ${color}`, borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", paddingRight: "0.5px" }}>
                                     <input
-                                    autoFocus="true"
+                                        autoFocus={true}
                                         type="number"
                                         inputMode="numeric"
                                         min={0.1}
@@ -347,10 +342,10 @@ export function DropableNew(props) {
                     </>
                 )}
 
-            <div style={{ position: "absolute", top: "50px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
+            <div style={{ position: "absolute", top:"45px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
                 {/* Position Input */}
                 {status.lengthSet && showleninput && (
-                    <div className="btn" style={{ border: "1px solid #0d6efd", borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", margin: "0px", paddingRight: "0.5px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
+                    <div className="btn" style={{ border: "1px solid", borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", margin: "0px", paddingRight: "0.5px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
                         <input
                             type="number"
                             inputMode="numeric"
@@ -373,9 +368,8 @@ export function DropableNew(props) {
                                 setinputValue((e.target.value.length === 0 || isNaN(e.target.value)) ? 0 : (parseFloat(e.target.value) > beamLength) ? beamLength : parseFloat(e.target.value))
                                 changeToolValue(beamID, id, "actualPosition", (((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > beamLength) ? parseFloat(beamLength) : parseFloat(e.target.value)) / (beamLength / parseFloat(actualBeamLength))) - (getToolWidth() / 2))
                                 changeToolValue(beamID, id, "positionOnBeam", ((e.target.value < 0 || e.target.value === "") ? 0 : (parseFloat(e.target.value) > beamLength) ? parseFloat(beamLength) : parseFloat(e.target.value)))
-                                    ;
+                                   
                             }} />
-                        {unit}
                     </div>
                 )}
                 {isShown &&

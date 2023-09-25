@@ -9,28 +9,38 @@ import { getRandomColorHex } from './utility';
 import { SendData } from '../dataFlow/sendDataToBackend';
 import { MyCharts } from './Chart';
 import ToggleButton from 'react-bootstrap/ToggleButton';
+import Alert from 'react-bootstrap/Alert';
+import Form from 'react-bootstrap/Form';
 
 
-function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
+function InputBeamLength({ beam, onChange, updateScale, actualBeamLength,showInfoBorder }) {
 
   const [inputValue, setInputValue] = useState(beam.length);
+  const [depthValue, setDepthValue] = useState(beam.depth);
+  const [widthValue, setWidthValue] = useState(beam.width);
+  const [isinputVisible, setisInputVisible] = useState(false);
 
-  return (
-    <div  className='d-flex mt-1' style={{ width: actualBeamLength }}>
+  return (<>
+    <div  className='d-flex' style={{ width: actualBeamLength,height:"20px" }}>
       <div>
-       <div className='strikethrough' style={{}}>|</div>
+       <div className='strikethrough'>|</div>
       </div>
       
-      <div className="border-dark" style={{ width: "100%", marginTop: "13px", borderTop: "1px solid" }}></div>
+      <div className="border-dark" style={{ width: "100%", marginTop: "11p  x", borderTop: "1px solid" }}></div>
 
-      <div className="input-group input-group-sm mb-3" style={{ maxWidth: "180px" }} >
+      {!isinputVisible? (
+      <div onClick={()=>setisInputVisible(true)} className='inputPointer' style={{fontSize:"15px",border:!showInfoBorder&&"none"}}>
+                             {inputValue+beam.unit}
+                                   </div>
+                                ): (
+      <div className="input-group input-group-sm" style={{ maxWidth: "180px" }} >
         <input
           type="number"
+          autoFocus={true}
           inputMode="numeric"
           min={1}
           className="form-control "
           aria-label={`Enter beam length for Beam ${beam.id}`}
-          style={{maxWidth:"100px"}}
           value={inputValue}
           onChange={(e) => {
             e.stopPropagation()
@@ -54,21 +64,121 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
             onChange(beam.id, "length", newLength);
           }}
           onBlur={(e) => {
+            setisInputVisible(false)
             setInputValue(e.target.value.length === 0 || parseFloat(e.target.value) === 0 ? 1 : e.target.value);
           }}
         />
-        <select style={{ maxWidth: "80px", width: "80px" }} className="form-select form-select-sm" onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
-          <option defaultValue="">m</option>
-          <option value="ft">ft</option>
-        </select>
-
       </div>
+        )}
     
-      <div className="border-dark" style={{ width: "100%", marginTop: "13px", borderTop: "1px solid" }}></div>
+      <div className="border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
       <div>
-       <div className='strikethrough' style={{}}>|</div>
+       <div className='strikethrough'>|</div>
       </div>     
     </div>
+    
+    <div style={{marginTop:"55px", position:"relative"}}>
+    <div className='d-flex gap-2 align-items-center my-2' >
+    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Unit of Length:</Form.Label>
+<Form.Select style={{ maxWidth: "80px"}} aria-label="Select Unit of Length of Beam"  id="input-unit-of-length"  onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
+      <option>m</option>
+      <option value="cm">cm</option>
+      <option value="ft">ft</option>
+      <option value="in">in</option>
+    </Form.Select>
+    </div>
+      <div className='d-flex gap-2 align-items-center'>
+    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Unit of Load:</Form.Label>
+<Form.Select style={{ maxWidth: "80px"}} aria-label="Select Unit of Length of Beam"  id="input-unit-of-length"  onChange={(e) => onChange(beam.id, "loadUnit", e.target.value)}>
+      <option>kN</option>
+      <option value="N">N</option>
+      <option value="lb">lb</option>
+    </Form.Select>
+        </div>
+
+
+    <div className='d-flex gap-2 align-items-center my-2' >
+    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Depth of Beam:</Form.Label>
+     <input
+     style={{ maxWidth: "80px"}}
+          type="number"
+          inputMode="numeric"
+          min={1}
+          value={depthValue}
+          className="form-control "
+          aria-label={`Enter Depth of Beam for Beam ${beam.id}`}
+          onChange={(e) => {
+            e.stopPropagation()
+            if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
+              return
+            }
+            setDepthValue(e.target.value);
+          }}
+          onBlur={(e) =>
+          {
+            if(depthValue===""){
+              setDepthValue(beam.depth);
+            }else{
+              onChange(beam.id, "depth", e.target.value)
+            }
+          }
+          }
+        />
+    </div>
+    <div className='d-flex gap-2 align-items-center my-2' >
+    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Width of Beam:</Form.Label>
+    <input
+    style={{ maxWidth: "80px"}}
+          type="number"
+          inputMode="numeric"
+          min={1}
+          value={widthValue}
+          className="form-control "
+          aria-label={`Enter Width of Beam for Beam ${beam.id}`}
+          onChange={(e) => {
+            e.stopPropagation()
+            if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
+              return
+            }
+            setWidthValue(e.target.value);
+          }}          
+          onBlur={(e) => {
+            if(widthValue==""){
+              setWidthValue(beam.width);
+            }else{
+              onChange(beam.id, "width", e.target.value)}
+            }
+            }
+        />
+    </div>
+    <div>
+    
+      {/* Width */}
+    <div style={{bottom:"0",left:"220px",position:"absolute",width:"110px", height:"110px",border:"solid 1px"}}>
+      <div style={{position:"absolute",top:"100%",display:"flex",justifyContent:"center",width:"100%"}}>
+          <div className='strikethrough'>|</div>
+          <div className="border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
+        {widthValue+beam.unit}
+          <div className="border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
+          <div className='strikethrough'>|</div>
+      </div>
+      {/* Depth */}
+      <div style={{position:"absolute",left:"100%",marginLeft:"13px",display:"flex",justifyContent:"center",width:"100%",flexDirection:"column",height:"110px"}}>
+          <div className='mirror-image' style={{position:"absolute",left:"-1.2px",top:"-12px"}}>
+          <div className='strikethrough'>|</div>
+          </div>
+          <div className="border-dark" style={{ height: "100%", borderLeft: "1px solid" }}></div>
+        {depthValue+beam.unit}
+          <div className="border-dark" style={{ height: "100%", borderLeft: "1px solid" }}></div>
+          <div className='mirror-image' style={{position:"absolute",left:"-1.2px",top:"98px"}}>
+          <div className='strikethrough'>|</div>
+          </div>
+      </div>
+    </div>
+
+    </div>
+    </div>
+        </>
   )
 }
 
@@ -135,6 +245,9 @@ function Beam() {
       length: 10,
       scale: 10 / actualBeamLength,
       unit: "m",
+      loadUnit: "kN",
+      depth: 450,
+      width:300,
       tools: {
 
       },
@@ -147,6 +260,9 @@ function Beam() {
       length: 10,
       scale: 10 / actualBeamLength,
       unit: "m",
+      loadUnit: "kN",
+      depth: 450,
+      width:300,
       tools: {
       },
     };
@@ -242,6 +358,7 @@ function Beam() {
 
 
   function changeOrAddBeamProperty(id, property, newValue) {
+    console.log(`changing....,${property} of Beam ${id} to ${newValue}`)
     setBeams((prevBeams) =>
       prevBeams.map((beam) =>
         beam.id === id ? { ...beam, [property]: newValue } : beam
@@ -400,7 +517,6 @@ function Beam() {
 
   const [loadSet, setloadSet] = useState(true)
   const [lengthSet, setlengthSet] = useState(true)
-  const [dlSpanSet, setdlSpanSet] = useState(true)
 
 
   const PositionDimension=({beam,actualBeamLength})=>{
@@ -447,9 +563,9 @@ function Beam() {
           }}>
     <div className='strikethrough'>|</div>
           
-          <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+          <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
          {(positionB-positionA).toFixed(3)+ beam.unit}
-        <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+        <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
         {(isLastTool && beam.length-positionB===0) &&(
     
           <div className='strikethrough'>|</div>
@@ -467,9 +583,9 @@ function Beam() {
            }}>
          <div className='strikethrough'>|</div>
           
-          <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+          <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
          {(beam.length-positionB).toFixed(3)+ beam.unit}
-        <div className="border-dark" style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+        <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
         <div className='strikethrough'>|</div>
         
         </div>
@@ -477,10 +593,13 @@ function Beam() {
           </div>
      )
     }))
-    return (<div className='d-flex justify-content-center flex-row position-relative' style={{fontSize:"12px",marginBottom:50+"px"}}>
+    return (<div className='d-flex justify-content-center flex-row position-relative' style={{color:"DimGray",fontSize:"12px",marginBottom:50+"px"}}>
       {alldivs}
     </div>)
   }
+
+  const [showInfoBorder, setShowInfoBorder] = useState(false);
+
   const AllDivs = ({ beamID, scale }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
@@ -493,13 +612,16 @@ function Beam() {
         <DropableNew
           key={tool.id}
           unit={beam.unit}
-          status={{ "loadSet": loadSet, "lengthSet": lengthSet, "dlSpanSet": dlSpanSet }}
+          loadUnit={beam.loadUnit}
+          status={{ "loadSet": loadSet, "lengthSet": lengthSet }}
           id={tool.id}
           toolType={tool.id.split("_")[0]}
           actualBeamLength={actualBeamLength}
           beamID={beamID}
           load={tool.isUp ? tool.id.split("_")[0] === "distributedLoad" ? { "loadStart": tool.loadStart, "loadEnd": tool.loadEnd } : tool.load : 1}
           changefunctions={[changeDLSpan, deleteTool, changeOrAddBeamProperty, changeToolValue]}
+          showInfoBorder={showInfoBorder}
+          setshowInfoBorder={setShowInfoBorder}
           //Length
           dlspan={tool.id.split("_")[0] === "distributedLoad" ? parseFloat(tool.span) : 1}
           beamLength={beam.length}
@@ -526,17 +648,17 @@ function Beam() {
   const [checkedRight, setCheckedRight] = useState(false);
   const [isFigAvailable, setIsFigAvailable] = useState(false);
   const [showFigNotAvailable, setshowFigNotAvailable] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   return (
     <div>
       <div className='d-flex justify-content-between' >
         <h2 className='fs-1'>Beams</h2>
         {beams.length > 0 && (
-          <div style={{ fontSize: "16px", minWidth: "140px" }}>
-        
+          <div style={{ fontSize: "16px", minWidth: "200px" }}>
             <Switch label={"Loads"} status={loadSet} setstatus={setloadSet} />
             <Switch label={"Length"} status={lengthSet} setstatus={setlengthSet} />
-            <Switch label={"DLSpan"} status={dlSpanSet} setstatus={setdlSpanSet} />
+            <Switch label={"Border"} status={showInfoBorder} setstatus={setShowInfoBorder} />
           </div>
         )}
       </div>
@@ -567,7 +689,7 @@ function Beam() {
           <PositionDimension beam={beam} actualBeamLength={actualBeamLength}/>
             }
           </div>
-          <InputBeamLength beam={beam}  onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} />
+          <InputBeamLength beam={beam}  onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} showInfoBorder={showInfoBorder} />
           <div className='d-flex justify-content-end gap-2 mt-5'>
           {showFigNotAvailable&&
                 !(
@@ -576,13 +698,23 @@ function Beam() {
                   (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
                   beam.fixedSupportLeft?true:false||
                   beam.fixedSupportRight?true:false
-                )&&
-          <div>hello</div>}
+                )&&showAlert&&
+          <div style={{maxHeight:"10px"}}>
+                <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
+       Invalid Support Condition!!
+      </Alert>
+</div>}
           <ToggleButton
           id="toggle-check"
           type="checkbox"
           variant="outline-primary"
-          checked={isFigAvailable}
+          checked={isFigAvailable&&(
+            beam.tools?.rollerSupport?.length>=2 ||
+            beam.tools?.hingedSupport?.length>=2||
+            (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
+            beam.fixedSupportLeft?true:false||
+            beam.fixedSupportRight?true:false
+          )}
           value="1"
           onChange={(e) => 
             (
@@ -592,21 +724,21 @@ function Beam() {
               beam.fixedSupportLeft?true:false||
               beam.fixedSupportRight?true:false
             )? (setIsFigAvailable( e.currentTarget.checked),setshowFigNotAvailable(false)):(setIsFigAvailable(false),
-            setshowFigNotAvailable(true))
+            (setshowFigNotAvailable(true),setShowAlert(true)))
           }
         >
-          Diagrams
+        {isFigAvailable&& (
+              beam.tools?.rollerSupport?.length>=2 ||
+              beam.tools?.hingedSupport?.length>=2||
+              (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
+              beam.fixedSupportLeft?true:false||
+              beam.fixedSupportRight?true:false
+            )? "Hide Diagrams":"Show Diagrams"}
         </ToggleButton>
-            <button className='btn btn-outline-primary p-1' onClick={() => deleteBeam(beam.id)}>Delete</button>
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
+            <button className='btn btn-danger p-1' onClick={() => deleteBeam(beam.id)}>🗑️ Delete Beam</button>
             <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)} />
-            { console.log( beam.tools?.rollerSupport?.length>=2 ,
-                beam.tools?.hingedSupport?.length>=2,
-                (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2),
-                beam.fixedSupportLeft?true:false,
-                beam.fixedSupportRight?true:false,
-                )}
           </div>
             {
         plot[beam.id] && isFigAvailable&&

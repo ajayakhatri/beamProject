@@ -71,7 +71,7 @@ deleteBeamProperty,
     )
 
     return (
-        <div className='d-flex gap-4 justify-content-center mb-5 border border-2 border-primary border-top-0'>
+        <div className='d-flex gap-4 justify-content-center align-items-center'>
             {DroppablesDivs}
                 <FixedEnds beamID={beamID} 
                 changeOrAddBeamProperty={changeOrAddBeamProperty}
