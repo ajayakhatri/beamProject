@@ -15,7 +15,6 @@ export function DropableNew(props) {
     const localDlSpanRef = useRef(dlSpanValue);
     const toolsRef = useRef(null);
     const [isShown, setIsShown] = useState(false)
-    const [isShowDlLoadInput, setIsShowDlLoadInput] = useState(true)
 
     const [loadStart, setloadStart] = useState(parseFloat(toolType == "distributedLoad" ? load.loadStart : load))
     const [loadEnd, setloadEnd] = useState(parseFloat(toolType == "distributedLoad" ? load.loadEnd : 1))
@@ -78,7 +77,6 @@ export function DropableNew(props) {
         e.stopPropagation();
         e.stopImmediatePropagation()
         setshowleninput(false)
-        setIsShowDlLoadInput(true)
         let actualPosition = parseFloat(e.target.getAttribute("data-actualPosition"))
         let positionOnBeam = parseFloat(e.target.getAttribute("data-positionOnBeam"))
 
@@ -107,7 +105,6 @@ export function DropableNew(props) {
             return
         }
         setshowleninput(true)
-        setIsShowDlLoadInput(false)
         const sliderRect = interact.getElementRect(e.target);
         const barRect = interact.getElementRect(e.target.parentElement);
         const actualPosition = sliderRect.left - barRect.left
@@ -170,7 +167,8 @@ export function DropableNew(props) {
 
     const handleChangeLoadStart = (e) => {
         e.stopPropagation()
-        if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
+        if ((e.nativeEvent.data === "+")) {
+        // if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
             e.target.value = loadStart
         }
         setloadStart(parseFloat(e.target.value))
@@ -178,7 +176,8 @@ export function DropableNew(props) {
 
     const handleChangeLoadEnd = (e) => {
         e.stopPropagation()
-        if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
+        if ((e.nativeEvent.data === "+")) {
+        // if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
             e.target.value = loadEnd
         }
         setloadEnd(parseFloat(e.target.value))
@@ -200,8 +199,8 @@ export function DropableNew(props) {
                     <>
                        {!isPLInputVisible?
                         (
-                        <div onClick={() => setPLInputVisible(true)}  className='inputPointer' style={{display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px",border:!props.showInfoBorder&&"none" }}>
-                            {loadStart} {loadUnit}
+                        <div onClick={() => setPLInputVisible(true)}  className='inputPointer' style={{position: "absolute", top: "-90px",border:!props.showInfoBorder&&"none" }}>
+                            {loadStart+" "+loadUnit}
                         </div>
                     ):(
                             <input
@@ -211,7 +210,7 @@ export function DropableNew(props) {
                                 autoFocus={true}
                                 value={loadStart}
                                 className="dlLoadSet loadSet"
-                                style={{ display: isShowDlLoadInput ? "block" : "none", width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
+                                style={{  width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
                                 onChange={handleChangeLoadStart}
                                 onBlur={(e) => {
                                     e.stopPropagation()
@@ -230,8 +229,8 @@ export function DropableNew(props) {
                 toolType == "distributedLoad" && status.loadSet &&(
                     <>
                     { !isDLLeftInputVisible ?(
-                        <div onClick={()=>setDLLeftInputVisible(true)}  className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none",  position: "absolute", top: "-90px",border:!props.showInfoBorder&&"none" }}>
-                            {loadStart} {loadUnit}/{unit}
+                        <div onClick={()=>setDLLeftInputVisible(true)}  className='inputPointer' style={{   position: "absolute", top: "-90px",border:!props.showInfoBorder&&"none" }}>
+                            {loadStart+" "+loadUnit}/{unit}
                         </div>
                     ):(
 
@@ -242,7 +241,7 @@ export function DropableNew(props) {
                                     min={0.01}
                                     value={loadStart}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
+                                    style={{  width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px" }}
                                     onChange={handleChangeLoadStart}
                                     onBlur={(e) => {
                                         e.stopPropagation()
@@ -254,8 +253,8 @@ export function DropableNew(props) {
                                 />
                         )}
                     { !isDLRightInputVisible ?(
-                        <div onClick={()=>setDLRightInputVisible(true)} className='inputPointer' style={{ display: isShowDlLoadInput ? "block" : "none", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px`,border:!props.showInfoBorder&&"none" }}>
-                           {loadEnd} {loadUnit}/{unit}
+                        <div onClick={()=>setDLRightInputVisible(true)} className='inputPointer' style={{  position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px`,border:!props.showInfoBorder&&"none" }}>
+                           {loadEnd+" "+loadUnit}/{unit}
                         </div>
                     ):(
                                 <input
@@ -265,7 +264,7 @@ export function DropableNew(props) {
                                     min={0.01}
                                     value={loadEnd}
                                     className="dlLoadSet loadSet"
-                                    style={{ display: isShowDlLoadInput ? "block" : "none", width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}
+                                    style={{  width: "60px", textAlign: "center", height: "25px", position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px` }}
                                     onChange={handleChangeLoadEnd}
                                     onBlur={(e) => {
                                         e.stopPropagation()

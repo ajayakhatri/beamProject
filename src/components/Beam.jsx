@@ -26,7 +26,7 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength,showInf
        <div className='strikethrough'>|</div>
       </div>
       
-      <div className="border-dark" style={{ width: "100%", marginTop: "11p  x", borderTop: "1px solid" }}></div>
+      <div className="border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
 
       {!isinputVisible? (
       <div onClick={()=>setisInputVisible(true)} className='inputPointer' style={{fontSize:"15px",border:!showInfoBorder&&"none"}}>

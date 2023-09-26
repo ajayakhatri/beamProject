@@ -5,9 +5,10 @@ export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, load
     let newcolor = hexToRGBA(color, 0.7);
     let width = (newSpanValue) / scale + 16
     let w = width - 16
-    const a = { "x": 0, "y": loadStart }
-    const b = { "x": w, "y": loadEnd }
+    const a = { "x": 0, "y": Math.abs(loadStart) }
+    const b = { "x": w, "y": Math.abs(loadEnd) }
     let fx = (x) => ((b.y - a.y) / (b.x - a.x)) * x + a.y
+    let fxNoAbs = (x) => ((loadEnd - loadStart) / (b.x - a.x)) * x + loadStart
     const height = 40
     const h = Math.max(a.y, b.y)
     const arrowSpacing = spacing
@@ -15,12 +16,13 @@ export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, load
     const space = w / times
     const arrows = []
     for (let i = 0; i <= w; i += space) {
-        arrows.push(<Arrow key={i} x={i} opacity={0.5} height={(100 - (fx(i) * 100 / h)) + "%"} />);
+        console.log("fxNoAbs(i)",i,fxNoAbs(i))
+        arrows.push(<Arrow key={i} x={i} opacity={0.5} height={(100 - (fx(i) * 100 / h))} negative={fxNoAbs(i)<0?true:false}/>);
     }
 
     return (
         <svg transform="translate(-8,-45)" height={height + "px"} width={width} style={{ position: 'absolute' }}>;
-            <polygon points={`8,${(height - (fx(0) * height / h))}  ${w + 8},${(height - (fx(w) * height / h))} ${w + 8},40 8,50`} fill={newcolor} />
+            <polygon points={`8,${(height - (fx(0) * height / h))}  ${w + 8},${(height - (fx(w) * height / h))} ${w + 8},400 8,500`} fill={newcolor} />
             {/* <rect x="8" y="0" width={width - 16} height="100%" fill="rgba(242, 135, 42, 0.405)" />; */}
             <line x1="8" y1={a.y > b.y ? 0 : (100 - ((a.y / b.y)) * 100) + "%"} x2={width - 8} y2={a.y < b.y ? 0 : (100 - ((b.y / a.y)) * 100) + "%"} stroke="black" strokeWidth="1" />
             {/* <Arrow x={8} /> */}
@@ -48,12 +50,22 @@ export const ImgPointLoad = () => {
     )
 }
 
-function Arrow({ x, opacity = 1, height = "0%" }) {
+function Arrow({ x, opacity = 1, height = 0,negative=false}) {
     return (
         <>
-            <line x1={x} y1={height} x2={x} y2="100%" stroke="black" strokeWidth="1" opacity={opacity} />
+            <line x1={x} y1={height+"%"} x2={x} y2="100%" stroke="black" strokeWidth="1" opacity={opacity} />
+            {negative?<>
+            <line x1={x} y1={height+"%"} x2={x - 2} y2={(height+15)+"%"} stroke="black" strokeWidth="1" opacity={opacity} />
+            <line x1={x} y1={height+"%"} x2={x + 2} y2={(height+15)+"%"} stroke="black" strokeWidth="1" opacity={opacity} />
+            </>
+            :
+            <>
             <line x1={x} y1="100%" x2={x - 2} y2="85%" stroke="black" strokeWidth="1" opacity={opacity} />
             <line x1={x} y1="100%" x2={x + 2} y2="85%" stroke="black" strokeWidth="1" opacity={opacity} />
+            </>
+        }
+
+
 
         </>
     )
