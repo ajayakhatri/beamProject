@@ -16,7 +16,6 @@ export const ImgDistributedLoad = ({ newSpanValue = 50, scale = 1, spacing, load
     const space = w / times
     const arrows = []
     for (let i = 0; i <= w; i += space) {
-        console.log("fxNoAbs(i)",i,fxNoAbs(i))
         arrows.push(<Arrow key={i} x={i} opacity={0.5} height={(100 - (fx(i) * 100 / h))} negative={fxNoAbs(i)<0?true:false}/>);
     }
 
@@ -89,7 +88,7 @@ export const ImgFixedSupportOnBeam=({className})=>{
 }
 export const ImgFixedSupport=({className})=>{
     return(
-<svg className={className} xmlns="http://www.w3.org/2000/svg" width="35" height="61" viewBox="0 0 35 61" fill="none">
+<svg className={className} xmlns="http://www.w3.org/2000/svg" height="61" viewBox="0 0 35 61" fill="none">
 <line x1="12.5" x2="12.5" y2="60" stroke="black"/>
 <line y1="-0.5" x2="15.402" y2="-0.5" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 4.82758)" stroke="black"/>
 <line y1="-0.5" x2="15.402" y2="-0.5" transform="matrix(-0.779118 0.626877 -0.600947 -0.799289 12 40.6897)" stroke="black"/>

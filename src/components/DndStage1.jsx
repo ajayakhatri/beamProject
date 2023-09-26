@@ -77,8 +77,6 @@ export const BeamBar = (props) => {
     }, [scale, localBeamscale]);
 
     return (
-        <div>
-        
             <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
                 position: "relative", width: actualBeamLength + "px", height: "70px",    
             }}>
@@ -88,14 +86,14 @@ export const BeamBar = (props) => {
                         <ImgFixedSupportOnBeam />
                         </div>
                         }
-                        {checkedRight&& <div style={{ position: "absolute", top: "-35px", left: "100%", width: "100%"}}>
+                        {checkedRight&& <div style={{ position: "absolute", top: "-35px", left: "100%"}}>
                 <ImgFixedSupportOnBeam  className={"mirror-image"} />
                 </div> 
                }
                 </div>
                 {children}
             </div>
-        </div>
+  
     )
 }
 
@@ -123,7 +121,7 @@ export function DropablePreset(props) {
         })
     }, []);
     return (
-        <div ref={toolsRef} id={id} key={id} style={{ zIndex: "1", touchAction: "none", width: getToolWidth() + "px", height: "40px", margin: 0, padding: 0 }}
+        <div ref={toolsRef} id={id} key={id} style={{ zIndex: "1",touchAction: "none", width: getToolWidth() + "px", height: "40px"}}
             className={`Tools_Beam_${id.split("_")[id.split("_").length - 1]}`} >
             {props.children}
         </div>

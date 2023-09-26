@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropablePreset } from './DndStage1';
-import { ImgDistributedLoad, ImgHingedSupport, ImgPointLoad, ImgRollerSupport,ImgFixedSupportOnBeam } from './Img';
+import { ImgDistributedLoad, ImgHingedSupport, ImgPointLoad, ImgRollerSupport } from './Img';
 import FixedEnds from './FixedEnds';
 
 export function getImg(toolType) {
@@ -48,21 +48,22 @@ function getDroppables(beamID) {
 
 function ToolBar({ beamID,
     changeOrAddBeamProperty,
-deleteBeamProperty,
+    deleteBeamProperty,
     checkedLeft,
     setCheckedLeft,
     checkedRight,
     setCheckedRight,
     addSupportPositions,
     beamLength,
-    removeSupportPositions }) {
+    removeSupportPositions,
+    actualBeamLength }) {
     const Droppables = getDroppables(beamID)
 
     const DroppablesDivs = Droppables.map((tool) =>
-    <div key={tool.id} style={{border:"1px solid", width:"70px",height:"70px", borderRadius:"10px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}>
+    <div key={tool.id} style={{border:"1px solid",width:"65px",height:"65px", borderRadius:"10px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}>
         <DropablePreset id={tool.id} >
             <div style={{
-                display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ? "55px" : "10px",marginLeft:tool.type==="distributedLoad"?"17px":null
+             scale:actualBeamLength<300?"0.8":null,display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ?actualBeamLength<300? "40px":"55px" : "10px",marginLeft:tool.type==="distributedLoad"?actualBeamLength<300?"12px":"17px":null
             }}>
                 {tool.img}
             </div>
@@ -71,7 +72,7 @@ deleteBeamProperty,
     )
 
     return (
-        <div className='d-flex gap-4 justify-content-center align-items-center'>
+        <div className='d-flex align-items-center justify-content-center gap-1' style={{width:actualBeamLength}}>
             {DroppablesDivs}
                 <FixedEnds beamID={beamID} 
                 changeOrAddBeamProperty={changeOrAddBeamProperty}
@@ -82,7 +83,8 @@ deleteBeamProperty,
                 setCheckedRight={setCheckedRight}
                 addSupportPositions={addSupportPositions}
                 beamLength={beamLength}
-                removeSupportPositions={removeSupportPositions}/>
+                removeSupportPositions={removeSupportPositions}
+                actualBeamLength={actualBeamLength}/>
             </div>
        
     );

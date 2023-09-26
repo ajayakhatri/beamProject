@@ -9,7 +9,6 @@ from .models import BeamModel
 from .beamApp import Beam
 import json
 import numpy as np
-from django.core import serializers
 
 
 @api_view(["POST", "GET"])
@@ -21,23 +20,15 @@ def my_view(request):
         pointLoad_ = data.get("point_load_input", None)
         distributedload_ = data.get("distributed_load_input", None)
         support_ = data.get("support_input", None)
-        # minspan = data.get("minspan", None)
         beamLength = data.get("beam_length")
-        # E = data.get("E", None)
-        # I = data.get("I", None)
-        # unit = data.get("unit", None)
+        moi = data.get("moi")
+        youngModulus = data.get("young_modulus")
 
-        # distributedload_ = [
-        # ["d", 0, [5, 5000, 1000]],
-        # ["d", 5, [5, 10000, 5000]],
-        # ]
-        # support_ = {2.5: 1, 7.5: 1, 10: 0}
-        # pointLoad_ = [[3, 12000], [6, 15000]]
         minspan = 0.05 * beamLength
         leng = beamLength
 
-        E: float = 210e9
-        I: float = 4.73e-6
+        E: float = youngModulus
+        I: float = moi
         if len(pointLoad_) == 0 and len(distributedload_) == 0 and len(support_) == 0:
             return JsonResponse({"ERROR": "Beam is empty"})
 
@@ -50,13 +41,11 @@ def my_view(request):
         beam_1.analysis()
         beam_1.plot()
 
-        # result = beam_1.results()
         plots = beam_1.plots
 
         calculation = BeamModel(plots=plots)
         calculation.save()
-
-        # data = json.loads(plots)
+        # print(plots)
         return JsonResponse(plots)
      
     else:

@@ -10,14 +10,19 @@ import { SendData } from '../dataFlow/sendDataToBackend';
 import { MyCharts } from './Chart';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Alert from 'react-bootstrap/Alert';
-import Form from 'react-bootstrap/Form';
+
+import { BeamInfo } from './BeamInfo';
 
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength,showInfoBorder }) {
 
   const [inputValue, setInputValue] = useState(beam.length);
-  const [depthValue, setDepthValue] = useState(beam.depth);
-  const [widthValue, setWidthValue] = useState(beam.width);
+  const [section, setSection] = useState("Rectangular");
+  const [radiusValue, setRadiusValue] = useState(0.15);
+  const [depthValue, setDepthValue] = useState(0.45);
+  const [widthValue, setWidthValue] = useState(0.30);
+  const [MOI, setMOI] = useState(0.002278);
+  const [youngModulus, setYoungModulus] = useState(210);
   const [isinputVisible, setisInputVisible] = useState(false);
 
   return (<>
@@ -76,108 +81,7 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength,showInf
        <div className='strikethrough'>|</div>
       </div>     
     </div>
-    
-    <div style={{marginTop:"55px", position:"relative"}}>
-    <div className='d-flex gap-2 align-items-center my-2' >
-    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Unit of Length:</Form.Label>
-<Form.Select style={{ maxWidth: "80px"}} aria-label="Select Unit of Length of Beam"  id="input-unit-of-length"  onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
-      <option>m</option>
-      <option value="cm">cm</option>
-      <option value="ft">ft</option>
-      <option value="in">in</option>
-    </Form.Select>
-    </div>
-      <div className='d-flex gap-2 align-items-center'>
-    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Unit of Load:</Form.Label>
-<Form.Select style={{ maxWidth: "80px"}} aria-label="Select Unit of Length of Beam"  id="input-unit-of-length"  onChange={(e) => onChange(beam.id, "loadUnit", e.target.value)}>
-      <option>kN</option>
-      <option value="N">N</option>
-      <option value="lb">lb</option>
-    </Form.Select>
-        </div>
-
-
-    <div className='d-flex gap-2 align-items-center my-2' >
-    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Depth of Beam:</Form.Label>
-     <input
-     style={{ maxWidth: "80px"}}
-          type="number"
-          inputMode="numeric"
-          min={1}
-          value={depthValue}
-          className="form-control "
-          aria-label={`Enter Depth of Beam for Beam ${beam.id}`}
-          onChange={(e) => {
-            e.stopPropagation()
-            if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
-              return
-            }
-            setDepthValue(e.target.value);
-          }}
-          onBlur={(e) =>
-          {
-            if(depthValue===""){
-              setDepthValue(beam.depth);
-            }else{
-              onChange(beam.id, "depth", e.target.value)
-            }
-          }
-          }
-        />
-    </div>
-    <div className='d-flex gap-2 align-items-center my-2' >
-    <Form.Label htmlFor="input-unit-of-length" style={{width:"110px"}}>Width of Beam:</Form.Label>
-    <input
-    style={{ maxWidth: "80px"}}
-          type="number"
-          inputMode="numeric"
-          min={1}
-          value={widthValue}
-          className="form-control "
-          aria-label={`Enter Width of Beam for Beam ${beam.id}`}
-          onChange={(e) => {
-            e.stopPropagation()
-            if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
-              return
-            }
-            setWidthValue(e.target.value);
-          }}          
-          onBlur={(e) => {
-            if(widthValue==""){
-              setWidthValue(beam.width);
-            }else{
-              onChange(beam.id, "width", e.target.value)}
-            }
-            }
-        />
-    </div>
-    <div>
-    
-      {/* Width */}
-    <div style={{bottom:"0",left:"220px",position:"absolute",width:"110px", height:"110px",border:"solid 1px"}}>
-      <div style={{position:"absolute",top:"100%",display:"flex",justifyContent:"center",width:"100%"}}>
-          <div className='strikethrough'>|</div>
-          <div className="border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
-        {widthValue+beam.unit}
-          <div className="border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
-          <div className='strikethrough'>|</div>
-      </div>
-      {/* Depth */}
-      <div style={{position:"absolute",left:"100%",marginLeft:"13px",display:"flex",justifyContent:"center",width:"100%",flexDirection:"column",height:"110px"}}>
-          <div className='mirror-image' style={{position:"absolute",left:"-1.2px",top:"-12px"}}>
-          <div className='strikethrough'>|</div>
-          </div>
-          <div className="border-dark" style={{ height: "100%", borderLeft: "1px solid" }}></div>
-        {depthValue+beam.unit}
-          <div className="border-dark" style={{ height: "100%", borderLeft: "1px solid" }}></div>
-          <div className='mirror-image' style={{position:"absolute",left:"-1.2px",top:"98px"}}>
-          <div className='strikethrough'>|</div>
-          </div>
-      </div>
-    </div>
-
-    </div>
-    </div>
+            
         </>
   )
 }
@@ -246,8 +150,8 @@ function Beam() {
       scale: 10 / actualBeamLength,
       unit: "m",
       loadUnit: "kN",
-      depth: 450,
-      width:300,
+      moi:0.002278,
+      youngModulus:210,
       tools: {
 
       },
@@ -261,8 +165,8 @@ function Beam() {
       scale: 10 / actualBeamLength,
       unit: "m",
       loadUnit: "kN",
-      depth: 450,
-      width:300,
+      moi:0.002278,
+      youngModulus:210,
       tools: {
       },
     };
@@ -653,9 +557,9 @@ function Beam() {
   return (
     <div>
       <div className='d-flex justify-content-between' >
-        <h2 className='fs-1'>Beams</h2>
+        <h2 style={{fontSize:"50px"}}>Beams</h2>
         {beams.length > 0 && (
-          <div style={{ fontSize: "16px", minWidth: "200px" }}>
+          <div style={{ fontSize: "12px", minWidth: "200px" }}>
             <Switch label={"Loads"} status={loadSet} setstatus={setloadSet} />
             <Switch label={"Length"} status={lengthSet} setstatus={setlengthSet} />
             <Switch label={"Border"} status={showInfoBorder} setstatus={setShowInfoBorder} />
@@ -663,9 +567,9 @@ function Beam() {
         )}
       </div>
       {beams.map((beam) => (
-        <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative' style={{ borderRadius: "8px", padding: "0px 40px" }}>
+        <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative d-flex flex-column align-items-center' style={{ borderRadius: "8px", padding: "0px 20px" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
-          <div className='mt-4'>
+        
             <ToolBar beamID={beam.id}
               changeOrAddBeamProperty={changeOrAddBeamProperty}
               deleteBeamProperty={deleteBeamProperty}
@@ -676,9 +580,10 @@ function Beam() {
               addSupportPositions={addSupportPositions}
               removeSupportPositions={removeSupportPositions}
               beamLength={beam.length}
+              actualBeamLength={actualBeamLength}
             />
-          </div>
-          <div style={{ marginTop: "150px", display: "flex",flexDirection:"column", justifyContent: "center" }}>
+         
+          <div style={{ marginTop: "150px", display: "flex",flexDirection:"column", justifyContent: "center", }}>
             <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength} 
             checkedLeft={checkedLeft}
             checkedRight={checkedRight}
@@ -687,10 +592,14 @@ function Beam() {
             </BeamBar>
             {lengthSet&&
           <PositionDimension beam={beam} actualBeamLength={actualBeamLength}/>
-            }
-          </div>
+        }
+        </div>
           <InputBeamLength beam={beam}  onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} showInfoBorder={showInfoBorder} />
-          <div className='d-flex justify-content-end gap-2 mt-5'>
+          <div className='align-self-start'>
+          <BeamInfo beam={beam} onChange={changeOrAddBeamProperty} actualBeamLength={actualBeamLength}/>   
+          </div>
+
+          <div className='d-flex gap-2 mt-5 position-relative'>
           {showFigNotAvailable&&
                 !(
                   beam.tools?.rollerSupport?.length>=2 ||
@@ -699,11 +608,11 @@ function Beam() {
                   beam.fixedSupportLeft?true:false||
                   beam.fixedSupportRight?true:false
                 )&&showAlert&&
-          <div style={{maxHeight:"10px"}}>
-                <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
-       Invalid Support Condition!!
-      </Alert>
-</div>}
+          <div style={{maxHeight:"10px",position:"absolute",top:"-50px"}}>
+                <Alert style={{fontSize:"12px"}} variant="danger" onClose={() => setShowAlert(false)} dismissible>
+                Invalid Support Condition!!
+                </Alert>
+            </div>}
           <ToggleButton
           id="toggle-check"
           type="checkbox"
@@ -742,14 +651,11 @@ function Beam() {
           </div>
             {
         plot[beam.id] && isFigAvailable&&
-
-        <>
-      <MyCharts plot={plot[beam.id]} actualBeamLength={actualBeamLength}/>
-        </>
+      <MyCharts plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit}/>
       }
         </div>
       ))}
-      <button onClick={addBeam}>Add Beam</button>
+      <button className="btn btn-primary mb-2" onClick={addBeam}>Add Beam</button>
     </div>
   )
 

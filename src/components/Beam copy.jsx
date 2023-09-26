@@ -8,7 +8,6 @@ import Switch from './Switch';
 import { getRandomColorHex } from './utility';
 import { SendData } from '../dataFlow/sendDataToBackend';
 import { MyChart } from './Chart';
-import { Result } from 'postcss';
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength }) {
 

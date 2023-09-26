@@ -22,7 +22,7 @@ deleteBeamProperty,
         variant="outline-secondary"
         checked={checkedLeft}
         value="1"
-        style={{width:"70px",height:"70px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}
+        style={{width:"65px",height:"65px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}
         onChange={(e) => {setCheckedLeft(e.currentTarget.checked)
             if(e.currentTarget.checked){
                 changeOrAddBeamProperty(beamID, "fixedSupportLeft", 1)
@@ -41,7 +41,7 @@ deleteBeamProperty,
         variant="outline-secondary"
         checked={checkedRight}
         value="2"
-        style={{width:"70px",height:"70px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}
+        style={{width:"65px",height:"65px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}
         onChange={(e) => {setCheckedRight(e.currentTarget.checked)
           if(e.currentTarget.checked){
             changeOrAddBeamProperty(beamID, "fixedSupportRight", 1)

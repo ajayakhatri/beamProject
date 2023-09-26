@@ -17,37 +17,21 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
             beamsRef.current = localBeams;
         }
     }, [beams]);
-    const unitConversion=(unit)=>{
-        const factor=0
-        switch (unit) {
-            case "m":
-                factor=1
-                break;
-            case "cm":
-                factor=0.01
-                break;
-            case "ft":
-                factor=1
-                break;
-            case "in":
-                factor=1
-                break;
-        
-            default:
-                factor=1
-                break;
-        }
-    }
+    
     const sendDataToBackend = async () => {
         const beamlist = beams
         let point_load_input = []
         let distributed_load_input = []
         let support_input = {}
         const beamIndex = beamlist.findIndex((beam) => beam.id === beamID);
-
+        let moi=0
+        let youngModulus=0
         // eg: pointLoad_input = {5: -1e3, 15: -1e3}
         if (beamIndex !== -1) {
             const beam = beamlist[beamIndex]
+            moi=beam.moi
+            youngModulus=beam.youngModulus
+            
             Object.values(beam.tools).forEach((toolType) => {
                 toolType.forEach(tool => {
                     if (tool.id.split("_")[0] === "pointLoad") {
@@ -64,7 +48,7 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
                     }
                 });
             });
-            if (beams[0].fixedSupportLeft===1) {
+            if (beam.fixedSupportLeft===1) {
                 support_input[0] = 0
             }
             if (beam.fixedSupportRight===1) {
@@ -79,6 +63,8 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
             "distributed_load_input": distributed_load_input,
             "support_input": support_input,
             "beam_length": beamLengthToSend,
+            "moi": moi,
+            "young_modulus": youngModulus,
         })
         try {
             const response = await axios({
@@ -89,6 +75,8 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
                     "distributed_load_input": distributed_load_input,
                     "support_input": support_input,
                     "beam_length": beamLengthToSend,
+                    "moi": moi,
+                    "young_modulus": youngModulus,
                 }
             });
 
