@@ -3,9 +3,9 @@ import introJs from 'intro.js';
 import 'intro.js/introjs.css';
 import { WelcomeModal } from './WelcomeModal';
 function OnBoarding({modalShow,setModalShow}) {
-
-  const intro = introJs();
-  intro.setOptions({ 
+ 
+    
+   const options={ 
     showProgress: true,
     steps:[
     {
@@ -64,7 +64,8 @@ function OnBoarding({modalShow,setModalShow}) {
     },
   
   ]}
-  )
+  const intro = introJs();
+  intro.setOptions(options)
 
   const startOnboarding = () => {
       const timer = setTimeout(() => {

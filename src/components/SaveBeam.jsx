@@ -1,7 +1,9 @@
 import React from 'react'
 import axios from '../dataFlow/axios';
-export const SaveBeam = ({beam,changeOrAddBeamProperty}) => {
+import CopyButton from './CopyButton';
+export const SaveBeam = ({beam,changeOrAddBeamProperty,setMessage}) => {
     
+
     function copyObjectWithoutCircular(obj) {
         let cache = new Set();
       
@@ -32,7 +34,7 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty}) => {
         });
       }
     const save = async (beam) => {
-     
+        
         let copyofbeam=beam
         copyofbeam=createCopy(copyofbeam)
         const distributedLoad = copyofbeam.tools?.distributedLoad || [];
@@ -59,10 +61,21 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty}) => {
 
             if (response.data.ERROR === "Beam couldnot be saved") {
                 console.log("Response from Backend:", response.data.ERROR);
+                setMessage(["danger","Beam couldnot be saved",true])
       
               } else {
                   console.log("Beam is saved: ", response.data);
-                  changeOrAddBeamProperty(beam.id,"referenceNo",response.data.ReferenceNO);
+                  changeOrAddBeamProperty(beam.id,"referenceNo",response.data.referenceNo);
+                setMessage(["success",
+                <>
+                <p>
+                "Beam is successfully saved"<br/>
+                Beam Reference no. is <strong>{response.data.referenceNo}</strong>
+                </p>
+                <CopyButton textToCopy={response.data.referenceNo}/>
+                </>
+                ,true])
+
             }
          
         } catch (error) {
@@ -74,6 +87,6 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty}) => {
     <button className='btn btn-outline-primary p-1'
     onClick={()=>save(beam)}>
 Save Beam
-            </button>
+      </button>
   )
 }

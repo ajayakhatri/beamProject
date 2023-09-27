@@ -4,6 +4,8 @@ import Form from 'react-bootstrap/Form';
 export const BeamInfo = ({beam,onChange,actualBeamLength}) => {
     const [section, setSection] = useState(beam.section?beam.section:"Rectangular");
     const [radiusValue, setRadiusValue] = useState(beam.radius?beam.radius:0.15);
+    const [lengthUnitValue, setLengthUnitValue] = useState(beam.unit?beam.unit:"m");
+    const [loadUnitValue, setLoadUnitValue] = useState(beam.loadUnit?beam.loadUnit:"kN");
     const [depthValue, setDepthValue] = useState(beam.depth?beam.depth:0.45);
     const [widthValue, setWidthValue] = useState(beam.width?beam.width:0.30);
     const [MOI, setMOI] = useState(beam.moi);
@@ -14,16 +16,26 @@ export const BeamInfo = ({beam,onChange,actualBeamLength}) => {
     <div style={{marginTop:"55px", position:"relative"}} id="tour-beamInfo">
     <div className='d-flex gap-2 align-items-center  mb-2'>
     <Form.Label htmlFor={`input-loadunit-of-${beam.id}`} style={{width:"105px"}}>Unit of Load :</Form.Label>
-<Form.Select  style={{ maxWidth: "120px"}} aria-label="Select Unit of Length of Beam"  id={`input-loadunit-of-${beam.id}`}  onChange={(e) => onChange(beam.id, "loadUnit", e.target.value)}>
-      <option>kN</option>
+<Form.Select  style={{ maxWidth: "120px"}} aria-label="Select Unit of Length of Beam"  id={`input-loadunit-of-${beam.id}`}  
+
+onChange={(e) => {onChange(beam.id, "loadUnit", e.target.value)
+setLoadUnitValue(e.target.value)
+}}>
+      <option style={{backgroundColor:"DimGray", color:"white"}}>{loadUnitValue}</option>
+      <option value="kN">kN</option>
       <option value="N">N</option>
       <option value="lb">lb</option>
     </Form.Select>
         </div>
         <div className='d-flex gap-2 align-items-center mb-2' >
-    <Form.Label htmlFor={`input-unit-of-lenght-of${beam.id}`} style={{width:"105px"}}>Unit of Length :</Form.Label>
-<Form.Select style={{ maxWidth: "120px"}} aria-label="Select Unit of Length of Beam"  id={`input-unit-of-lenght-of${beam.id}`}  onChange={(e) => onChange(beam.id, "unit", e.target.value)}>
-      <option>m</option>
+    <Form.Label htmlFor={`input-unit-of-length-of-${beam.id}`} style={{width:"105px"}}>Unit of Length :</Form.Label>
+<Form.Select style={{ maxWidth: "120px"}} aria-label="Select Unit of Length of Beam"  id={`input-unit-of-length-of-${beam.id}`}  
+onChange={(e) => {
+  onChange(beam.id, "unit", e.target.value)
+  setLengthUnitValue(e.target.value)
+  } }>
+      <option style={{backgroundColor:"DimGray", color:"white"}}>{lengthUnitValue}</option>
+      <option value="m">m</option>
       <option value="cm">cm</option>
       <option value="ft">ft</option>
       <option value="in">in</option>
@@ -76,7 +88,8 @@ onChange(beam.id, "moi",moiValue );
 
 setMOI(moiValue)
 }}>
-      <option>Rectangular</option>
+      <option style={{backgroundColor:"DimGray", color:"white"}}>{section}</option>
+      <option value="Rectangular">Rectangular</option>
       <option value="Solid Circle">Solid Circle</option>
       <option value="Other">Other</option>
     </Form.Select>

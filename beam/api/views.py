@@ -2,8 +2,6 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import BeamModelSerializer
 
 from .models import BeamModel
 from .beamApp import Beam
@@ -14,7 +12,6 @@ import numpy as np
 @api_view(["POST"])
 def my_view(request):
     if request.method == "POST":
-        # Retrieve the data from the request
         data = json.loads(request.body)
         pointLoad_ = data.get("point_load_input", None)
         distributedload_ = data.get("distributed_load_input", None)
@@ -41,9 +38,6 @@ def my_view(request):
         beam_1.plot()
 
         plots = beam_1.plots
-        # if pk=="save":
-        #     calculation = BeamModel(plots=plots)
-        #     calculation.save()
         return JsonResponse(plots)
      
     else:
@@ -53,120 +47,33 @@ def my_view(request):
 def saveBeam(request):
     data = json.loads(request.body)
     beam = data.get("beam", None)
-    beam["id"]=int(beam['id'])+1000
+    last_object = BeamModel.objects.last()
+    last_object_pk=0
+    if last_object:
+        last_object_pk = last_object.pk
+    beam["id"]=last_object_pk+10000
+    beam["referenceNo"]=last_object_pk+1
     beamtosave = BeamModel(beam=beam)
     beamtosave.save()
+    print("beam",beam)
     if beam==None:
         return JsonResponse({"ERROR": "Beam couldnot be saved"})
-    return JsonResponse({"ReferenceNO":beamtosave.pk+1000})
+    return JsonResponse({"referenceNo":last_object_pk+1,"added":beam})
 
 @api_view(["GET"])
 def getBeam(request, pk):
-    a=BeamModel.objects.get(id=(int(pk)-1000))
+    a=BeamModel.objects.get(id=int(pk))
     if not a:
         return JsonResponse({"ERROR": "Beam not found"})
-    # beams = BeamModel.objects.get(pk=pk)
-    # serializer = BeamModelSerializer(beams, many=False)
-    plots={"data":a.beam}
-    return JsonResponse(plots)
-    return Response(serializer.data)
-
-
-@api_view(["POST"])
-def getit(request):
-    try:
-        # Assuming data is sent as JSON
-        data = json.loads(request.body)
-        my_data = data.get("field1")
-        # Process the received data
-
-        # Return a JSON response with the processed data
-        response_data = {"result": "Data processed successfully", "my_data": my_data}
-        return render(request, "api/index.html", response_data)
-        # return JsonResponse(response_data)
-    except json.JSONDecodeError as e:
-        # Handle JSON decoding error
-        return JsonResponse({"error": "Invalid JSON data"}, status=400)
-
-
-@api_view(["GET"])
-def apiOverview(request):
-    api_urls = {
-        "List": "/task-list/",
-        "Detail View": "/task-detail/<str:pk>/",
-        "Create": "/task-create/",
-        "Update": "/task-update/<str:pk>/",
-        "Delete": "/task-delete/<str:pk>/",
-        "Load": "/app/",
-    }
-
-    return Response(api_urls)
+    else:
+        plots={"data":a.beam}
+        return JsonResponse(plots)
 
 
 @api_view(["GET"])
 def index(request):
     return render(request, "api/index.html")
 
-
-@api_view(["POST"])
-def taskAddBeam(request):
-    length = request.POST.get("length")
-    nodes = request.POST.get("nodes")
-    elasticity = request.POST.get("Elasticity")
-    inertia = request.POST.get("Inertia")
-
-    beam_instance = BeamModel.objects.create(
-        length=length, nodes=nodes, elasticity=elasticity, inertia=inertia
-    )
-    return Response({"message": f"Beam {beam_instance.pk} created successfully."})
-
-
-pointLoad_input = []
-distributedload_input = []
-support_input = []
-
-
-@api_view(["GET"])
-def add(request, toAdd):
-    response = {"message": "ERROR"}
-    if toAdd == "point_load":
-        # point_load_input = request.data.get("point_load", [])
-        point_load_input = json.loads(request.body)
-        calculation = BeamModel(point_load_input=point_load_input)
-        calculation.save()
-        response["message"] = "Point Load Added"
-
-    elif toAdd == "distributed_load":
-        distributedload_input = json.loads(request.body)
-        calculation = BeamModel(distributedload_input=distributedload_input)
-        calculation.save()
-        response["message"] = "Distributed Load Added"
-
-    elif toAdd == "support":
-        support_input = json.loads(request.body)
-        calculation = BeamModel(support_input=support_input)
-        calculation.save()
-        response["message"] = "Supports Added"
-
-        # value = {
-        #     "point_load_input": pointLoad_input,
-        #     "distributed_load_input": distributedload_input,
-        #     "support_input": support_input,
-        # }
-    return Response(response)
-
-
-
-
-
-
-
-
-@api_view(["GET"])
-def removeBeam(request):
-    beams = BeamModel.objects.all()
-    serializer = BeamModelSerializer(beams, many=True)
-    return Response(serializer.data)
 
 
 def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):

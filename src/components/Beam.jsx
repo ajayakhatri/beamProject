@@ -15,6 +15,7 @@ import { BeamInfo } from './BeamInfo';
 import  OnBoarding  from './OnBoarding';
 import { LoadBeam } from './LoadBeam';
 import { SaveBeam } from './SaveBeam';
+import MessageBox from './Message';
 
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength,showInfoBorder }) {
@@ -155,6 +156,7 @@ function Beam() {
       loadUnit: "kN",
       moi:0.002278,
       fixedSupportLeft: true,
+      fixedSupportRight: false,
       youngModulus:210,
       section:"Rectangular",
       radius:0.15,
@@ -177,7 +179,7 @@ function Beam() {
     }
   ]);
   
-  function addBeam() {
+  const addBeam=()=> {
     const newBeam = {
       id: beams.length + 1,
       length: 10,
@@ -563,8 +565,7 @@ function Beam() {
               <ImgDistributedLoad hasid={true} newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} color={tool.color} />
               : 
               getImg(tool.id.split("_")[0])
-              // tool.img
-              }
+            }
           </div>
         </DropableNew >
       )
@@ -572,14 +573,15 @@ function Beam() {
     return alldivs;
   }
 
-  const [modalShow, setModalShow] = useState(true);
-  
+  const [modalShow, setModalShow] = useState(localStorage.getItem('modalShow') === 'false' ? false : true);
+
   const [plot, setPlot] = useState({})
 
   const [isFigAvailable, setIsFigAvailable] = useState({});
   const [showFigNotAvailable, setShowFigNotAvailable] = useState({});
   const [showFig, setShowFig] = useState({});
   const [showAlert, setShowAlert] = useState({});
+  const [message, setMessage] = useState(["warning","message",false]);
 
   const setState = (state,id,value) => {
     state((prevState) => ({
@@ -589,6 +591,7 @@ function Beam() {
   };
   return (
     <div>
+      <MessageBox message={message} setMessage={setMessage}/>
       <div className='d-flex justify-content-between' >
         <div className='d-flex gap-2 align-items-center'>
         <h1 style={{fontSize:"30px"}}>Beams</h1>
@@ -609,7 +612,7 @@ function Beam() {
       </div>
       {beams.map((beam) => (
         <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative d-flex flex-column align-items-center' style={{ borderRadius: "8px", padding: "0px 20px", boxShadow:"#422800 4px 4px 0 0" }}>
-          <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
+          <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.referenceNo?"Ref no."+beam.referenceNo:""}</div>
         
             <ToolBar 
             beam={beam}
@@ -675,7 +678,16 @@ function Beam() {
                 (setState(setShowFigNotAvailable,beam.id,true),setState(setShowAlert,beam.id,true)))}
               }
         >
-          <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}>
+          <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}
+          show={
+            isFigAvailable[beam.id]&& (
+              beam.tools?.rollerSupport?.length>=2 ||
+              beam.tools?.hingedSupport?.length>=2||
+              (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
+              beam.fixedSupportLeft||
+              beam.fixedSupportRight
+            )
+          }>
         {isFigAvailable[beam.id]&& (
               beam.tools?.rollerSupport?.length>=2 ||
               beam.tools?.hingedSupport?.length>=2||
@@ -685,10 +697,15 @@ function Beam() {
             )? "Hide Diagrams": "Show Diagrams"}
             </SendData>
         </ToggleButton>
-            <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
-            <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
-           <SaveBeam beam={beam} changeOrAddBeamProperty={changeOrAddBeamProperty}/>
-            <button className='btn btn-danger p-1' onClick={() => {deleteBeam(beam.id)}}>🗑️ Delete Beam</button>
+
+          {/* For Debugging purpose */}
+            {/* <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
+            <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button> */}
+
+           <SaveBeam setMessage={setMessage} beam={beam} changeOrAddBeamProperty={changeOrAddBeamProperty}/>
+            <button className='btn btn-danger p-1' onClick={() => {deleteBeam(beam.id)
+            setMessage(["info","Beam is successfully deleted",true])
+            }}>🗑️ Delete Beam</button>
           </div>
             {
               
@@ -699,8 +716,13 @@ function Beam() {
         </div>
       ))}
    <div className='d-flex justify-content-center gap-4 mb-2'>
-      <button className="btn btn-primary" style={{minWidth:"120px"}} onClick={addBeam}>Add New Beam</button>
-      <LoadBeam setBeams={setBeams} beams={beams} addBeam={addBeam} changeOrAddBeamProperty={changeOrAddBeamProperty} addTool={addTool}/>
+      <button className="btn btn-primary" style={{minWidth:"120px"}} onClick={()=>{addBeam()
+                setMessage(["primary","New Beam is added",true])
+      
+    }
+      
+      }>Add New Beam</button>
+      <LoadBeam setBeams={setBeams} beams={beams} setMessage={setMessage}/>
    </div>
       
     </div>

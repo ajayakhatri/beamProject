@@ -2,7 +2,7 @@ import axios from "./axios.jsx";
 import  { useState, useEffect, useRef } from "react";
 
 
-export const SendData = ({ beams, beamID, setPlot, beamLength,plot,children}) => {
+export const SendData = ({ show,beams, beamID, setPlot, beamLength,plot,children}) => {
 
     const [localBeams, setlocalBeams] = useState(beams)
     const beamsRef = useRef(localBeams);
@@ -12,7 +12,7 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot,children}) =>
         if (beams !== beamsRef.current) {
             console.log("<_______________>")
             console.log(beams)
-            sendDataToBackend()
+            show&&sendDataToBackend()
             setlocalBeams(beams)
             // Update the ref with the new value of beams
             beamsRef.current = localBeams;
