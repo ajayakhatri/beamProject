@@ -36,7 +36,6 @@ export const BeamBar = (props) => {
                     e.stopPropagation();
                     e.stopImmediatePropagation()
                     e.target.classList.add('drop-enter')
-                    e.target.classList.remove('drop-no-enter')
                 },
                 ondragleave: function (e) {
                     e.stopPropagation();
@@ -44,7 +43,6 @@ export const BeamBar = (props) => {
                     console.log("leave", e)
                     console.log("leave", localBeamscale)
                     e.target.classList.remove('drop-enter')
-                    e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
                 },
                 ondrop: function (e) {
@@ -60,7 +58,6 @@ export const BeamBar = (props) => {
                     e.stopPropagation()
                     e.stopImmediatePropagation()
                     e.target.classList.remove('drop-enter')
-                    e.target.classList.add('drop-no-enter')
                     e.relatedTarget.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)'
                     console.log(localBeamscale)
             
@@ -71,16 +68,15 @@ export const BeamBar = (props) => {
                     e.stopPropagation();
                     e.stopImmediatePropagation()
                     e.target.classList.remove('drop-enter')
-                    e.target.classList.add('drop-no-enter')
                 }
             });
     }, [scale, localBeamscale]);
 
     return (
-            <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex drop-no-enter' style={{
+            <div ref={beamRef} id={`Beam_${beamID}`} className='d-flex ' style={{
                 position: "relative", width: actualBeamLength + "px", height: "70px",    
             }}>
-                <div style={{position: "relative",width: actualBeamLength + "px", height: "20px",backgroundColor:"white", border:"solid 2px"
+                <div id="tour-beam" style={{position: "relative",width: actualBeamLength + "px", height: "20px",backgroundColor:"white", border:"solid 2px"
                 }}>
                     {checkedLeft&& <div style={{ position: "absolute", top: "-35px", left: "-14px", width: "100%"}}>
                         <ImgFixedSupportOnBeam />

@@ -290,7 +290,7 @@ export function DropableNew(props) {
 
                                 <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
                         {!isDLSpanInputVisible? (
-                             <div onClick={()=>setDLSpanInputVisible(true)}  className='inputPointer' style={{border:!props.showInfoBorder&&"none"}}>
+                             <div onClick={()=>setDLSpanInputVisible(true)}  className='inputPointer tour-inputSpan' style={{border:!props.showInfoBorder&&"none"}}>
                              {dlSpanValue+unit}
                                    </div>
                                 ): (
@@ -341,7 +341,7 @@ export function DropableNew(props) {
                     </>
                 )}
 
-            <div style={{ position: "absolute", top:"45px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
+            <div style={{ position: "absolute", top:toolType === "distributedLoad"?"50px":"45px", marginLeft: "-6px", display: "flex", justifyContent: "center", flexDirection: "column", gap: "2px" }}>
                 {/* Position Input */}
                 {status.lengthSet && showleninput && (
                     <div className="btn" style={{ border: "1px solid", borderRadius: "0.375rem", display: "flex", alignItems: "center", backgroundColor: "white", padding: "0px", margin: "0px", paddingRight: "0.5px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
@@ -349,6 +349,7 @@ export function DropableNew(props) {
                             type="number"
                             inputMode="numeric"
                             min={0}
+                            autoFocus={true}
                             className="lengthSet mt-1"
                             aria-label={`Change position of ${id}`}
                             value={inputValue}

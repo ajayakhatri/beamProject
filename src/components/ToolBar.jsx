@@ -46,7 +46,8 @@ function getDroppables(beamID) {
     ]
 }
 
-function ToolBar({ beamID,
+function ToolBar({ beam,
+    beamID,
     changeOrAddBeamProperty,
     deleteBeamProperty,
     checkedLeft,
@@ -73,8 +74,12 @@ function ToolBar({ beamID,
 
     return (
         <div className='d-flex align-items-center justify-content-center gap-1' style={{width:actualBeamLength}}>
+            <div style={{maxWidth:actualBeamLength<370?"220px":null}}  className='d-flex align-items-center justify-content-center gap-1' id="tour-draggable">
             {DroppablesDivs}
-                <FixedEnds beamID={beamID} 
+            </div>
+            <div  className='d-flex align-items-center justify-content-center gap-1' id="tour-fixedEnds">
+                <FixedEnds 
+                beam={beam}
                 changeOrAddBeamProperty={changeOrAddBeamProperty}
                 deleteBeamProperty={deleteBeamProperty}
                 checkedLeft={checkedLeft}
@@ -86,6 +91,7 @@ function ToolBar({ beamID,
                 removeSupportPositions={removeSupportPositions}
                 actualBeamLength={actualBeamLength}/>
             </div>
+                </div>
        
     );
 

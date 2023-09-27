@@ -5,7 +5,7 @@ function Switch({ label, status, setstatus }) {
     const [isChecked, setIsChecked] = useState(status);
     return (
         <>
-            <Form>
+            <Form style={{width:"118px",display:"flex"}} >
                 <Form.Check
                 title={"switch-for-"+label}
                     type="switch"

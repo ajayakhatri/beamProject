@@ -4,7 +4,7 @@ import 'chart.js/auto';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
-export const MyCharts = ({ plot,actualBeamLength,unit,loadUnit}) => {
+export const MyCharts = ({plot,actualBeamLength,unit,loadUnit}) => {
     const [deformation, setDeformation] = useState(true)
     const [sfd, setSFD] = useState(false)
     const [bmd, setBMD] = useState(false)
@@ -91,8 +91,8 @@ export const MyCharts = ({ plot,actualBeamLength,unit,loadUnit}) => {
 export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,unit,loadUnit}) => {
 
 
-    console.log("x",x0)
-    console.log("y",y)
+    // console.log("x",x0)
+    // console.log("y",y)
 
     const multiplyByNegativeOne = (arr) => {
       return arr.map((num) => num * -1);

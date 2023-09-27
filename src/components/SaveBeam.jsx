@@ -1,0 +1,79 @@
+import React from 'react'
+import axios from '../dataFlow/axios';
+export const SaveBeam = ({beam,changeOrAddBeamProperty}) => {
+    
+    function copyObjectWithoutCircular(obj) {
+        let cache = new Set();
+      
+        const copy = JSON.parse(JSON.stringify(obj, (key, value) => {
+          if (typeof value === 'object' && value !== null) {
+            if (cache.has(value)) {
+              return; // Skip circular references
+            }
+            cache.add(value);
+          }
+          return value;
+        }));
+      
+        cache.clear();
+        return copy;
+      }
+      
+      
+    function createCopy(obj) {
+        let copy = JSON.parse(JSON.stringify(copyObjectWithoutCircular(obj)));
+        return copy
+
+      }
+
+      function deleteIMG(array){
+        array.forEach(e => {
+            delete e.img
+        });
+      }
+    const save = async (beam) => {
+     
+        let copyofbeam=beam
+        copyofbeam=createCopy(copyofbeam)
+        const distributedLoad = copyofbeam.tools?.distributedLoad || [];
+        const beamPointLoad = copyofbeam.tools?.pointLoad || [];
+        const beamRollerSupport = copyofbeam.tools?.rollerSupport || [];
+        const beamHingedSupport = copyofbeam.tools?.hingedSupport || [];
+        deleteIMG(distributedLoad)
+        deleteIMG(beamPointLoad)
+        deleteIMG(beamRollerSupport)
+        deleteIMG(beamHingedSupport)
+      
+
+        console.log(" saving beam:", {
+            "beam":copyofbeam,
+        })
+        try {
+            const response = await axios({
+                method: 'post',
+                url: 'save-beam/',
+                data: {
+                    "beam": copyofbeam,
+                }
+            });
+
+            if (response.data.ERROR === "Beam couldnot be saved") {
+                console.log("Response from Backend:", response.data.ERROR);
+      
+              } else {
+                  console.log("Beam is saved: ", response.data);
+                  changeOrAddBeamProperty(beam.id,"referenceNo",response.data.ReferenceNO);
+            }
+         
+        } catch (error) {
+            console.log("Error: ", error.message);
+        }
+    };
+
+  return (
+    <button className='btn btn-outline-primary p-1'
+    onClick={()=>save(beam)}>
+Save Beam
+            </button>
+  )
+}

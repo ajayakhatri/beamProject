@@ -11,11 +11,10 @@ import json
 import numpy as np
 
 
-@api_view(["POST", "GET"])
+@api_view(["POST"])
 def my_view(request):
     if request.method == "POST":
         # Retrieve the data from the request
-
         data = json.loads(request.body)
         pointLoad_ = data.get("point_load_input", None)
         distributedload_ = data.get("distributed_load_input", None)
@@ -42,14 +41,35 @@ def my_view(request):
         beam_1.plot()
 
         plots = beam_1.plots
-
-        calculation = BeamModel(plots=plots)
-        calculation.save()
-        # print(plots)
+        # if pk=="save":
+        #     calculation = BeamModel(plots=plots)
+        #     calculation.save()
         return JsonResponse(plots)
      
     else:
         return render(request, "api/index.html")
+
+@api_view(["POST"])
+def saveBeam(request):
+    data = json.loads(request.body)
+    beam = data.get("beam", None)
+    beam["id"]=int(beam['id'])+1000
+    beamtosave = BeamModel(beam=beam)
+    beamtosave.save()
+    if beam==None:
+        return JsonResponse({"ERROR": "Beam couldnot be saved"})
+    return JsonResponse({"ReferenceNO":beamtosave.pk+1000})
+
+@api_view(["GET"])
+def getBeam(request, pk):
+    a=BeamModel.objects.get(id=(int(pk)-1000))
+    if not a:
+        return JsonResponse({"ERROR": "Beam not found"})
+    # beams = BeamModel.objects.get(pk=pk)
+    # serializer = BeamModelSerializer(beams, many=False)
+    plots={"data":a.beam}
+    return JsonResponse(plots)
+    return Response(serializer.data)
 
 
 @api_view(["POST"])
@@ -136,18 +156,10 @@ def add(request, toAdd):
     return Response(response)
 
 
-@api_view(["GET"])
-def getBeam(request, pk):
-    beams = BeamModel.objects.get(pk=pk)
-    serializer = BeamModelSerializer(beams, many=False)
-    return Response(serializer.data)
 
 
-@api_view(["GET"])
-def getBeams(request):
-    beams = BeamModel.objects.all()
-    serializer = BeamModelSerializer(beams, many=True)
-    return Response(serializer.data)
+
+
 
 
 @api_view(["GET"])

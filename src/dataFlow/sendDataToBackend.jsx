@@ -2,7 +2,8 @@ import axios from "./axios.jsx";
 import  { useState, useEffect, useRef } from "react";
 
 
-export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
+export const SendData = ({ beams, beamID, setPlot, beamLength,plot,children}) => {
+
     const [localBeams, setlocalBeams] = useState(beams)
     const beamsRef = useRef(localBeams);
 
@@ -48,10 +49,10 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
                     }
                 });
             });
-            if (beam.fixedSupportLeft===1) {
+            if (beam.fixedSupportLeft===true) {
                 support_input[0] = 0
             }
-            if (beam.fixedSupportRight===1) {
+            if (beam.fixedSupportRight===true) {
                 support_input[beam.length] = 0
             }
         }
@@ -69,7 +70,7 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
         try {
             const response = await axios({
                 method: 'post',
-                url: 'url/',
+                url: 'plot/',
                 data: {
                     "point_load_input": point_load_input,
                     "distributed_load_input": distributed_load_input,
@@ -92,6 +93,9 @@ export const SendData = ({ beams, beamID, setPlot, beamLength,plot }) => {
         }
     };
 
+    return(
+        <span onClick={()=>sendDataToBackend()}>{children}</span>
+    )
 
 };
 

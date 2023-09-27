@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import Beam from './components/Beam';
 import './components/consoleOverride.js.js';
-
+import introJs from 'intro.js';
 function App() {
   return (
     <div>

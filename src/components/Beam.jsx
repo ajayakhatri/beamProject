@@ -12,6 +12,9 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import Alert from 'react-bootstrap/Alert';
 
 import { BeamInfo } from './BeamInfo';
+import  OnBoarding  from './OnBoarding';
+import { LoadBeam } from './LoadBeam';
+import { SaveBeam } from './SaveBeam';
 
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength,showInfoBorder }) {
@@ -34,7 +37,7 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength,showInf
       <div className="border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
 
       {!isinputVisible? (
-      <div onClick={()=>setisInputVisible(true)} className='inputPointer' style={{fontSize:"15px",border:!showInfoBorder&&"none"}}>
+      <div onClick={()=>setisInputVisible(true)} id="tour-beamLength" className='inputPointer' style={{fontSize:"15px",border:!showInfoBorder&&"none"}}>
                              {inputValue+beam.unit}
                                    </div>
                                 ): (
@@ -151,9 +154,25 @@ function Beam() {
       unit: "m",
       loadUnit: "kN",
       moi:0.002278,
+      fixedSupportLeft: true,
       youngModulus:210,
+      section:"Rectangular",
+      radius:0.15,
+      depth:0.45,
+      width:0.3,
       tools: {
-
+      distributedLoad:[
+  {
+    id: 'distributedLoad_1_1', 
+    actualPosition: -25, 
+    positionOnBeam: 0, 
+    isUp: true,     
+    loadEnd: 5,
+    loadStart: 5,
+    span:2,
+    img:<ImgDistributedLoad hasid={true} newSpanValue={2} scale={10 / actualBeamLength} spacing={20} loadEnd={5} loadStart={5} />
+  }
+]
       },
     }
   ]);
@@ -167,6 +186,10 @@ function Beam() {
       loadUnit: "kN",
       moi:0.002278,
       youngModulus:210,
+      section:"Rectangular",
+      radius:0.15,
+      depth:0.45,
+      width:0.3,
       tools: {
       },
     };
@@ -537,9 +560,11 @@ function Beam() {
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
             {tool.id.split("_")[0] === "distributedLoad" ?
-              // (tool.span + tool.positionOnBeam) === beam.length ? (beam.length - tool.positionOnBeam) : tool.span
-              <ImgDistributedLoad newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} color={tool.color} />
-              : tool.img}
+              <ImgDistributedLoad hasid={true} newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} color={tool.color} />
+              : 
+              getImg(tool.id.split("_")[0])
+              // tool.img
+              }
           </div>
         </DropableNew >
       )
@@ -547,19 +572,35 @@ function Beam() {
     return alldivs;
   }
 
+  const [modalShow, setModalShow] = useState(true);
+  
   const [plot, setPlot] = useState({})
-  const [checkedLeft, setCheckedLeft] = useState(false);
-  const [checkedRight, setCheckedRight] = useState(false);
-  const [isFigAvailable, setIsFigAvailable] = useState(false);
-  const [showFigNotAvailable, setshowFigNotAvailable] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
 
+  const [isFigAvailable, setIsFigAvailable] = useState({});
+  const [showFigNotAvailable, setShowFigNotAvailable] = useState({});
+  const [showFig, setShowFig] = useState({});
+  const [showAlert, setShowAlert] = useState({});
+
+  const setState = (state,id,value) => {
+    state((prevState) => ({
+      ...prevState,
+      [id]:value ,
+    }));
+  };
   return (
     <div>
       <div className='d-flex justify-content-between' >
-        <h2 style={{fontSize:"50px"}}>Beams</h2>
+        <div className='d-flex gap-2 align-items-center'>
+        <h1 style={{fontSize:"30px"}}>Beams</h1>
+          {beams.length > 0 &&
+        <div className={(actualBeamLength<660?'flex-column mb-2 ':"")+"d-flex "+ "gap-2"}>
+        <OnBoarding modalShow={modalShow} setModalShow={setModalShow}/>
+        <button className='btn btn-outline-primary' style={{fontWeight:"bold",height:"30px",width:"100px", borderRadius:"10px",boxShadow:"#422800 4px 4px 0 0"}} onClick={()=>setModalShow(true)}>About</button>
+        </div>
+      }
+        </div>
         {beams.length > 0 && (
-          <div style={{ fontSize: "12px", minWidth: "200px" }}>
+          <div id="tour-toggle" className={actualBeamLength>660?"d-flex gap-2 align-items-center ms-4":'ms-4'} style={{fontSize: "14px", minWidth: "120px" }}>
             <Switch label={"Loads"} status={loadSet} setstatus={setloadSet} />
             <Switch label={"Length"} status={lengthSet} setstatus={setlengthSet} />
             <Switch label={"Border"} status={showInfoBorder} setstatus={setShowInfoBorder} />
@@ -567,26 +608,24 @@ function Beam() {
         )}
       </div>
       {beams.map((beam) => (
-        <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative d-flex flex-column align-items-center' style={{ borderRadius: "8px", padding: "0px 20px" }}>
+        <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative d-flex flex-column align-items-center' style={{ borderRadius: "8px", padding: "0px 20px", boxShadow:"#422800 4px 4px 0 0" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.id}</div>
         
-            <ToolBar beamID={beam.id}
+            <ToolBar 
+            beam={beam}
+            beamID={beam.id}
               changeOrAddBeamProperty={changeOrAddBeamProperty}
               deleteBeamProperty={deleteBeamProperty}
-              checkedLeft={checkedLeft}
-              setCheckedLeft={setCheckedLeft}
-              checkedRight={checkedRight}
-              setCheckedRight={setCheckedRight}
               addSupportPositions={addSupportPositions}
               removeSupportPositions={removeSupportPositions}
               beamLength={beam.length}
               actualBeamLength={actualBeamLength}
             />
          
-          <div style={{ marginTop: "150px", display: "flex",flexDirection:"column", justifyContent: "center", }}>
+          <div style={{ marginTop: "110px", display: "flex",flexDirection:"column", justifyContent: "center", }}>
             <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength} 
-            checkedLeft={checkedLeft}
-            checkedRight={checkedRight}
+            checkedLeft={beam.fixedSupportLeft}
+            checkedRight={beam.fixedSupportRight}
             >
               <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength} />
             </BeamBar>
@@ -599,64 +638,73 @@ function Beam() {
           <BeamInfo beam={beam} onChange={changeOrAddBeamProperty} actualBeamLength={actualBeamLength}/>   
           </div>
 
-          <div className='d-flex gap-2 mt-5 position-relative'>
-          {showFigNotAvailable&&
+          <div className='d-flex gap-2 mt-5 position-relative' id="tour-diagramAndDelete">
+          {showFigNotAvailable[beam.id]&&
                 !(
                   beam.tools?.rollerSupport?.length>=2 ||
                   beam.tools?.hingedSupport?.length>=2||
                   (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
-                  beam.fixedSupportLeft?true:false||
-                  beam.fixedSupportRight?true:false
-                )&&showAlert&&
+                  beam.fixedSupportLeft||
+                  beam.fixedSupportRight
+                )&&showAlert[beam.id]&&
           <div style={{maxHeight:"10px",position:"absolute",top:"-50px"}}>
-                <Alert style={{fontSize:"12px"}} variant="danger" onClose={() => setShowAlert(false)} dismissible>
+                <Alert style={{fontSize:"12px"}} variant="danger" onClose={() => setState(setShowAlert,beam.id,false)} dismissible>
                 Invalid Support Condition!!
                 </Alert>
             </div>}
           <ToggleButton
-          id="toggle-check"
-          type="checkbox"
-          variant="outline-primary"
-          checked={isFigAvailable&&(
-            beam.tools?.rollerSupport?.length>=2 ||
-            beam.tools?.hingedSupport?.length>=2||
-            (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
-            beam.fixedSupportLeft?true:false||
-            beam.fixedSupportRight?true:false
-          )}
-          value="1"
-          onChange={(e) => 
-            (
-              beam.tools?.rollerSupport?.length>=2 ||
-              beam.tools?.hingedSupport?.length>=2||
-              (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
-              beam.fixedSupportLeft?true:false||
-              beam.fixedSupportRight?true:false
-            )? (setIsFigAvailable( e.currentTarget.checked),setshowFigNotAvailable(false)):(setIsFigAvailable(false),
-            (setshowFigNotAvailable(true),setShowAlert(true)))
-          }
+              id={`toggle-check-${beam.id}`}
+              type="checkbox"
+              variant="outline-primary"
+              checked={isFigAvailable[beam.id]&&(
+                beam.tools?.rollerSupport?.length>=2 ||
+                beam.tools?.hingedSupport?.length>=2||
+                (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
+                beam.fixedSupportLeft||
+                beam.fixedSupportRight
+              )}
+              value="1"
+              onChange={(e) => {
+                (
+                  beam.tools?.rollerSupport?.length>=2 ||
+                  beam.tools?.hingedSupport?.length>=2||
+                  (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
+                  beam.fixedSupportLeft||
+                  beam.fixedSupportRight
+                )? (setState(setIsFigAvailable,beam.id, e.currentTarget.checked),setState(setShowFigNotAvailable,beam.id,false),setState(setShowFig,beam.id,true)):(setState(setIsFigAvailable,beam.id,false),
+                (setState(setShowFigNotAvailable,beam.id,true),setState(setShowAlert,beam.id,true)))}
+              }
         >
-        {isFigAvailable&& (
+          <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}>
+        {isFigAvailable[beam.id]&& (
               beam.tools?.rollerSupport?.length>=2 ||
               beam.tools?.hingedSupport?.length>=2||
               (beam.tools?.rollerSupport?.length+beam.tools?.hingedSupport?.length>=2)||
-              beam.fixedSupportLeft?true:false||
-              beam.fixedSupportRight?true:false
-            )? "Hide Diagrams":"Show Diagrams"}
+              beam.fixedSupportLeft||
+              beam.fixedSupportRight
+            )? "Hide Diagrams": "Show Diagrams"}
+            </SendData>
         </ToggleButton>
             <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>
-            <button className='btn btn-danger p-1' onClick={() => deleteBeam(beam.id)}>🗑️ Delete Beam</button>
-            <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)} />
+           <SaveBeam beam={beam} changeOrAddBeamProperty={changeOrAddBeamProperty}/>
+            <button className='btn btn-danger p-1' onClick={() => {deleteBeam(beam.id)}}>🗑️ Delete Beam</button>
           </div>
             {
-        plot[beam.id] && isFigAvailable&&
+              
+        plot[beam.id] && isFigAvailable[beam.id]&& showFig[beam.id]&&
       <MyCharts plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit}/>
       }
+          
         </div>
       ))}
-      <button className="btn btn-primary mb-2" onClick={addBeam}>Add Beam</button>
+   <div className='d-flex justify-content-center gap-4 mb-2'>
+      <button className="btn btn-primary" style={{minWidth:"120px"}} onClick={addBeam}>Add New Beam</button>
+      <LoadBeam setBeams={setBeams} beams={beams} addBeam={addBeam} changeOrAddBeamProperty={changeOrAddBeamProperty} addTool={addTool}/>
+   </div>
+      
     </div>
+
   )
 
 }

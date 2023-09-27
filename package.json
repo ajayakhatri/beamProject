@@ -17,6 +17,8 @@
     "concurrently": "^8.2.1",
     "immer": "^10.0.2",
     "interactjs": "^1.10.18",
+    "intro.js": "^7.2.0",
+    "intro.js-react": "^1.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.8.0",
     "react-chartjs-2": "^5.2.0",
