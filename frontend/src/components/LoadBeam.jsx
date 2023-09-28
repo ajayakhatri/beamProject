@@ -11,7 +11,7 @@ export const LoadBeam = ({setBeams,beams,setMessage}) => {
   const getBeam = async (referenceNo,beams) => {
     console.log("Sending Request for Beam ID: ", referenceNo)
       try {
-        const res = await axios.get(`get-beam/${referenceNo}/`);
+        const res = await axios.get(`/api/get-beam/${referenceNo}/`);
         const jsonData = res.data
         console.log(jsonData)
          if (jsonData.ERROR === "Beam not found") {

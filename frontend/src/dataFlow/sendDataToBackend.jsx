@@ -71,7 +71,7 @@ export const SendData = ({ show,beams, beamID, setPlot, beamLength,plot,children
         try {
             const response = await axios({
                 method: 'post',
-                url: 'plot/',
+                url: '/api/plot/',
                 data: {
                     "point_load_input": point_load_input,
                     "distributed_load_input": distributed_load_input,

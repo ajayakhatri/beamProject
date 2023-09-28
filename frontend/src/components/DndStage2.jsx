@@ -351,7 +351,6 @@ export function DropableNew(props) {
                             type="number"
                             inputMode="numeric"
                             min={0}
-                            autoFocus={true}
                             className="lengthSet mt-1"
                             aria-label={`Change position of ${id}`}
                             value={inputValue}

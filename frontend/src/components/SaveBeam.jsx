@@ -55,7 +55,7 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty,setMessage}) => {
         try {
             const response = await axios({
                 method: 'post',
-                url: 'save-beam/',
+                url: '/api/save-beam/',
                 data: {
                     "beam": copyofbeam,
                 }

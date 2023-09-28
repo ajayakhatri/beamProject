@@ -17,6 +17,7 @@ import OnBoarding from './OnBoarding';
 import { LoadBeam } from './LoadBeam';
 import { SaveBeam } from './SaveBeam';
 import MessageBox from './Message';
+import PDFGenerator from './Print';
 
 
 function InputBeamLength({ beam, onChange, updateScale, actualBeamLength, showInfoBorder }) {
@@ -708,7 +709,12 @@ function Beam() {
           {
 
             plot[beam.id] && isFigAvailable[beam.id] && showFig[beam.id] &&
-            <MyCharts plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit} />
+<>
+              <MyCharts beamID={beam.id} plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit} />
+              <PDFGenerator beamID={beam.id}/>
+</>
+            
+              
           }
 
         </div>
@@ -723,7 +729,6 @@ function Beam() {
         }>Add New Beam</button>
         <LoadBeam setBeams={setBeams} beams={beams} setMessage={setMessage} />
       </div>
-
     </div>
 
   )

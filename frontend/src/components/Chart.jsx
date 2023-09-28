@@ -6,7 +6,7 @@ import 'chart.js/auto';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
-export const MyCharts = ({plot,actualBeamLength,unit,loadUnit}) => {
+export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
     const [deformation, setDeformation] = useState(true)
     const [sfd, setSFD] = useState(false)
     const [bmd, setBMD] = useState(false)
@@ -65,7 +65,7 @@ export const MyCharts = ({plot,actualBeamLength,unit,loadUnit}) => {
           };
     
     return (
-        <div className='card my-4' id="curves">
+        <div className='card my-4' id={`curves-${beamID}`}>
     <Navbar className="bg-body-tertiary"  >
       <Nav variant="underline" activeKey={activeTab} onSelect={handleNavSelect} className='ms-4 my-1'style={{width:actualBeamLength<300?"300px":null, fontSize:"12px"}}>
         <Nav.Item>
