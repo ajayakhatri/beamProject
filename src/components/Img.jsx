@@ -22,9 +22,7 @@ export const ImgDistributedLoad = ({ hasid=false,newSpanValue = 50, scale = 1, s
     return (
         <svg className={hasid===true?"tour-svg":null} transform="translate(-8,-45)" height={height + "px"} width={width} style={{ position: "absolute" }}>;
             <polygon  points={`8,${(height - (fx(0) * height / h))}  ${w + 8},${(height - (fx(w) * height / h))} ${w + 8},400 8,500`} fill={newcolor} />
-            {/* <rect x="8" y="0" width={width - 16} height="100%" fill="rgba(242, 135, 42, 0.405)" />; */}
             <line x1="8" y1={a.y > b.y ? 0 : (100 - ((a.y / b.y)) * 100) + "%"} x2={width - 8} y2={a.y < b.y ? 0 : (100 - ((b.y / a.y)) * 100) + "%"} stroke="black" strokeWidth="1" />
-            {/* <Arrow x={8} /> */}
             <g transform="translate(8)">
                 {arrows}
             </g>

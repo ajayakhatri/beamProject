@@ -7,7 +7,6 @@ export const SendData = ({ show,beams, beamID, setPlot, beamLength,plot,children
     const [localBeams, setlocalBeams] = useState(beams)
     const beamsRef = useRef(localBeams);
 
-    // Call the arrangeData function before sending the data to the backend
     useEffect(() => {
         if (beams !== beamsRef.current) {
             console.log("<_______________>")

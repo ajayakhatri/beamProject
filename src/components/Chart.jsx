@@ -91,9 +91,6 @@ export const MyCharts = ({plot,actualBeamLength,unit,loadUnit}) => {
 export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,unit,loadUnit}) => {
 
 
-    // console.log("x",x0)
-    // console.log("y",y)
-
     const multiplyByNegativeOne = (arr) => {
       return arr.map((num) => num * -1);
     };

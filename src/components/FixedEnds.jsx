@@ -4,11 +4,6 @@ import { useState } from 'react';
 
 function FixedEnds({beam,
 changeOrAddBeamProperty,
-deleteBeamProperty,
-    // checkedLeft,
-    // setCheckedLeft,
-    // checkedRight,
-    // setCheckedRight,
     addSupportPositions,
     beamLength,
     removeSupportPositions}) {
@@ -31,7 +26,6 @@ const [checkedRight, setCheckedRight] = useState(beam.fixedSupportRight)
                 addSupportPositions(beam.id,0,"fixedSupportLeft")
               }else{
                 changeOrAddBeamProperty(beam.id, "fixedSupportLeft", false)
-                // deleteBeamProperty(beam.id, "fixedSupportLeft")
                 removeSupportPositions(0)
               }
             }}
@@ -51,7 +45,6 @@ const [checkedRight, setCheckedRight] = useState(beam.fixedSupportRight)
             addSupportPositions(beam.id,beamLength,"fixedSupportRight")
           }else{
             changeOrAddBeamProperty(beam.id, "fixedSupportRight", false)
-            // deleteBeamProperty(beam.id, "fixedSupportRight")
             removeSupportPositions(beamLength)
           }
           

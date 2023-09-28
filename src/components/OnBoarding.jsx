@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import introJs from 'intro.js';
 import 'intro.js/introjs.css';
 import { WelcomeModal } from './WelcomeModal';
