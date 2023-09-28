@@ -92,7 +92,6 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
     for key in support_:
         s[float(key)] = support_[key]
     support_ = s
-    # print(support_)
 
     a = []
     for dl in distributedload_:
@@ -203,7 +202,6 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
 
     combined_list = list_pf + list_df + list_sf
 
-    list_f = sorted(combined_list, key=lambda x: x[0])
 
     no_nodes = len(n)
     bars = []
@@ -242,7 +240,5 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
         bar[0] = bar[0] - 1
         bar[1] = bar[1] - 1
     n = np.array(array).astype(float)
-    # print("N", n)
-    # print("N", bars)
 
     return no_nodes, bars, n, value_
