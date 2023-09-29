@@ -46,7 +46,7 @@ export const LoadBeam = ({setBeams,beams,setMessage}) => {
           aria-label="Load Beam"
           type="number"
           inputMode="numeric"
-          aria-describedby="basic-addon2"style={{maxWidth:"200px"}}
+          aria-describedby="basic-addon2"style={{maxWidth:"100px"}}
           onChange={(e)=>
             setbeamIDValue(e.target.value)
           }

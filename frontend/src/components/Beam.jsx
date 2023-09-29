@@ -582,7 +582,7 @@ function Beam() {
 
         </div>
       ))}
-      <div className='d-flex justify-content-center gap-4 mb-2 tohide'>
+      <div className='d-flex justify-content-center gap-2 mb-2 tohide'>
         <button className="btn btn-primary" style={{ minWidth: "120px" }} onClick={() => {
           addBeam()
           setMessage(["primary", "New Beam is added", true])

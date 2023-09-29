@@ -66,7 +66,7 @@ function ToolBar({ beam,
     <div key={tool.id} style={{border:"1px solid",width:"65px",height:"65px", borderRadius:"10px",display: "flex", flexDirection: "row", justifyContent: "center",alignItems:"center"}}>
         <DropablePreset id={tool.id} >
             <div style={{
-             scale:actualBeamLength<300?"0.8":null,display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ?actualBeamLength<300? "40px":"55px" : "10px",marginLeft:tool.type==="distributedLoad"?actualBeamLength<300?"12px":"17px":null
+             scale:actualBeamLength<400?"0.8":null,display: "flex", flexDirection: "row", justifyContent: "center", marginTop: tool.isUp ?actualBeamLength<400? "40px":"55px" : "10px",marginLeft:tool.type==="distributedLoad"?actualBeamLength<400?"12px":"17px":null
             }}>
                 {tool.img}
             </div>
@@ -76,7 +76,7 @@ function ToolBar({ beam,
 
     return (
         <div className='d-flex align-items-center justify-content-center gap-1' style={{width:actualBeamLength}}>
-            <div style={{maxWidth:actualBeamLength<370?"220px":null}}  className='d-flex align-items-center justify-content-center gap-1' id="tour-draggable">
+            <div style={{maxWidth:actualBeamLength<400?"220px":null}}  className='d-flex align-items-center justify-content-center gap-1' id="tour-draggable">
             {DroppablesDivs}
             </div>
             <div  className='d-flex align-items-center justify-content-center gap-1' id="tour-fixedEnds">

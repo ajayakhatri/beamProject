@@ -4,6 +4,7 @@
 
 - [Introduction](#introduction)
   - [Inspiration](#inspiration)
+  - [How does this entire web app work?](#how-does-this-entire-web-app-work)
 - [Installation and Running](#installation-and-running)
 - [Distinctiveness and Complexity](#distinctiveness-and-complexity)
   - [Distinctiveness](#distinctiveness)
