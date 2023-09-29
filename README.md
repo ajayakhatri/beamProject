@@ -15,13 +15,13 @@
 
 ## Introduction
 
-This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and Numpy for calculation. Frontend sends data of a model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) for more features.
+This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and Numpy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) for more features.
 
 - Demo video:
 
 ## Inspiration
 
-I, as a recent civil engineering graduate, always had the affinity for structural analysis and wanted my CS50W final project to be related to enginnering itself. I googled and found that the existing beam apps on the internet were not very fun to use, they need more interactivity. I began my journey by learning React and NumPy.
+I, as a recent civil engineering graduate, always had the affinity for structural analysis and wanted my CS50W final project to be related to enginnering itself. I googled and found that the existing beam apps on the internet were not very fun to use, they need more interactivity. And thus, I began my journey by learning React and NumPy.
 
 ## How does this entire web app work?
 
@@ -82,7 +82,7 @@ The flowchart below shows integaration of different components of the web app.
 
 ### Distinctiveness
 
-The Beam Calculator App stands out due to its combination of interactive modeling thanks to **React**, a javascript library and analysis of modelled beam in **Django backend** by **Finite Element Method** with the use of numpy, a python library. Features like onboarding guide, save and load are plus points to this web projects. The distinctiveness are mentioned below:
+The Beam Calculator App stands out due to its combination of interactive modeling thanks to **React**, a javascript library and analysis of modelled beam in **Django backend** by **Finite Element Method** with the use of numpy, a python library. Features like onboarding guide, save, load and print are plus points to this web project. The distinctiveness are mentioned below:
 
 - **Interactive Beam Modeling:**
 
@@ -90,10 +90,9 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 
   - The position of loads and supports can be changed by simply dragging them along the beam or changed manually.
   - ![Demo](img/demo.gif)
-  - The application allows users to specify load units, beam length, and units to match their specific requirements.
+  - The application allows users to specify load units, beam length, and Young's Modulus to suit the material properties of their beam.
   - Users can choose beam section from preset for automatic calculation of Moment of Inertia or specify the custom value.
-  - The application allows users to specify the Young's Modulus to suit the material properties of their beam.
-  - User can delete element on a beam.
+  - User can delete elements on a beam.
   - Distributed load changes its image when its loads are changed. User can also change colour of distributed load.
   - ![Demo](img/colourChange.gif)
 
@@ -113,7 +112,7 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 
 ### Complexity
 
-The project's complexity is evident in its use of multiple technologies and the integration of various components. Besides the integration part what I find the most complex in the projects were:
+The project's complexity is evident in its use of multiple technologies and the integration of various components. Besides the integration part what I found the most complex in the projects were:
 
 1. Logic for changing svg images dynamically based on value of loads on either ends(done in frontend/src/components/Img.jsx).
 2. Logic for arranging data from frontend into numpy arrays and converting distributed load into many finite elements (done in backend/api/arrangeData.py).
@@ -162,7 +161,7 @@ Different libraries and packages used in the app along with their usage are:
 
 ## What’s contained in each file?
 
-Files in both back-end and front-end and their information are given below:
+Files in both back-end and front-end along with their information are given below:
 
 ### Back-end File Structure
 
@@ -252,6 +251,8 @@ frontend
   ```
 
 - The frontend and backend are separated, that means the user can change method of analysis in backend to any methods while using the beautiful frontend as it is.
+
+- For optimal printing, it may be necessary to adjust the dimensions of the PDF. While testing on desktops using Edge and Chrome, the print was satisfactory. However, there is room for improvement in this regard.
 
 ## Contacts
 
