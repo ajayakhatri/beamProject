@@ -494,9 +494,11 @@ function Beam() {
               <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength} />
             </BeamBar>
             {lengthSet &&
+            <>
               <PositionDimension beam={beam} actualBeamLength={actualBeamLength} />
-            }
           <InputBeamLength beam={beam} onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} showInfoBorder={showInfoBorder} />
+            </>
+            }
       
           </div>
           <div className={`align-self-start beaminfo-${beam.id}`}>

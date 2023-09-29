@@ -47,7 +47,7 @@ def saveBeam(request):
     beam["id"]=last_object_pk+10000
     beam["referenceNo"]=last_object_pk+1
 
-    beamtosave = BeamModel(beam=beam,elasticity=beam["youngModulus"],inertia=beam["moi"],length=beam["length"],lengthunit=beam["unit"],loadunit=beam["loadUnit"])
+    beamtosave = BeamModel(reference_no=(last_object_pk+1),beam=beam,elasticity=beam["youngModulus"],inertia=beam["moi"],length=beam["length"],lengthunit=beam["unit"],loadunit=beam["loadUnit"])
     beamtosave.save()
     print("beam",beam)
     if beam==None:
@@ -56,7 +56,7 @@ def saveBeam(request):
 
 @api_view(["GET"])
 def getBeam(request, pk):
-    a=BeamModel.objects.get(id=int(pk))
+    a=BeamModel.objects.get(reference_no=int(pk))
     if not a:
         return JsonResponse({"ERROR": "Beam not found"})
     else:
