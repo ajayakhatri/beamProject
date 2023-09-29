@@ -15,7 +15,7 @@
 
 ## Introduction
 
-This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and Numpy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) to learn about features.
+This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and NumPy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) to learn about features.
 
 - Demo video:
 
@@ -82,7 +82,7 @@ The flowchart below shows integaration of different components of the web app.
 
 ### Distinctiveness
 
-The Beam Calculator App stands out due to its combination of interactive modeling thanks to **React**, a javascript library and analysis of modelled beam in **Django backend** by **Finite Element Method** with the use of numpy, a python library. Features like onboarding guide, save, load and print are plus points to this web project. The web app is **mobile responsive** as well. The distinctiveness are mentioned below:
+The Beam Calculator App stands out due to its combination of interactive modeling thanks to **React**, a javascript library and analysis of modelled beam in **Django backend** by **Finite Element Method** with the use of NumPy, a python library. Features like onboarding guide, save, load and print are plus points to this web project. The web app is **mobile responsive** as well. The distinctiveness are mentioned below:
 
 - **Interactive Beam Modeling:**
 
@@ -115,14 +115,14 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 The project's complexity is evident in its use of multiple technologies and the integration of various components. Besides the integration part what I found the most complex in the projects were:
 
 1. Logic for changing svg images dynamically based on value of loads on either ends(done in frontend/src/components/Img.jsx).
-2. Logic for arranging data from frontend into numpy arrays and converting distributed load into many finite elements (done in backend/api/arrangeData.py).
+2. Logic for arranging data from frontend into NumPy arrays and converting distributed load into many finite elements (done in backend/api/arrangeData.py).
 3. Logic for passing latest state of beam in different React components.
 
 Different libraries and packages used in the app along with their usage are:
 
 - Python Packages
 
-  1. **numpy :** It was used to make arrays of load, support condition, nodes and beam elements for mathematical operations related for Finite Element Analysis. Before feeding the
+  1. **NumPy :** It was used to make arrays of load, support condition, nodes and beam elements for mathematical operations related for Finite Element Analysis. Before feeding the
 
   2. **djangorestframework :** The api_view decorator was used in Django REST framework to define API views. Example : `@api_view(["GET"])`
 
@@ -175,7 +175,7 @@ backend
 │   ├── __init__.py    # Initialization script for the 'api' app
 │   ├── admin.py       # Django admin configuration
 │   ├── apps.py        # Configuration for the 'api' app
-│   ├── arrangeData.py # Function to arrange data from frontend into numpy arrays
+│   ├── arrangeData.py # Function to arrange data from frontend into NumPy arrays
 │   ├── beamApp.py     # Contains beam class to handle calculations
 │   ├── models.py      # Database models definition
 │   ├── urls.py        # URL routing configuration
