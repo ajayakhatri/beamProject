@@ -1,7 +1,9 @@
 # Beam Calculator App
 
-This application is a comprehensive tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and Numpy for calculation.
+**Table of Contents**
 
+- [Introduction](#introduction)
+  - [Inspiration](#inspiration)
 - [Installation and Running](#installation-and-running)
 - [Distinctiveness and Complexity](#distinctiveness-and-complexity)
   - [Distinctiveness](#distinctiveness)
@@ -10,6 +12,22 @@ This application is a comprehensive tool for civil engineers and students to mod
   - [Back-end File Structure](#back-end-file-structure)
   - [Front-end File Structure](#front-end-file-structure)
 - [Additional Information](#additional-information)
+
+## Introduction
+
+This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and Numpy for calculation. Frontend sends data of a model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) for more features.
+
+- Demo video:
+
+## Inspiration
+
+I, as a recent civil engineering graduate, always had the affinity for structural analysis and wanted my CS50W final project to be related to enginnering itself. I googled and found that the existing beam apps on the internet were not very fun to use, they need more interactivity. I began my journey by learning React and NumPy.
+
+## How does this entire web app work?
+
+The flowchart below shows integaration of different components of the web app.
+
+- ![Demo](img/flowchart.svg)
 
 ## Installation And Running
 
@@ -25,9 +43,11 @@ This application is a comprehensive tool for civil engineers and students to mod
   3. Create a python virtual environment and activate it.
   4. Go to root directory and navigate to the _backend_ directory.
   5. Install the required Python packages from requirements.txt using command below:
-     `  
-pip install -r requirements.txt`
-     OR
+     ```
+      pip install -r requirements.txt
+     ```
+
+  OR
 
   Directly run the command below on root directory(Assuming you have Python installed):
 
@@ -67,6 +87,7 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 - **Interactive Beam Modeling:**
 
   - Users can create their beam model by dragging and dropping elements like loads and supports onto the beam.
+
   - The position of loads and supports can be changed by simply dragging them along the beam or changed manually.
   - ![Demo](img/demo.gif)
   - The application allows users to specify load units, beam length, and units to match their specific requirements.
@@ -86,20 +107,23 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 
 - **Working with Multiple beams:** Users can **work with multiple beams** on a single app independently. This opens up possibility of comparing different beams.
 
+- **Print:** Users can print the beam with its information and charts.
+
 - **Save and Share:** Users can save their beam models and analysis for future reference. The application also allows users to share them with colleagues or peers easily.
 
 ### Complexity
 
 The project's complexity is evident in its use of multiple technologies and the integration of various components. Besides the integration part what I find the most complex in the projects were:
-  1. Logic for changing svg images dynamically (done in frontend/src/components/Img.jsx).
-  2. Logic for arranging data from frontend into numpy arrays and making of many finite elements from a distributed load (done in backend/api/arrangeData.py).
-  3. Logic for passing latest state of beam in different React components.
+
+1. Logic for changing svg images dynamically based on value of loads on either ends(done in frontend/src/components/Img.jsx).
+2. Logic for arranging data from frontend into numpy arrays and converting distributed load into many finite elements (done in backend/api/arrangeData.py).
+3. Logic for passing latest state of beam in different React components.
 
 Different libraries and packages used in the app along with their usage are:
 
 - Python Packages
 
-  1. **numpy :** It was used to make arrays of load, support condition, nodes and beam elements for mathematical operations related for Finite Element Analysis. Before feeding the 
+  1. **numpy :** It was used to make arrays of load, support condition, nodes and beam elements for mathematical operations related for Finite Element Analysis. Before feeding the
 
   2. **djangorestframework :** The api_view decorator was used in Django REST framework to define API views. Example : `@api_view(["GET"])`
 
@@ -130,11 +154,11 @@ Different libraries and packages used in the app along with their usage are:
   11. **react-dom:** A package that provides DOM-specific methods that can be used at the top level of a web app to enable an efficient way of managing DOM elements of the web page.
 
   12. **concurrently:** A utility that manages multiple concurrent tasks. In this case, it was used to run both react and django using a single command `npm run start` in script of **package.json**.
-    ```json
-    // in package.json
-      "start": "concurrently \"cd ../backend && python manage.py runserver\" \"vite\"",
-    ```
-  13. **react-icons:** React package for icons.
+
+      ```json
+      // in package.json
+        "start": "concurrently \"cd ../backend && python manage.py runserver\" \"vite\"",
+      ```
 
 ## What’s contained in each file?
 
@@ -149,10 +173,6 @@ backend
 ├── api/               # Django API app directory
 │   ├── __pycache__/   # Cached Python files
 │   ├── migrations/    # Database migrations
-│   │   ├── __init__.py
-│   ├── templates/     # Django templates
-│   │   └── api/
-│   │       └── index.html
 │   ├── __init__.py    # Initialization script for the 'api' app
 │   ├── admin.py       # Django admin configuration
 │   ├── apps.py        # Configuration for the 'api' app
@@ -161,7 +181,7 @@ backend
 │   ├── models.py      # Database models definition
 │   ├── urls.py        # URL routing configuration
 │   └── views.py       # View functions for the 'api' app
-├── beam/               # Django project settings
+├── beam/              # Django project settings
 │   ├── __pycache__/   # Cached Python files
 │   ├── __init__.py    # Initialization script for the 'beam' project
 │   ├── asgi.py        # ASGI configuration
@@ -179,26 +199,29 @@ Inside front-end folder :
 
 ```
 frontend
-├── public/                  # Public assets
-│   └── logo.svg             # SVG logo file
-├── src/                     # Source code directory
-│   ├── components/          # React components
-│   │   ├── Beam.jsx         # Main file
-│   │   ├── BeamInfo.jsx     # Contains input for beam properties
-│   │   ├── Chart.jsx        # Makes charts
-│   │   ├── CopyButton.jsx   # Copies saved beam no. to clipboard
-│   │   ├── DndStage1.jsx    # Handles dropping of elements on beam
-│   │   ├── DndStage2.jsx    # Handles dragging of elements on beam
-│   │   ├── FixedEnds.jsx    # Toggle for fixed ends supports
-│   │   ├── Img.jsx          # Contains svg images of elements
-│   │   ├── LoadBeam.jsx     # Loads a beam from its reference no.
-│   │   ├── Message.jsx      # Displays messages dynamically
-│   │   ├── OnBoarding.jsx   # Logic for onboarding
-│   │   ├── SaveBeam.jsx     # Sends a beam to backend to be saved.
-│   │   ├── Switch.jsx       # Toggles for length, load and border display
-│   │   ├── ToolBar.jsx      # Contains toolbox of draggable elements
-│   │   ├── utility.js       # Contains fuction for random colour and hexToRGBA
-│   │   └── WelcomeModal.jsx    # Welcome Modal
+├── public/
+│   └── logo.svg                  # SVG logo file
+├── src/                          # Source code directory
+│   ├── components/
+│   │   ├── Beam.jsx              # Renders all beam and contains functions for making changes
+│   │   ├── BeamInfo.jsx          # Contains input for beam properties
+│   │   ├── Chart.jsx             # Makes charts
+│   │   ├── CopyButton.jsx        # Copies saved beam no. to clipboard
+│   │   ├── DndStage1.jsx         # Handles dropping of elements on beam
+│   │   ├── DndStage2.jsx         # Handles dragging of elements on beam
+│   │   ├── FixedEnds.jsx         # Toggle for fixed ends supports
+│   │   ├── Img.jsx               # Contains svg images of elements
+│   │   ├── InputBeamLength.jsx   # Changes length of a beam
+│   │   ├── LoadBeam.jsx          # Loads a beam from its reference no.
+│   │   ├── Message.jsx           # Displays messages dynamically
+│   │   ├── OnBoarding.jsx        # Contains Logic for onboarding tour
+│   │   ├── PositionDimension.jsx # Changes position dimensions when there is any change
+│   │   ├── Print.jsx             # Prints the beam and charts
+│   │   ├── SaveBeam.jsx          # Sends a beam to backend to be saved.
+│   │   ├── Switch.jsx            # Toggles for length, load and border display
+│   │   ├── ToolBar.jsx           # Contains toolbox of draggable elements
+│   │   ├── utility.js            # Contains fuction for random colour and hexToRGBA
+│   │   └── WelcomeModal.jsx      # Lunches Welcome Modal
 │   ├── dataFlow/
 │   │   ├── axios.jsx             # Input for baseUrl of backend server
 │   │   └── sendDataToBackend.jsx # Sends data to backend
@@ -206,7 +229,6 @@ frontend
 │   ├── App.jsx                   # React application entry point
 │   └── main.jsx                  # Main JavaScript file
 ├── .eslintrc.cjs                 # ESLint configuration
-├── .gitignore                    # Git ignore rules
 ├── index.html                    # HTML entry point
 ├── package-lock.json             # Lock file for npm packages
 ├── package.json                  # npm package dependencies
@@ -216,17 +238,25 @@ frontend
 
 ## Additional Information
 
-- If the Django Server is being run of other address from "http://127.0.0.1:8000" then you can update baseURL in axios.jsx file:
+- If the Django Server is being run on other address from "http://127.0.0.1:8000" then you can update baseURL in axios.jsx file:
 
   ```
    frontend
     └── src/
          └── dataFlow/
-            └── axios.jsx
-  
+              └── axios.jsx
+
   const API = axios.create({
       baseURL: "http://127.0.0.1:8000",
   });
   ```
 
+- The frontend and backend are separated, that means the user can change method of analysis in backend to any methods while using the beautiful frontend as it is.
 
+## Contacts
+
+Any feedbacks will be highly appreciable
+
+<a href="mailto:mrajayakhatri@gmail.com" target="blank"><img align="center" src="https://raw.githubusercontent.com/gauravghongde/social-icons/master/SVG/Color/Gmail.svg" alt="ajaya-khatri-7b9715254" height="30" width="40" />mrajayakhatri@gmail.com</a>
+
+<a href="https://linkedin.com/in/ajaya-khatri-7b9715254" target="blank"><img align="center" src="https://raw.githubusercontent.com/gauravghongde/social-icons/master/SVG/Color/LinkedIN.svg" alt="ajaya-khatri-7b9715254" height="30" width="40" />ajayakhatri</a>

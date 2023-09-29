@@ -41,7 +41,6 @@ export const LoadBeam = ({setBeams,beams,setMessage}) => {
     };
   return (
          <InputGroup style={{height:"40px"}} id="tour-loadBeam">
-         
         <Form.Control
           placeholder="Load Beam"
           aria-label="Load Beam"
@@ -49,8 +48,8 @@ export const LoadBeam = ({setBeams,beams,setMessage}) => {
           inputMode="numeric"
           aria-describedby="basic-addon2"style={{maxWidth:"200px"}}
           onChange={(e)=>
-                setbeamIDValue(e.target.value)
-            }
+            setbeamIDValue(e.target.value)
+          }
           />
           
         <Button variant="primary" id="button-addon2"
@@ -61,7 +60,7 @@ export const LoadBeam = ({setBeams,beams,setMessage}) => {
               setMessage(["danger","Invalid beam number",true])
             }
           }
-          }
+        }
           >
           Load Beam
         </Button>

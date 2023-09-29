@@ -4,11 +4,10 @@ from rest_framework.decorators import api_view
 from .models import BeamModel
 from .beamApp import Beam
 import json
-import numpy as np
 from .arrangeData import arrangeData
 
 @api_view(["POST"])
-def my_view(request):
+def chart(request):
     data = json.loads(request.body)
     
     pointLoad_ = data.get("point_load_input", None)

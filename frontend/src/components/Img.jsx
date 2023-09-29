@@ -3,7 +3,7 @@
 import React from 'react'
 import { hexToRGBA } from './utility';
 
-export const ImgDistributedLoad = ({ hasid=false,newSpanValue = 50, scale = 1, spacing, loadStart = 5, loadEnd = 5, color = "rgba(242, 135, 42, 0.405)" }) => {
+export const ImgDistributedLoad = ({ hasid=false,newSpanValue = 50, scale = 1, spacing, loadStart = 5, loadEnd = 5, color = "#facfa9" }) => {
     let newcolor = hexToRGBA(color, 0.7);
     let width = (newSpanValue) / scale + 16
     let w = width - 16
@@ -105,4 +105,37 @@ export const ImgFixedSupport=({className})=>{
 <line x1="29.5" y1="34" x2="29.5" y2="49" stroke="black"/>
 </svg>
     )
+}
+
+export const Dustbin=()=>{
+    return <svg
+    fill="white"
+    viewBox="0 0 24 24"
+    height="1em"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM6 10V20H18V10H6ZM9 12H11V18H9V12ZM13 12H15V18H13V12ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9Z" />
+  </svg>
+  
+}
+
+export const BackArrow=()=>{
+
+  return <svg
+    stroke="white"
+    fill="none"
+    strokeWidth={3}
+    viewBox="0 0 24 24"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    height="1em"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M9 14l-4 -4l4 -4" />
+    <path d="M5 10h11a4 4 0 1 1 0 8h-1" />
+  </svg>
+
 }

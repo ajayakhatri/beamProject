@@ -3,8 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import interact from 'interactjs';
 import { getToolWidth } from './ToolBar';
-import { TbArrowBackUp } from 'react-icons/tb';
-import { RiDeleteBin5Line } from 'react-icons/ri';
+import { BackArrow, Dustbin } from './Img';
 
 export function DropableNew(props) {
     const { status, beamID, style, id, toolType, load, color, unit,loadUnit } = props
@@ -378,17 +377,17 @@ export function DropableNew(props) {
                         <>
                             <div style={{ border: "2px solid black", borderRadius: "8px", width: "70px", marginLeft: toolType === "distributedLoad" && (`${getToolWidth() + 8}px`) }}>
                                 <button onClick={() => deleteTool(beamID, id)} className='btn btn-danger w-100' style={{ borderRadius: "0px", height: "30px" }}>
-                                    <RiDeleteBin5Line />
+                                <Dustbin/>
                                 </button>
                                 <button onClick={() => setIsShown(false)} className='btn btn-primary w-100' style={{ borderRadius: "0px", height: "28px" }}>
-                                    <TbArrowBackUp />
+                                <BackArrow/>
                                 </button>
                                 {toolType === "distributedLoad" && (
                                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", backgroundColor: "white" }}>
                                         Color:
                                         <input type="color"
                                             defaultValue={color}
-                                            onBlur={(e) => { console.log(e.target.value); changeToolValue(beamID, id, "color", e.target.value) }
+                                            onBlur={(e) => {changeToolValue(beamID, id, "color", e.target.value) }
                                             } />
                                     </div>
                                 )}

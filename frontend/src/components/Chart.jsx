@@ -10,11 +10,10 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
     const [deformation, setDeformation] = useState(true)
     const [sfd, setSFD] = useState(false)
     const [bmd, setBMD] = useState(false)
-
     const [activeTab, setActiveTab] = useState('link-0');
 
     if (plot === null) {
-      return (<div> Error! Plot  couldnot be created</div>)
+      return (<div className='my-3 text-danger'> Error! Plot  could not be created</div>)
   }
 
         let bendingMoment = plot.bendingMoment
@@ -65,8 +64,8 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
           };
     
     return (
-        <div className='card my-4' id={`curves-${beamID}`}>
-    <Navbar className="bg-body-tertiary"  >
+        <div className='card my-4' >
+    <Navbar className="bg-body-tertiary tohide"  >
       <Nav variant="underline" activeKey={activeTab} onSelect={handleNavSelect} className='ms-4 my-1'style={{width:actualBeamLength<300?"300px":null, fontSize:"12px"}}>
         <Nav.Item>
           <Nav.Link eventKey="link-0">Deformation Curve</Nav.Link>
@@ -82,11 +81,12 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
         </Nav.Item>
       </Nav>
       </Navbar>
-
+<div id={`curves-${beamID}`} className='d-flex flex-column align-items-center'>
+  <strong className='fs-4'>Charts</strong>
             {deformation && <MyChart unit={unit} loadUnit={loadUnit} x0={x_original} y0={y_original} y={y_deformationplot} plot={plot} actualBeamLength={actualBeamLength} label="Deformation Curve"/>}
             {sfd && <MyChart unit={unit} loadUnit={loadUnit} x0={x_original} y0={y_original} y={y_shearForce} plot={plot} actualBeamLength={actualBeamLength} label="Shear Force Diagram"/>}
             {bmd && <MyChart unit={unit} loadUnit={loadUnit} x0={x_original} y0={y_original} y={y_bendingMoment} plot={plot} actualBeamLength={actualBeamLength} label="Bending Moment Diagram"/>}
-    
+</div>
         </div>
     );
 };
@@ -153,12 +153,16 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,unit,loadUnit}) =
           fontSize: 16, // Adjust font size as needed
         },
       }
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: label
+      }
     }
     };
     
-   
- 
-    
+       
     const [chartData, setChartData] = useState(createChart());
 
     useEffect(() => {
@@ -170,12 +174,9 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,unit,loadUnit}) =
     };
 
     return (
-        <div className='mt-3'>
-          <div style={{ width:actualBeamLength+'px', minHeight:"250px"}}>
+          <div className='mt-1 card' style={{ width:actualBeamLength+'px', minHeight:actualBeamLength<400?"250px":"400px"}}>
         <Scatter  data={chartData} options={options} />
-          </div>
-        <div className='text-center m-4'><strong>fig: </strong>{label}</div>            
-        </div>
+          </div> 
     );
 };
 

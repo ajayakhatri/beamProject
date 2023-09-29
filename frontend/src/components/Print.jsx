@@ -1,31 +1,36 @@
 
 import React from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+
 
 const PDFGenerator = ({beamID}) => {
 
-  
-  const generatePDF = (beamID) => {
-      const pdf = new jsPDF('p', 'pt', 'letter');
+  const handlePrint = (beamID) => {
       const divToPrint = document.getElementById(`curves-${beamID}`);
-      html2canvas(divToPrint).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-  
-        const width = pdf.internal.pageSize.getWidth();
-        const height = (canvas.height * width) / canvas.width;
-  
-        pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-        pdf.save('output.pdf');
+      const beamInfo = document.querySelector(`.beaminfo-${beamID}`);
+      const beam = document.getElementById(`beamFig-${beamID}`);
+      beam.classList.add("printable")
+      beamInfo.classList.add("printable")
+      divToPrint.classList.add("printable")
+      let tohide=document.querySelectorAll(".tohide")
+      tohide.forEach(element => {
+        element.classList.add("not-printable")
       });
- 
+      window.print();
+      tohide.forEach(element => {
+        element.classList.remove("not-printable")
+      });
+      beam.classList.remove("printable")
+      beamInfo.classList.remove("printable")
+      divToPrint.classList.remove("printable")
   };
 
+  
   return (
-    <div>
-      <button className='btn btn-primary' onClick={()=>generatePDF(beamID)}>Generate PDF</button>
-    </div>
+      <button className='btn btn-primary tohide' onClick={()=>handlePrint(beamID)}>Print</button>
   );
 };
 
 export default PDFGenerator;
+
+
+

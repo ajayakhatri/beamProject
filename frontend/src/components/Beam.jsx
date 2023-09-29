@@ -18,73 +18,10 @@ import { LoadBeam } from './LoadBeam';
 import { SaveBeam } from './SaveBeam';
 import MessageBox from './Message';
 import PDFGenerator from './Print';
+import InputBeamLength from './InputBeamLength';
+import PositionDimension from './PositionDimension';
 
 
-function InputBeamLength({ beam, onChange, updateScale, actualBeamLength, showInfoBorder }) {
-
-  const [inputValue, setInputValue] = useState(beam.length);
-  const [isinputVisible, setisInputVisible] = useState(false);
-
-  return (<>
-    <div className='d-flex' style={{ width: actualBeamLength, height: "20px" }}>
-      <div>
-        <div className='strikethrough'>|</div>
-      </div>
-
-      <div className="border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
-
-      {!isinputVisible ? (
-        <div onClick={() => setisInputVisible(true)} id="tour-beamLength" className='inputPointer' style={{ fontSize: "15px", border: !showInfoBorder && "none" }}>
-          {inputValue + beam.unit}
-        </div>
-      ) : (
-        <div className="input-group input-group-sm" style={{ maxWidth: "180px" }} >
-          <input
-            type="number"
-            autoFocus={true}
-            inputMode="numeric"
-            min={1}
-            className="form-control "
-            aria-label={`Enter beam length for Beam ${beam.id}`}
-            value={inputValue}
-            onChange={(e) => {
-              e.stopPropagation()
-              if ((e.nativeEvent.data === "-" || e.nativeEvent.data === "+")) {
-                e.target.value = inputValue
-              }
-              setInputValue(e.target.value);
-              const newValue = (e.target.value.length === 0 ? 1 : parseFloat(e.target.value));
-              const scale = newValue / parseFloat(actualBeamLength)
-              console.log("Check on Length Change", {
-                "scale": scale,
-                "newValue": newValue,
-                "check": e.target.value.length === 0 ? 1 : parseFloat(e.target.value),
-              })
-
-              const newLength = e.target.value.length === 0 || newValue === 0 ? beam.length : newValue
-              const newScale = e.target.value.length === 0 || newValue === 0 ? beam.scale : scale
-
-              updateScale(beam.id, newScale, newLength)
-              onChange(beam.id, "scale", newScale);
-              onChange(beam.id, "length", newLength);
-            }}
-            onBlur={(e) => {
-              setisInputVisible(false)
-              setInputValue(e.target.value.length === 0 || parseFloat(e.target.value) === 0 ? 1 : e.target.value);
-            }}
-          />
-        </div>
-      )}
-
-      <div className="border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
-      <div>
-        <div className='strikethrough'>|</div>
-      </div>
-    </div>
-
-  </>
-  )
-}
 
 
 function Beam() {
@@ -195,6 +132,7 @@ function Beam() {
   }
 
   const [supportPositions, setSupportPositions] = useState({})
+
   function findPositionBySupportID(valueToFind) {
     for (const key in supportPositions) {
       if (supportPositions[key] === valueToFind) {
@@ -203,6 +141,7 @@ function Beam() {
     }
     return null; // Return null if the value is not found
   }
+
   function printInfo(beamID) {
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     const beamPointLoad = beams[beamIndex]?.tools?.pointLoad || [];
@@ -444,84 +383,7 @@ function Beam() {
   const [lengthSet, setlengthSet] = useState(true)
 
 
-  const PositionDimension = ({ beam, actualBeamLength }) => {
-    const toolWidth = getToolWidth()
-    let positionA = 0
-    let positionB = 0
-    let leftA = 0
-    let leftB = 0
-    let i = 0
-    const tools = beam.tools
-    const positions = [];
-    const positionsBeam = [];
-    const toolTypes = Object.values(beam.tools);
-    for (let toolType of toolTypes) {
 
-      toolType.forEach(tool => {
-        positions.push(parseFloat(tool.actualPosition));
-        positionsBeam.push(parseFloat(tool.positionOnBeam));
-      });
-    }
-
-    positions.sort((a, b) => a - b);
-    positionsBeam.sort((a, b) => a - b);
-
-    let alldivs = Object.values(beam.tools).map((toolType) =>
-
-      toolType.slice().sort((a, b) => parseFloat(a.positionOnBeam) - parseFloat(b.positionOnBeam))
-        .map((tool) => {
-          const isLastTool = i === positions.length - 1;
-          leftA = leftB
-          leftB = positions[i] + toolWidth / 2
-          positionA = positionB
-          positionB = positionsBeam[i]
-          i += 1
-          return (
-            <div key={tool.id}>
-              {(positionB - positionA) !== 0 && (
-                <div
-                  className='d-flex justify-content-between mt-1'
-                  style={{
-                    width: leftB - leftA,
-                    left: leftA,
-                    position: "absolute",
-                  }}>
-                  <div className='strikethrough'>|</div>
-
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
-                  {(positionB - positionA).toFixed(3) + beam.unit}
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
-                  {(isLastTool && beam.length - positionB === 0) && (
-
-                    <div className='strikethrough'>|</div>
-
-                  )}
-                </div>
-              )}
-              {isLastTool && beam.length - positionB !== 0 && (
-                <div
-                  className='d-flex justify-content-between mt-1'
-                  style={{
-                    width: (actualBeamLength - positions[i - 1] - toolWidth / 2).toFixed(3) + "px",
-                    left: leftB,
-                    position: "absolute",
-                  }}>
-                  <div className='strikethrough'>|</div>
-
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
-                  {(beam.length - positionB).toFixed(3) + beam.unit}
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
-                  <div className='strikethrough'>|</div>
-
-                </div>
-              )}
-            </div>
-          )
-        }))
-    return (<div className='d-flex justify-content-center flex-row position-relative' style={{ color: "DimGray", fontSize: "12px", marginBottom: 50 + "px" }}>
-      {alldivs}
-    </div>)
-  }
 
   const [showInfoBorder, setShowInfoBorder] = useState(false);
 
@@ -571,9 +433,7 @@ function Beam() {
   }
 
   const [modalShow, setModalShow] = useState(localStorage.getItem('modalShow') === 'false' ? false : true);
-
   const [plot, setPlot] = useState({})
-
   const [isFigAvailable, setIsFigAvailable] = useState({});
   const [showFigNotAvailable, setShowFigNotAvailable] = useState({});
   const [showFig, setShowFig] = useState({});
@@ -586,6 +446,9 @@ function Beam() {
       [id]: value,
     }));
   };
+
+
+
   return (
     <div>
       <MessageBox message={message} setMessage={setMessage} />
@@ -608,9 +471,9 @@ function Beam() {
         )}
       </div>
       {beams.map((beam) => (
-        <div key={beam.id} className='border-1 border-black border py-5 mb-4 position-relative d-flex flex-column align-items-center' style={{ borderRadius: "8px", padding: "0px 20px", boxShadow: "#422800 4px 4px 0 0" }}>
+        <div key={beam.id} id={"toPrint"+beam.id} className='border-1 border-black border py-5 mb-4 position-relative d-flex flex-column align-items-center' style={{ borderRadius: "8px", padding: "0px 20px", boxShadow: "#422800 4px 4px 0 0" }}>
           <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.referenceNo ? "Ref no." + beam.referenceNo : ""}</div>
-
+        <div className='tohide'style={{ marginBottom: "70px"}}>
           <ToolBar
             beam={beam}
             beamID={beam.id}
@@ -621,8 +484,9 @@ function Beam() {
             beamLength={beam.length}
             actualBeamLength={actualBeamLength}
           />
-
-          <div style={{ marginTop: "110px", display: "flex", flexDirection: "column", justifyContent: "center", }}>
+        </div>
+         
+        <div id={`beamFig-${beam.id}`} style={{ marginTop: "30px"}}>
             <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength}
               checkedLeft={beam.fixedSupportLeft}
               checkedRight={beam.fixedSupportRight}
@@ -632,13 +496,14 @@ function Beam() {
             {lengthSet &&
               <PositionDimension beam={beam} actualBeamLength={actualBeamLength} />
             }
-          </div>
           <InputBeamLength beam={beam} onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} showInfoBorder={showInfoBorder} />
-          <div className='align-self-start'>
+      
+          </div>
+          <div className={`align-self-start beaminfo-${beam.id}`}>
             <BeamInfo beam={beam} onChange={changeOrAddBeamProperty} actualBeamLength={actualBeamLength} />
           </div>
 
-          <div className='d-flex gap-2 mt-5 position-relative' id="tour-diagramAndDelete">
+          <div className='d-flex gap-2 mt-5 tohide' id="tour-diagramAndDelete">
             {showFigNotAvailable[beam.id] &&
               !(
                 beam.tools?.rollerSupport?.length >= 2 ||
@@ -647,11 +512,22 @@ function Beam() {
                 beam.fixedSupportLeft ||
                 beam.fixedSupportRight
               ) && showAlert[beam.id] &&
-              <div style={{ maxHeight: "10px", position: "absolute", top: "-50px" }}>
-                <Alert style={{ fontSize: "12px" }} variant="danger" onClose={() => setState(setShowAlert, beam.id, false)} dismissible>
+              <div  className='alert' style={{ minHeight: "100px", position: "fixed", bottom: "5%",zIndex:4}}>
+                <Alert style={{ fontSize: "12px"}} variant="danger" onClose={() => setState(setShowAlert, beam.id, false)} dismissible>
+                <Alert.Heading>"Error"</Alert.Heading>
                   Invalid Support Condition!!
                 </Alert>
               </div>}
+              <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}
+                show={
+                  isFigAvailable[beam.id] && (
+                    beam.tools?.rollerSupport?.length >= 2 ||
+                    beam.tools?.hingedSupport?.length >= 2 ||
+                    (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
+                    beam.fixedSupportLeft ||
+                    beam.fixedSupportRight
+                  )
+                }>
             <ToggleButton
               id={`toggle-check-${beam.id}`}
               type="checkbox"
@@ -676,16 +552,6 @@ function Beam() {
               }
               }
             >
-              <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}
-                show={
-                  isFigAvailable[beam.id] && (
-                    beam.tools?.rollerSupport?.length >= 2 ||
-                    beam.tools?.hingedSupport?.length >= 2 ||
-                    (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
-                    beam.fixedSupportLeft ||
-                    beam.fixedSupportRight
-                  )
-                }>
                 {isFigAvailable[beam.id] && (
                   beam.tools?.rollerSupport?.length >= 2 ||
                   beam.tools?.hingedSupport?.length >= 2 ||
@@ -693,8 +559,8 @@ function Beam() {
                   beam.fixedSupportLeft ||
                   beam.fixedSupportRight
                 ) ? "Hide Diagrams" : "Show Diagrams"}
-              </SendData>
             </ToggleButton>
+              </SendData>
 
             {/* For Debugging purpose */}
             {/* <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
@@ -707,19 +573,16 @@ function Beam() {
             }}>🗑️ Delete Beam</button>
           </div>
           {
-
-            plot[beam.id] && isFigAvailable[beam.id] && showFig[beam.id] &&
-<>
-              <MyCharts beamID={beam.id} plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit} />
-              <PDFGenerator beamID={beam.id}/>
-</>
-            
-              
+          plot[beam.id] && isFigAvailable[beam.id] && showFig[beam.id] &&
+          <>
+            <MyCharts beamID={beam.id} plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit} />
+            <PDFGenerator beamID={beam.id}/>
+          </>       
           }
 
         </div>
       ))}
-      <div className='d-flex justify-content-center gap-4 mb-2'>
+      <div className='d-flex justify-content-center gap-4 mb-2 tohide'>
         <button className="btn btn-primary" style={{ minWidth: "120px" }} onClick={() => {
           addBeam()
           setMessage(["primary", "New Beam is added", true])
