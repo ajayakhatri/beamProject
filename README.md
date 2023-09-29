@@ -15,7 +15,7 @@
 
 ## Introduction
 
-This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and Numpy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) for more features.
+This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and Numpy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) to learn about features.
 
 - Demo video:
 
@@ -82,7 +82,7 @@ The flowchart below shows integaration of different components of the web app.
 
 ### Distinctiveness
 
-The Beam Calculator App stands out due to its combination of interactive modeling thanks to **React**, a javascript library and analysis of modelled beam in **Django backend** by **Finite Element Method** with the use of numpy, a python library. Features like onboarding guide, save, load and print are plus points to this web project. The distinctiveness are mentioned below:
+The Beam Calculator App stands out due to its combination of interactive modeling thanks to **React**, a javascript library and analysis of modelled beam in **Django backend** by **Finite Element Method** with the use of numpy, a python library. Features like onboarding guide, save, load and print are plus points to this web project. The web app is **mobile responsive** as well. The distinctiveness are mentioned below:
 
 - **Interactive Beam Modeling:**
 
@@ -256,7 +256,7 @@ frontend
 
 ## Contacts
 
-Any feedbacks will be highly appreciable
+Any feedback will be highly appreciated.
 
 <a href="mailto:mrajayakhatri@gmail.com" target="blank"><img align="center" src="https://raw.githubusercontent.com/gauravghongde/social-icons/master/SVG/Color/Gmail.svg" alt="ajaya-khatri-7b9715254" height="30" width="40" />mrajayakhatri@gmail.com</a>
 
