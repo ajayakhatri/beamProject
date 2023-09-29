@@ -109,7 +109,7 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 
 - **Print:** Users can print the beam with its information and charts.
 
-- **Save and Share:** Users can save their beam models and analysis for future reference. The application also allows users to share them with colleagues or peers easily.
+- **Save, Share and Delete:** Users can save their beam models and analysis for future reference. The application also allows users to share them with colleagues or peers easily. User can delete beams from database by logging in as admin in django server.
 
 ### Complexity
 
