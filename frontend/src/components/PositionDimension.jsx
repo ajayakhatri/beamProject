@@ -1,7 +1,7 @@
 import React from 'react'
 import { getToolWidth } from './ToolBar'
 
-const PositionDimension = ({ beam, actualBeamLength }) => {
+const PositionDimension = ({ beam, actualBeamLength,scale }) => {
 
     const toolWidth = getToolWidth()
     let positionA = 0
@@ -9,14 +9,13 @@ const PositionDimension = ({ beam, actualBeamLength }) => {
     let leftA = 0
     let leftB = 0
     let i = 0
-    const tools = beam.tools
     const positions = [];
     const positionsBeam = [];
     const toolTypes = Object.values(beam.tools);
     for (let toolType of toolTypes) {
 
       toolType.forEach(tool => {
-        positions.push(parseFloat(tool.actualPosition));
+        positions.push(parseFloat(tool.positionOnBeam/scale));
         positionsBeam.push(parseFloat(tool.positionOnBeam));
       });
     }
@@ -30,7 +29,7 @@ const PositionDimension = ({ beam, actualBeamLength }) => {
         .map((tool) => {
           const isLastTool = i === positions.length - 1;
           leftA = leftB
-          leftB = positions[i] + toolWidth / 2
+          leftB = positions[i]
           positionA = positionB
           positionB = positionsBeam[i]
           i += 1
@@ -60,7 +59,7 @@ const PositionDimension = ({ beam, actualBeamLength }) => {
                 <div
                   className='d-flex justify-content-between mt-1'
                   style={{
-                    width: (actualBeamLength - positions[i - 1] - toolWidth / 2).toFixed(3) + "px",
+                    width: (actualBeamLength - positions[i - 1]).toFixed(3) + "px",
                     left: leftB,
                     position: "absolute",
                   }}>

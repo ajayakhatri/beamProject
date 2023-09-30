@@ -43,6 +43,7 @@ function Beam() {
     // Function to handle changes in the media query
     const handleMediaQueryChange = (event) => {
       if (event.matches) {
+        console.log("(max-width: 800px)",true)
         // Media query matches (screen width is less than 900px)
         setactualBeamLength(window.innerWidth - 100); // Adjust component as needed
       } else {
@@ -388,11 +389,11 @@ function Beam() {
 
   const [showInfoBorder, setShowInfoBorder] = useState(false);
 
-  const AllDivs = ({ beamID, scale,setState,setShowFigNotAvailable }) => {
+  const AllDivs = ({ beamID, scale}) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     let beam = beams[beamIndex]
-    
+    console.log("scale in alldiv",scale)
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
       toolType !== "fixedSupportLeft" && toolType !== "fixedSupportRight" &&
@@ -416,7 +417,7 @@ function Beam() {
           positionOnBeam={tool.positionOnBeam}
           //style
           color={tool.id.split("_")[0] === "distributedLoad" ? tool.color : null}
-          style={{ width: toolWidth + "px", left: tool.actualPosition ? tool.actualPosition : 0 }}>
+          style={{ width: toolWidth + "px", left: (tool.positionOnBeam/scale)-toolWidth/2 ? (tool.positionOnBeam/scale)-toolWidth/2: 0 }}>
           <div style={{
             marginTop: tool.isUp ? "4px" : "23px",
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
@@ -446,7 +447,6 @@ function Beam() {
       [id]: value,
     }));
   };
-
 
   return (
     <div>
@@ -494,12 +494,11 @@ function Beam() {
               checkedLeft={beam.fixedSupportLeft}
               checkedRight={beam.fixedSupportRight}
             >
-              <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength}  
-              />
+              <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength}/>
             </BeamBar>
             {lengthSet &&
             <>
-              <PositionDimension beam={beam} actualBeamLength={actualBeamLength} />
+              <PositionDimension beam={beam} actualBeamLength={actualBeamLength} scale={beam.length / actualBeamLength} />
           <InputBeamLength beam={beam} onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} showInfoBorder={showInfoBorder} />
             </>
             }

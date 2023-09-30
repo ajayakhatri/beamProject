@@ -101,7 +101,6 @@ export function DropableNew(props) {
     function handleMove(e) {
         e.stopPropagation();
         e.stopImmediatePropagation()
-        // e.target.style.removeProperty("left");
         if (e.target.parentElement === null || e.target === null) {
             return
         }
@@ -110,14 +109,15 @@ export function DropableNew(props) {
         const barRect = interact.getElementRect(e.target.parentElement);
         const actualPosition = sliderRect.left - barRect.left
         const positionOnBeam = parseFloat(((sliderRect.left - barRect.left + sliderRect.width / 2) * beamLength / actualBeamLength).toFixed(3))
-        // console.log("On Moving Tool", {
-        //     "beamLength":  beamLength,
-        //     "sliderRect.left": sliderRect.left,
-        //     "sliderElement": sliderRect.width,
-        //     "barRect.left": barRect.left,
-        //     "positionOnBeam": positionOnBeam,
-        //     "beamLength - positionOnBeam": beamLength - positionOnBeam,
-        // })
+        console.log("On Moving Tool", {
+            "beamLength":  beamLength,
+            "sliderRect.left": sliderRect.left,
+            "sliderElement": sliderRect.width,
+            "barRect.left": barRect.left,
+            "actualPosition": actualPosition,
+            "positionOnBeam": positionOnBeam,
+            "beamLength - positionOnBeam": beamLength - positionOnBeam,
+        })
         var target = e.target
         var x = (parseFloat(target.getAttribute('data-x')) || 0) + e.dx
         target.style.transform = 'translate(' + x + 'px)'
