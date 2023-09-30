@@ -38,7 +38,7 @@ I, as a recent civil engineering graduate, always had the affinity for structura
 
 The flowchart below shows integaration of different components of the web app.
 
-- ![Demo](img/flowchart.svg)
+- ![Demo](frontend/public/img/flowchart.svg)
 
 ## Installation And Running
 
@@ -100,20 +100,20 @@ The Beam Calculator App stands out due to its combination of interactive modelin
   - Users can create their beam model by dragging and dropping elements like loads and supports onto the beam.
 
   - The position of loads and supports can be changed by simply dragging them along the beam or changed manually.
-  - ![Demo](img/demo.gif)
+  - ![Demo](frontend/public/img/demo.gif)
   - The application allows users to specify load units, beam length, and Young's Modulus to suit the material properties of their beam.
   - Users can choose beam section from preset for automatic calculation of Moment of Inertia or specify the custom value.
   - User can delete elements on a beam.
   - Distributed load changes its image when its loads are changed. User can also change colour of distributed load.
-  - ![Demo](img/colourChange.gif)
+  - ![Demo](frontend/public/img/colourChange.gif)
 
 - **Finite Element Analysis with Numpy And Visualization:** Calculations done on backend are depicted as charts (Deformation Curve, Shear Force Diagram and Bending Moment Diagram) on Front-end for effective visualization.
 
-  - ![Data Visualization](img/charts.gif)
+  - ![Data Visualization](frontend/public/img/charts.gif)
 
 - **Onboarding guide with intro.js:** Users are provided with onboarding guide option via welcome modal as well as a button on top section of the web app. The guide gives the tour of the most important features of this app so as to make users even more familiar when navigating.
 
-  - ![Onboarding](img/onboarding.gif)
+  - ![Onboarding](frontend/public/img/onboarding.gif)
 
 - **Working with Multiple beams:** Users can **work with multiple beams** on a single app independently. This opens up possibility of comparing different beams.
 
@@ -210,9 +210,11 @@ Inside front-end folder :
 ```
 frontend
 ├── public/
+│   └── img/                      # Contains image files for READ.md and AboutPage
 │   └── logo.svg                  # SVG logo file
 ├── src/                          # Source code directory
 │   ├── components/
+│   │   ├── AboutPage.jsx              # Renders about page
 │   │   ├── Beam.jsx              # Renders all beam and contains functions for making changes
 │   │   ├── BeamInfo.jsx          # Contains input for beam properties
 │   │   ├── Chart.jsx             # Makes charts

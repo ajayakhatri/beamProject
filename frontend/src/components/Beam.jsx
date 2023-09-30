@@ -20,6 +20,7 @@ import MessageBox from './Message';
 import PDFGenerator from './Print';
 import InputBeamLength from './InputBeamLength';
 import PositionDimension from './PositionDimension';
+import { AboutPage } from './AboutPage';
 
 
 
@@ -276,7 +277,6 @@ function Beam() {
         if (beamIndex !== -1) {
           const beam = draft[beamIndex];
           const preScale = beam.scale;
-          // setbeamscale(newScale)
           Object.values(beam.tools).forEach((toolType) => {
             toolType.forEach((tool) => {
               console.log("tool.positionOnBeam = (tool.positionOnBeam * newScale) / preScale", tool.positionOnBeam, "=", newScale, "/", preScale, "=", (tool.positionOnBeam * newScale) / preScale)
@@ -332,7 +332,6 @@ function Beam() {
                 "beam.length": beam.length,
                 "newSpan": newSpan
               })
-            // const newSpan = ((0.4 * beam.length) + positionOnBeam) > beam.length ? (beam.length - positionOnBeam) : (0.4 * beam.length)
             if ((newSpan + parseFloat(positionOnBeam)) > beam.length) {
               newTool["actualPosition"] = -25 + (beam.length - newSpan) / scale
               newTool["positionOnBeam"] = beam.length - newSpan
@@ -435,6 +434,7 @@ function Beam() {
   }
 
   const [modalShow, setModalShow] = useState(localStorage.getItem('modalShow') === 'false' ? false : true);
+  const [showAboutPage, setShowAboutPage] = useState(false);
   const [plot, setPlot] = useState({})
   const [isFigAvailable, setIsFigAvailable] = useState({});
   const [showAlert, setShowAlert] = useState({});
@@ -456,10 +456,14 @@ function Beam() {
           <h1 style={{ fontSize: "30px" }}>Beams</h1>
           {beams.length > 0 &&
             <div className={(actualBeamLength < 660 ? 'flex-column mb-2 ' : "") + "d-flex " + "gap-2"}>
-              <OnBoarding modalShow={modalShow} setModalShow={setModalShow} />
-              <button className='btn btn-outline-primary' style={{ fontWeight: "bold", height: "30px", width: "100px", borderRadius: "10px", boxShadow: "#422800 4px 4px 0 0" }} onClick={() => setModalShow(true)}>About</button>
+              <OnBoarding modalShow={modalShow} setModalShow={setModalShow} setShowAboutPage={setShowAboutPage}/>
+              <button className='btn btn-outline-primary' style={{ fontWeight: "bold", height: "30px", width: "100px", borderRadius: "10px", boxShadow: "#422800 4px 4px 0 0" }} onClick={() => setShowAboutPage(!showAboutPage)}>About</button>
             </div>
           }
+        {
+             showAboutPage&&
+             <AboutPage showAboutPage={showAboutPage} setShowAboutPage={setShowAboutPage} />
+           } 
         </div>
         {beams.length > 0 && (
           <div id="tour-toggle" className={actualBeamLength > 660 ? "d-flex gap-2 align-items-center ms-4" : 'ms-4'} style={{ fontSize: "14px", minWidth: "120px" }}>
@@ -598,6 +602,7 @@ function Beam() {
         }>Add New Beam</button>
         <LoadBeam setBeams={setBeams} beams={beams} setMessage={setMessage} />
       </div>
+      
     </div>
 
   )
