@@ -2,6 +2,7 @@ import React from 'react'
 import { getToolWidth } from './ToolBar'
 
 const PositionDimension = ({ beam, actualBeamLength }) => {
+
     const toolWidth = getToolWidth()
     let positionA = 0
     let positionB = 0

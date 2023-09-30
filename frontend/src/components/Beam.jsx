@@ -77,6 +77,8 @@ function Beam() {
       window.removeEventListener('resize', handleWindowResize);
       window.removeEventListener('load', handleWindowResize);
     };
+
+    
   });
 
 
@@ -387,11 +389,11 @@ function Beam() {
 
   const [showInfoBorder, setShowInfoBorder] = useState(false);
 
-  const AllDivs = ({ beamID, scale }) => {
+  const AllDivs = ({ beamID, scale,setState,setShowFigNotAvailable }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     let beam = beams[beamIndex]
-
+    
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
       toolType !== "fixedSupportLeft" && toolType !== "fixedSupportRight" &&
@@ -435,8 +437,6 @@ function Beam() {
   const [modalShow, setModalShow] = useState(localStorage.getItem('modalShow') === 'false' ? false : true);
   const [plot, setPlot] = useState({})
   const [isFigAvailable, setIsFigAvailable] = useState({});
-  const [showFigNotAvailable, setShowFigNotAvailable] = useState({});
-  const [showFig, setShowFig] = useState({});
   const [showAlert, setShowAlert] = useState({});
   const [message, setMessage] = useState(["warning", "message", false]);
 
@@ -446,7 +446,6 @@ function Beam() {
       [id]: value,
     }));
   };
-
 
 
   return (
@@ -491,7 +490,8 @@ function Beam() {
               checkedLeft={beam.fixedSupportLeft}
               checkedRight={beam.fixedSupportRight}
             >
-              <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength} />
+              <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength}  
+              />
             </BeamBar>
             {lengthSet &&
             <>
@@ -506,7 +506,7 @@ function Beam() {
           </div>
 
           <div className='d-flex gap-2 mt-5 tohide' id="tour-diagramAndDelete">
-            {showFigNotAvailable[beam.id] &&
+            {!isFigAvailable[beam.id] &&
               !(
                 beam.tools?.rollerSupport?.length >= 2 ||
                 beam.tools?.hingedSupport?.length >= 2 ||
@@ -549,8 +549,8 @@ function Beam() {
                   (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
                   beam.fixedSupportLeft ||
                   beam.fixedSupportRight
-                ) ? (setState(setIsFigAvailable, beam.id, e.currentTarget.checked), setState(setShowFigNotAvailable, beam.id, false), setState(setShowFig, beam.id, true)) : (setState(setIsFigAvailable, beam.id, false),
-                  (setState(setShowFigNotAvailable, beam.id, true), setState(setShowAlert, beam.id, true)))
+                ) ? (setState(setIsFigAvailable, beam.id, e.currentTarget.checked)) : (setState(setIsFigAvailable, beam.id, false),
+                  (setState(setShowAlert, beam.id, true)))
               }
               }
             >
@@ -575,7 +575,13 @@ function Beam() {
             }}>🗑️ Delete Beam</button>
           </div>
           {
-          plot[beam.id] && isFigAvailable[beam.id] && showFig[beam.id] &&
+          plot[beam.id] && isFigAvailable[beam.id] && (
+            beam.tools?.rollerSupport?.length >= 2 ||
+            beam.tools?.hingedSupport?.length >= 2 ||
+            (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
+            beam.fixedSupportLeft ||
+            beam.fixedSupportRight
+          ) &&
           <>
             <MyCharts beamID={beam.id} plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit} />
             <PDFGenerator beamID={beam.id}/>
@@ -588,9 +594,7 @@ function Beam() {
         <button className="btn btn-primary" style={{ minWidth: "120px" }} onClick={() => {
           addBeam()
           setMessage(["primary", "New Beam is added", true])
-
         }
-
         }>Add New Beam</button>
         <LoadBeam setBeams={setBeams} beams={beams} setMessage={setMessage} />
       </div>
