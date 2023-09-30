@@ -9,7 +9,7 @@ function WelcomePage(props) {
       <div>
         <h1 className='text-center'>Welcome to the Beam Calculator App</h1>
         
-        <h2 className='text-center'><small>Tool for Beam Analysis</small>
+        <h2 className='text-center'><small>A Tool for Beam Analysis</small>
         </h2>
         <p className='text-center my-5'>
         <Button style={{fontSize:"30px"}} onClick={()=>{props.onHide(),props.startOnboarding()}}>Take Tour of the App !!</Button>

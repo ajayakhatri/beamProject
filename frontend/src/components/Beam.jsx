@@ -5,7 +5,7 @@ import ToolBar, { getImg, getToolWidth } from './ToolBar';
 import { produce } from "immer";
 import { DropableNew } from './DndStage2';
 import { BeamBar } from './DndStage1';
-import { ImgDistributedLoad } from './Img';
+import { ImgDistributedLoad, ImgPointLoad } from './Img';
 import Switch from './Switch';
 import { getRandomColorHex } from './utility';
 import { SendData } from '../dataFlow/sendDataToBackend';
@@ -424,7 +424,7 @@ function Beam() {
           }}>
             {tool.id.split("_")[0] === "distributedLoad" ?
               <ImgDistributedLoad hasid={true} newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} color={tool.color} />
-              :
+              :tool.id.split("_")[0] === "pointLoad" ?<ImgPointLoad load={tool.load}/>:
               getImg(tool.id.split("_")[0])
             }
           </div>
@@ -568,8 +568,8 @@ function Beam() {
               </SendData>
 
             {/* For Debugging purpose */}
-            {/* <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
-            <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button> */}
+           <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
+            <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button> 
 
             <SaveBeam setMessage={setMessage} beam={beam} changeOrAddBeamProperty={changeOrAddBeamProperty} />
             <button className='btn btn-danger p-1' onClick={() => {

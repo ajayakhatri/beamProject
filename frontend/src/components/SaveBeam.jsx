@@ -32,7 +32,9 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty,setMessage}) => {
 
       function deleteIMG(array){
         array.forEach(e => {
+          if(e && e.img){
             delete e.img
+          }
         });
       }
     const save = async (beam) => {

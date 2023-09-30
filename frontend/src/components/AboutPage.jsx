@@ -81,7 +81,7 @@ const About=()=>{
         </li>
         <li>
           <p>
-            Degrees of Freedom: Each finite beam element is considered to have
+            Degrees of Freedom: Each nodes of beam element is considered to have
             two degrees of freedom. These are described as:
           </p>
           <ul>
@@ -101,7 +101,7 @@ const About=()=>{
     <a href="#distinctiveness">here</a> to learn about features.
   </p>
   <ul>
-    <li>Demo video:</li>
+    <li>Demo video: <a href="https://youtu.be/hzglLLgS51E">https://youtu.be/hzglLLgS51E</a></li>
   </ul>
   <h2 id="inspiration">Inspiration</h2>
   <p>
@@ -502,8 +502,8 @@ const About=()=>{
   <p>Inside front-end folder :</p>
   <pre>
     <code>
-      frontend{"\n"}├── public/{"\n"}│{"   "}└── logo.svg{"                  "}#
-      SVG logo file{"\n"}├── src/{"                          "}# Source{" "}
+      frontend{"\n"}├── public/{"                       "}#
+      Contains images for README.md and About page{"\n"}├── src/{"                          "}# Source{" "}
       <span className="hljs-keyword">code</span> directory{"\n"}│{"   "}├──
       components/{"\n"}│{"   "}│{"   "}├── Beam.jsx{"              "}# Renders
       all beam and contains functions for making changes{"\n"}│{"   "}│{"   "}
@@ -542,7 +542,7 @@ const About=()=>{
       {"\n"}├── .eslintrc.cjs{"                 "}# ESLint configuration{"\n"}
       ├── index.html{"                    "}# HTML entry point{"\n"}├──
       package-lock.json{"             "}# Lock file for npm packages{"\n"}├──
-      package.json{"                  "}# npm package dependencies{"\n"}──
+      package.json{"                  "}# npm package dependencies{"\n"}└──
       vite.config.js{"                "}# Configuration for Vite.js (build tool)
       {"\n"}
     </code>

@@ -22,13 +22,13 @@
 
   - Element Division: The beam is divided into finite elements such that their maximum length is set to 0.05 times the total length of the beam. This factor of 0.05 can be easily modified in the views.py file.
 
-  - Degrees of Freedom: Each finite beam element is considered to have two degrees of freedom. These are described as:
+  - Degrees of Freedom: Each nodes of beam element is considered to have two degrees of freedom. These are described as:
     - Rotation about the normal to the plane of the model (RZ).
     - Translation in the vertical direction (UY).
 
 It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and NumPy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) to learn about features.
 
-- Demo video:
+- Demo video: [https://youtu.be/hzglLLgS51E](https://youtu.be/hzglLLgS51E)
 
 ## Inspiration
 
@@ -209,12 +209,10 @@ Inside front-end folder :
 
 ```
 frontend
-├── public/
-│   └── img/                      # Contains image files for READ.md and AboutPage
-│   └── logo.svg                  # SVG logo file
+├── public/                       # Contains images for README.md and About page
 ├── src/                          # Source code directory
 │   ├── components/
-│   │   ├── AboutPage.jsx              # Renders about page
+│   │   ├── AboutPage.jsx         # Renders about page
 │   │   ├── Beam.jsx              # Renders all beam and contains functions for making changes
 │   │   ├── BeamInfo.jsx          # Contains input for beam properties
 │   │   ├── Chart.jsx             # Makes charts
@@ -244,7 +242,7 @@ frontend
 ├── index.html                    # HTML entry point
 ├── package-lock.json             # Lock file for npm packages
 ├── package.json                  # npm package dependencies
-── vite.config.js                # Configuration for Vite.js (build tool)
+└── vite.config.js                # Configuration for Vite.js (build tool)
 
 ```
 
