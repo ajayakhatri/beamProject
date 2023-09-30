@@ -86,10 +86,10 @@ class Beam:
             element_matrix[2] = [-12, -6 * l, 12, -6 * l]
             element_matrix[3] = [6 * l, 2 * l**2, -6 * l, 4 * l**2]
             k_matrix[i] = self.young * self.inertia * element_matrix / l**3
-
+            # print("self.young",self.young)
+            # print("self.inertia",self.inertia)
             # Global Stiffness Matrix
             global_matrix[np.ix_(index, index)] += k_matrix[i]
-
 
 
         # For equivalent load at each node
@@ -120,6 +120,7 @@ class Beam:
 
         # returns stiffness matrix of non supported nodes
         kff = global_matrix[np.ix_(free_dof, free_dof)]
+        # np.savetxt('reducedGlobalMatrix.txt', kff)
 
         p = self.point_load.flatten()
 
@@ -127,10 +128,10 @@ class Beam:
         pf = p[free_dof]  # type: ignore
 
         #  {pf}= [kff]{u}  gives u. For ax = b, x=numpy.linalg.solve(a, b)
-        uf = np.linalg.solve(kff, pf)
+
+        uf = np.linalg.solve(kff, pf) 
 
         u = self.support.astype(float).flatten()
-        # print(uf.shape)
 
         # puts deformation due to equivalent load in index of non supported nodes
         u[free_dof] = uf
@@ -140,12 +141,11 @@ class Beam:
 
         # Gives deformation (both deflection and displacement) of a beam element on either ends
         u_ele = np.concatenate((u[self.bar[:, 0]], u[self.bar[:, 1]]), axis=1)
-
         for i in range(n_ele):
             self.force[i] = np.dot(k_matrix[i], u_ele[i]) - eq_load_ele[i]
             self.displacement[i] = u_ele[i]
 
-    def plot(self, scale=1):
+    def plot(self):
         ne = len(self.bar)
 
         # Deformed Shape
@@ -160,8 +160,8 @@ class Beam:
 
         for i in range(ne):
             dxi, dxf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
-            dyi = self.node[self.bar[i, 0], 1] + self.displacement[i, 0] * scale
-            dyf = self.node[self.bar[i, 1], 1] + self.displacement[i, 2] * scale
+            dyi = self.node[self.bar[i, 0], 1] + self.displacement[i, 0]
+            dyf = self.node[self.bar[i, 1], 1] + self.displacement[i, 2]
             self.plots["deformation"][0].extend([dxi, dxf])
             self.plots["deformation"][1].extend([dyi, dyf])
      
@@ -187,7 +187,6 @@ class Beam:
     def add_point_load(self, loadingList):
         for location, load in loadingList.items():
             self.point_load[(location, 0)] = load
-        # print(self.point_load)
 
     def add_distributed_load(self, loadingList):
         for location, load_array in loadingList.items():
@@ -196,9 +195,9 @@ class Beam:
     def assign_support_values(self, index_value_list):
         for index in index_value_list:
             self.support[index] = np.array(0)
-        print("dd", self.support)
 
     def add_values(self, value):
+        print("<----------------------------------------->")
         print("value", value)
         self.add_point_load(value["point_load_input"])
         self.add_distributed_load(value["distributed_load_input"])

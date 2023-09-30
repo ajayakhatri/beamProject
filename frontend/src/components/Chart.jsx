@@ -68,7 +68,7 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
     <Navbar className="bg-body-tertiary tohide"  >
       <Nav variant="underline" activeKey={activeTab} onSelect={handleNavSelect} className='ms-4 my-1'style={{width:actualBeamLength<300?"300px":null, fontSize:"12px"}}>
         <Nav.Item>
-          <Nav.Link eventKey="link-0">Deformation Curve</Nav.Link>
+          <Nav.Link eventKey="link-0">Elastic Curve</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link eventKey="link-1">Shear Force</Nav.Link>
@@ -83,7 +83,7 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
       </Navbar>
 <div id={`curves-${beamID}`} className='d-flex flex-column align-items-center'>
   <strong className='fs-4'>Charts</strong>
-            {deformation && <MyChart unit={unit} loadUnit={loadUnit} x0={x_original} y0={y_original} y={y_deformationplot} plot={plot} actualBeamLength={actualBeamLength} label="Deformation Curve"/>}
+            {deformation && <MyChart unit={unit} loadUnit={loadUnit} x0={x_original} y0={y_original} y={y_deformationplot} plot={plot} actualBeamLength={actualBeamLength} label="Elastic Curve"/>}
             {sfd && <MyChart unit={unit} loadUnit={loadUnit} x0={x_original} y0={y_original} y={y_shearForce} plot={plot} actualBeamLength={actualBeamLength} label="Shear Force Diagram"/>}
             {bmd && <MyChart unit={unit} loadUnit={loadUnit} x0={x_original} y0={y_original} y={y_bendingMoment} plot={plot} actualBeamLength={actualBeamLength} label="Bending Moment Diagram"/>}
 </div>
@@ -92,6 +92,7 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
 };
 export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,unit,loadUnit}) => {
 
+    console.log("PLOTS",{"x-axis":x0,"y-axis":y})
 
     const multiplyByNegativeOne = (arr) => {
       return arr.map((num) => num * -1);
@@ -118,7 +119,7 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,unit,loadUnit}) =
                 },
                 {
                     label: title,
-                    data: label==="Bending Moment Diagram"?multiplyByNegativeOne(y_data):y_data,
+                    data: label==="Elastic Curve"?(y_data):multiplyByNegativeOne(y_data),
                     fill: true,
                     borderColor: 'rgba(192,75,192,1)',
                     showLine: true,
@@ -144,12 +145,12 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,unit,loadUnit}) =
         ticks: {
           beginAtZero: true,
           callback: function(value) {
-            return label==="Bending Moment Diagram"?-value:value; // Invert the sign of the y-axis values for BMD
+            return label==="Bending Moment Diagram"||label==="Elastic Curve"?-value:value; // Invert the sign of the y-axis values for BMD
           }
         },
         title: {
           display: true,
-          text: title+' in '+(label==="Bending Moment Diagram"?loadUnit+"."+unit:label==="Shear Force Diagram"?loadUnit:unit)+' →', // Your y-axis title
+          text: (label==="Elastic Curve"?"Deformation":title)+' in '+(label==="Bending Moment Diagram"?loadUnit+"."+unit:label==="Shear Force Diagram"?loadUnit:unit)+' →', // Your y-axis title
           fontSize: 16, // Adjust font size as needed
         },
       }

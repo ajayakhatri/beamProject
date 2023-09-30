@@ -16,7 +16,17 @@
 
 ## Introduction
 
-This application is a tool for civil engineers and students to model and analyze beam structures. It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and NumPy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) to learn about features.
+- Purpose: The application is designed for modeling and analyzing beam structures.
+
+- Analysis Method: It employs the finite element method for structural analysis. This method involves dividing the beam into several finite elements.
+
+  - Element Division: The beam is divided into finite elements such that their maximum length is set to 0.05 times the total length of the beam. This factor of 0.05 can be easily modified in the views.py file.
+
+  - Degrees of Freedom: Each finite beam element is considered to have two degrees of freedom. These are described as:
+    - Rotation about the normal to the plane of the model (RZ).
+    - Translation in the vertical direction (UY).
+
+It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and NumPy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) to learn about features.
 
 - Demo video:
 
@@ -34,19 +44,19 @@ The flowchart below shows integaration of different components of the web app.
 
 - ### Installation
 
-  To run the Beam Calculator App, follow these steps:
-
-  1. Clone the repository to your local machine.
-  2. Go to **frontend** directory run command below to install necessary dependencies.
-     ```
-     npm install
-     ```
-  3. Create a python virtual environment and activate it.
-  4. Go to root directory and navigate to the _backend_ directory.
-  5. Install the required Python packages from requirements.txt using command below:
-     ```
-      pip install -r requirements.txt
-     ```
+  - **Installing frontend dependencies:**
+    1. Clone the repository to your local machine.
+    2. Go to **frontend** directory run the command below to install necessary dependencies.
+       ```
+       npm install
+       ```
+  - **Installing python virtual environment and packages:**
+    1. Create a python virtual environment and activate it.
+    2. Go to root directory and navigate to the _backend_ directory.
+    3. Install the required Python packages from requirements.txt using command below:
+       ```
+       pip install -r requirements.txt
+       ```
 
   OR
 

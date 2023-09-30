@@ -1,5 +1,5 @@
 import numpy as np
-def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
+def arrangeData(distributedload_, support_, pointLoad_input, max_element_span, leng):
     sum_dict = {}
     for sublist in pointLoad_input:
         key = sublist[0]
@@ -27,10 +27,10 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
         else:
             a.append(dl)
 
-    def dl_to_node(list_d, minspan):
+    def dl_to_node(list_d, max_element_span):
         n = {}
         a = {}
-        span = minspan
+        span = max_element_span
         for list in list_d:
             y1 = list[2][1]
             y2 = list[2][2]
@@ -67,7 +67,7 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
                     a[x2] = ["d", a[x2][1] + y(x2)]
         return n, a
 
-    n, a = dl_to_node(a, minspan)
+    n, a = dl_to_node(a, max_element_span)
     for i in pointLoad_:
         if i not in n:
             n[i] = i
@@ -85,21 +85,21 @@ def arrangeData(distributedload_, support_, pointLoad_input, minspan, leng):
         while x < list_n[0][0]:
             if x not in n:
                 n[x] = 0
-            x += minspan
+            x += max_element_span
 
     for i in range(len(list_n) - 1):
         x = list_n[i][0]
         while x <= list_n[i + 1][0]:
             if x not in n:
                 n[x] = 0
-            x += minspan
+            x += max_element_span
 
     if list_n[-1][0] != leng:
         x = list_n[-1][0]
         while x <= leng:
             if x not in n:
                 n[x] = 0
-            x += minspan
+            x += max_element_span
 
     n = dict(sorted(n.items(), key=lambda x: x[0]))
 

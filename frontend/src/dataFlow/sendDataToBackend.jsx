@@ -87,7 +87,8 @@ export const SendData = ({ show,beams, beamID, setPlot, beamLength,plot,children
 
                 setPlot({ ...plot, [beamID]: null });
             } else {
-                setPlot({ ...plot, [beamID]: response.data });
+                setPlot({ ...plot, [beamID]: response.data.plots });
+                console.log({"Data send":response.data.data,"Plots received":response.data.plots})
             }
         } catch (error) {
             console.log("Error: ", error.message);

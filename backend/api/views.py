@@ -16,8 +16,8 @@ def chart(request):
     beamLength = data.get("beam_length")
     moi = data.get("moi")
     youngModulus = data.get("young_modulus")
-
-    minspan = 0.05 * beamLength
+    # maximum span of a beam element
+    max_element_span = 0.05 * beamLength
     leng = beamLength
     E: float = youngModulus
     I: float = moi
@@ -26,14 +26,15 @@ def chart(request):
         return JsonResponse({"ERROR": "Beam is empty"})
     
     no_nodes, bars, n, value_ = arrangeData(
-        distributedload_, support_, pointLoad_, minspan, leng
+        distributedload_, support_, pointLoad_, max_element_span, leng
     )
     beam_1 = Beam(leng, no_nodes, E, I, bars, n)
     beam_1.add_values(value_)
     beam_1.analysis()
     beam_1.plot()
     plots = beam_1.plots
-    return JsonResponse(plots)
+    # print(E)
+    return JsonResponse({"data":data,"plots":plots})
      
 
 @api_view(["POST"])
