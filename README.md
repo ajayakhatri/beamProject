@@ -197,26 +197,26 @@ Inside back-end folder :
 ```
 backend
 ├── api/               # Django API app directory
-│   ├── __pycache__/   # Cached Python files
-│   ├── migrations/    # Database migrations
-│   ├── __init__.py    # Initialization script for the 'api' app
+│   ├── __pycache__/   
+│   ├── migrations/  
+│   ├── __init__.py  
 │   ├── admin.py       # Django admin configuration
-│   ├── apps.py        # Configuration for the 'api' app
-│   ├── arrangeData.py # Function to arrange data from frontend into NumPy arrays
+│   ├── apps.py        
+│   ├── arrangeData.py # Contains Function to arrange data from frontend into NumPy arrays
 │   ├── beamApp.py     # Contains beam class to handle calculations
-│   ├── models.py      # Database models definition
+│   ├── models.py      # Contains Database model definition
 │   ├── urls.py        # URL routing configuration
-│   └── views.py       # View functions for the 'api' app
-├── beam/              # Django project settings
-│   ├── __pycache__/   # Cached Python files
-│   ├── __init__.py    # Initialization script for the 'beam' project
-│   ├── asgi.py        # ASGI configuration
-│   ├── settings.py    # Django project settings
+│   └── views.py       # Contains View functions for the 'api' app
+├── beam/              
+│   ├── __pycache__/   
+│   ├── __init__.py    
+│   ├── asgi.py        
+│   ├── settings.py    
 │   ├── urls.py        # Top-level URL routing configuration
-│   └── wsgi.py        # WSGI configuration
-├── db.sqlite3         # SQLite database file
-├── manage.py          # Django management script
-└── requirements.txt   # Python package dependencies
+│   └── wsgi.py        
+├── db.sqlite3         
+├── manage.py          
+└── requirements.txt   # Contains Python package dependencies
 ```
 
 ### Front-end File Structure
