@@ -281,7 +281,7 @@ frontend
 
 - The frontend and backend are separated, that means the user can change method of analysis in backend to any methods while using the beautiful frontend as it is.
 
-- For optimal printing, it may be necessary to adjust the dimensions of the PDF. While testing on desktops using Edge and Chrome, the print was satisfactory. However, there is room for improvement in this regard.
+- For optimal printing, it may be necessary to adjust the dimensions of the PDF. While testing on desktops using Edge and Chrome, the prints were satisfactory.
 
 ## Contacts
 
