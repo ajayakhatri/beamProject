@@ -51,7 +51,7 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty,setMessage}) => {
         deleteIMG(beamHingedSupport)
       
 
-        console.log(" saving beam:", {
+        console.log("saving beam:", {
             "beam":copyofbeam,
         })
         const url='/api/save-beam/'
@@ -103,7 +103,7 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty,setMessage}) => {
   return (
     <button className='btn btn-outline-primary p-1'
     onClick={()=>save(beam)}>
-Save Beam
-      </button>
+    Save Beam
+    </button>
   )
 }

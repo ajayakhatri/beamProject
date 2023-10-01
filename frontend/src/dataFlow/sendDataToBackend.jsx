@@ -68,7 +68,7 @@ export const SendData = ({setMessage, show,beams, beamID, setPlot, beamLength,pl
             "moi": moi,
             "young_modulus": youngModulus,
         })
-        const url='/api/plsot/'
+        const url='/api/plot/'
         try {
             const response = await axios({
                 method: 'post',
