@@ -393,7 +393,6 @@ function Beam() {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     let beam = beams[beamIndex]
-    console.log("scale in alldiv",scale)
 
     let alldivs = Object.values(beam.tools).map((toolType) =>
       toolType !== "fixedSupportLeft" && toolType !== "fixedSupportRight" &&
@@ -523,7 +522,7 @@ function Beam() {
                   Invalid Support Condition!!
                 </Alert>
               </div>}
-              <SendData beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}
+              <SendData setMessage={setMessage} beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}
                 show={
                   isFigAvailable[beam.id] && (
                     beam.tools?.rollerSupport?.length >= 2 ||

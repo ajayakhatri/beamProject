@@ -42,6 +42,40 @@ The flowchart below shows integaration of different components of the web app.
 
 ## Installation And Running
 
+Directly run the command below on root directory (Assuming you have [Python](https://www.python.org/downloads/) and [NodeJs](https://nodejs.org/en/download) downloaded ):
+
+For Windows
+
+```
+cd frontend
+npm install
+cd ..
+python -m venv venv
+venv\Scripts\activate
+cd backend
+pip install -r requirements.txt
+cd ..
+cd frontend
+npm run start
+```
+
+For Linux and macOS
+
+```
+cd frontend
+npm install
+cd ..
+python -m venv venv
+source venv/bin/activate
+cd backend
+pip install -r requirements.txt
+cd ..
+cd frontend
+npm run start
+```
+
+**OR** Do it manually:
+
 - ### Installation
 
   - **Installing frontend dependencies:**
@@ -58,22 +92,6 @@ The flowchart below shows integaration of different components of the web app.
        pip install -r requirements.txt
        ```
 
-  OR
-
-  Directly run the command below on root directory(Assuming you have Python installed):
-
-  ```
-    cd frontend
-    npm install
-
-    cd ..
-    python -m venv venv
-    venv\Scripts\activate
-
-    cd backend
-    pip install -r requirements.txt
-  ```
-
 - ### Running the appication
 
   **To start React and Django development server concurrently :** In _frontend directory_ run command below :
@@ -82,12 +100,10 @@ The flowchart below shows integaration of different components of the web app.
   npm run start
   ```
 
-  OR
-
   **To start servers separately :**
 
   - In _frontend directory_ run command `npm run dev` to start React development server
-  - In _backend directory_ run command `manage.py runserver` to start Django development server.
+  - In _backend directory_ run command `py manage.py runserver` to start Django development server.
 
 ## Distinctiveness and Complexity
 

@@ -54,10 +54,11 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty,setMessage}) => {
         console.log(" saving beam:", {
             "beam":copyofbeam,
         })
+        const url='/api/save-beam/'
         try {
             const response = await axios({
                 method: 'post',
-                url: '/api/save-beam/',
+                url: url,
                 data: {
                     "beam": copyofbeam,
                 }
@@ -84,6 +85,18 @@ export const SaveBeam = ({beam,changeOrAddBeamProperty,setMessage}) => {
          
         } catch (error) {
             console.log("Error: ", error.message);
+            // Network Error
+            const errorMessage=error.message==="Network Error"?"Could not connect to the server, ensure the server is running at "+axios.defaults.baseURL:"Server could not find the resources at "+axios.defaults.baseURL+url
+            setMessage(["danger", 
+            <>
+            <p style={{fontSize:"16px",fontWeight:"bold"}}>
+            {error.message}
+            </p>
+            <li>
+            {errorMessage}
+            </li>
+            </>
+            , true])
         }
     };
 

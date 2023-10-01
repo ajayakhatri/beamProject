@@ -10,8 +10,9 @@ export const LoadBeam = ({setBeams,beams,setMessage}) => {
 
   const getBeam = async (referenceNo,beams) => {
     console.log("Sending Request for Beam ID: ", referenceNo)
+    const url=`/api/get-beam/${referenceNo}/`
       try {
-        const res = await axios.get(`/api/get-beam/${referenceNo}/`);
+        const res = await axios.get(url);
         const jsonData = res.data
         console.log(jsonData)
          if (jsonData.ERROR === "Beam not found") {
@@ -35,8 +36,23 @@ export const LoadBeam = ({setBeams,beams,setMessage}) => {
               
             }
           } catch (error) {
-            console.log(error.message);
-            setMessage(["danger","Beam not found",true])
+            console.log(error);
+                // Network Error
+                const errorMessage=error.message==="Network Error"?"Could not connect to the server, ensure the server is running at "+axios.defaults.baseURL:"Server could not find the resources at "+axios.defaults.baseURL+url
+                setMessage(["danger", 
+                <>
+                  {error.message==="Request failed with status code 500"?"Beam of reference no. "+referenceNo+" not found":
+                  <>
+                <p style={{fontSize:"16px",fontWeight:"bold"}}>
+                  {error.message}
+                </p>
+                <li>
+                {errorMessage}
+                </li>
+                  </>
+                }
+                </>
+                , true])
           }
     };
   return (

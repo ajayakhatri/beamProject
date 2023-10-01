@@ -4,7 +4,7 @@ import axios from "./axios.jsx";
 import  { useState, useEffect, useRef } from "react";
 
 
-export const SendData = ({ show,beams, beamID, setPlot, beamLength,plot,children}) => {
+export const SendData = ({setMessage, show,beams, beamID, setPlot, beamLength,plot,children}) => {
 
     const [localBeams, setlocalBeams] = useState(beams)
     const beamsRef = useRef(localBeams);
@@ -68,10 +68,11 @@ export const SendData = ({ show,beams, beamID, setPlot, beamLength,plot,children
             "moi": moi,
             "young_modulus": youngModulus,
         })
+        const url='/api/plsot/'
         try {
             const response = await axios({
                 method: 'post',
-                url: '/api/plot/',
+                url: url ,
                 data: {
                     "point_load_input": point_load_input,
                     "distributed_load_input": distributed_load_input,
@@ -91,7 +92,19 @@ export const SendData = ({ show,beams, beamID, setPlot, beamLength,plot,children
                 console.log({"Data send":response.data.data,"Plots received":response.data.plots})
             }
         } catch (error) {
-            console.log("Error: ", error.message);
+            setPlot({ ...plot, [beamID]: null });
+            // Network Error
+            const errorMessage=error.message==="Network Error"?"Could not connect to the server, ensure the server is running at "+axios.defaults.baseURL:"Server could not find the resources at "+axios.defaults.baseURL+url
+            setMessage(["danger", 
+            <>
+            <p style={{fontSize:"16px",fontWeight:"bold"}}>
+            {error.message}
+            </p>
+            <li>
+            {errorMessage}
+            </li>
+            </>
+            , true])
         }
     };
 
