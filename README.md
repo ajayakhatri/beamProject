@@ -28,7 +28,7 @@
 
 It was developed as a final project for CS50W, using React as frontend Javascript library, Django as backend Python framework and NumPy for calculation. Frontend sends data of a beam model to the backend via an HTTP request, and there is a Django model for handling the read and write operations of beam data in the database. Click [here](#distinctiveness) to learn about features.
 
-- Demo video: [https://youtu.be/hzglLLgS51E](https://youtu.be/hzglLLgS51E)
+- Demo video: [https://youtu.be/q1yYABC7Nis](https://youtu.be/q1yYABC7Nis)
 
 ## Inspiration
 
@@ -135,8 +135,8 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 
 - **Save, Share and Delete:** Users can save their beam models and analysis for future reference. The application also allows users to share them with colleagues or peers easily. They can remove elements on a beam from view. Also, users can delete beams from database by logging in as admin in django server.
 
-- **Other features:** The application allows users to specify units, beam length, and Young's Modulus to suit the material properties of their beams. Users can choose beam section from preset for automatic calculation of Moment of Inertia or specify the custom value. 
-  
+- **Other features:** The application allows users to specify units, beam length, and Young's Modulus to suit the material properties of their beams. Users can choose beam section from preset for automatic calculation of Moment of Inertia or specify the custom value.
+
 ### Complexity
 
 The project's complexity is evident in its use of multiple technologies and the integration of various components. Besides the integration part what I found the most complex in the projects were:
@@ -197,25 +197,25 @@ Inside back-end folder :
 ```
 backend
 ├── api/               # Django API app directory
-│   ├── __pycache__/   
-│   ├── migrations/  
-│   ├── __init__.py  
+│   ├── __pycache__/
+│   ├── migrations/
+│   ├── __init__.py
 │   ├── admin.py       # Django admin configuration
-│   ├── apps.py        
+│   ├── apps.py
 │   ├── arrangeData.py # Contains Function to arrange data from frontend into NumPy arrays
 │   ├── beamApp.py     # Contains beam class to handle calculations
 │   ├── models.py      # Contains Database model definition
 │   ├── urls.py        # URL routing configuration
 │   └── views.py       # Contains View functions for the 'api' app
-├── beam/              
-│   ├── __pycache__/   
-│   ├── __init__.py    
-│   ├── asgi.py        
-│   ├── settings.py    
+├── beam/
+│   ├── __pycache__/
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
 │   ├── urls.py        # Top-level URL routing configuration
-│   └── wsgi.py        
-├── db.sqlite3         
-├── manage.py          
+│   └── wsgi.py
+├── db.sqlite3
+├── manage.py
 └── requirements.txt   # Contains Python package dependencies
 ```
 
@@ -265,7 +265,6 @@ frontend
 ## Additional Information
 
 - Both default username and password for Django admin panel is **admin** at "http://127.0.0.1:8000/admin"
-  
 - If the Django Server is being run on other address from "http://127.0.0.1:8000" then you can update baseURL in axios.jsx file:
 
   ```
