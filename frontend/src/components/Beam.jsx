@@ -567,8 +567,8 @@ function Beam() {
               </SendData>
 
             {/* For Debugging purpose */}
-           <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
-            <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button> 
+           {/* <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
+            <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>  */}
 
             <SaveBeam setMessage={setMessage} beam={beam} changeOrAddBeamProperty={changeOrAddBeamProperty} />
             <button className='btn btn-danger p-1' onClick={() => {

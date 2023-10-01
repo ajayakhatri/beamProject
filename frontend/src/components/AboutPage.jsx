@@ -26,9 +26,6 @@ const About=()=>{
       </ul>
     </li>
     <li>
-      <a href="#installation-and-running">Installation and Running</a>
-    </li>
-    <li>
       <a href="#distinctiveness-and-complexity">
         Distinctiveness and Complexity
       </a>
@@ -123,100 +120,7 @@ const About=()=>{
       <img src="img/flowchart.svg" alt="flowchart" />
     </li>
   </ul>
-  <h2 id="installation-and-running">Installation And Running</h2>
-  <ul>
-    <li>
-      <h3 id="installation">Installation</h3>
-      <ul>
-        <li>
-          <strong>Installing frontend dependencies:</strong>
-          <ol>
-            <li>Clone the repository to your local machine.</li>
-            <li>
-              Go to <strong>frontend</strong> directory run the command below to
-              install necessary dependencies.
-              <pre>
-                <code>
-                  npm <span className="hljs-keyword">install</span>
-                  {"\n"}
-                </code>
-              </pre>
-            </li>
-          </ol>
-        </li>
-        <li>
-          <strong>Installing python virtual environment and packages:</strong>
-          <ol>
-            <li>Create a python virtual environment and activate it.</li>
-            <li>
-              Go to root directory and navigate to the <em>backend</em>{" "}
-              directory.
-            </li>
-            <li>
-              Install the required Python packages from requirements.txt using
-              command below:
-              <pre>
-                <code>
-                  pip <span className="hljs-keyword">install</span> -r
-                  requirements.txt{"\n"}
-                </code>
-              </pre>
-            </li>
-          </ol>
-        </li>
-      </ul>
-      <p>OR</p>
-      <p>
-        Directly run the command below on root directory(Assuming you have
-        Python installed):
-      </p>
-      <pre>
-        <code>
-          {"  "}cd frontend{"\n"}
-          {"  "}npm <span className="hljs-keyword">install{"\n"}</span>
-          {"\n"}
-          {"  "}cd ..{"\n"}
-          {"  "}python -m venv venv{"\n"}
-          {"  "}venv\
-          <span className="hljs-keyword">Scripts\activate{"\n"}</span>
-          {"\n"}
-          {"  "}cd <span className="hljs-keyword">backend{"\n"}</span>
-          {"  "}pip <span className="hljs-keyword">install </span>-r
-          requirements.txt{"\n"}
-        </code>
-      </pre>
-    </li>
-    <li>
-      <h3 id="running-the-appication">Running the appication</h3>
-      <p>
-        <strong>
-          To start React and Django development server concurrently :
-        </strong>{" "}
-        In <em>frontend directory</em> run command below :
-      </p>
-      <pre>
-        <code>
-          npm <span className="hljs-keyword">run</span>
-          <span className="bash"> start</span>
-          {"\n"}
-        </code>
-      </pre>
-      <p>OR</p>
-      <p>
-        <strong>To start servers separately :</strong>
-      </p>
-      <ul>
-        <li>
-          In <em>frontend directory</em> run command <code>npm run dev</code> to
-          start React development server
-        </li>
-        <li>
-          In <em>backend directory</em> run command{" "}
-          <code>manage.py runserver</code> to start Django development server.
-        </li>
-      </ul>
-    </li>
-  </ul>
+
   <h2 id="distinctiveness-and-complexity">Distinctiveness and Complexity</h2>
   <h3 id="distinctiveness">Distinctiveness</h3>
   <p>
@@ -250,15 +154,6 @@ const About=()=>{
         <li>
           <img src="img/demo.gif" alt="Demo" />
         </li>
-        <li>
-          The application allows users to specify load units, beam length, and
-          Young's Modulus to suit the material properties of their beam.
-        </li>
-        <li>
-          Users can choose beam section from preset for automatic calculation of
-          Moment of Inertia or specify the custom value.
-        </li>
-        <li>User can delete elements on a beam.</li>
         <li>
           Distributed load changes its image when its loads are changed. User
           can also change colour of distributed load.
@@ -314,6 +209,11 @@ const About=()=>{
         models and analysis for future reference. The application also allows
         users to share them with colleagues or peers easily. User can delete
         beams from database by logging in as admin in django server.
+      </p>
+    </li>
+    <li>
+      <p>
+        <strong>Other features:</strong>The application allows users to specify units, beam length, and Young's Modulus to suit the material properties of their beams. Users can choose beam section from preset for automatic calculation of Moment of Inertia or specify the custom value.
       </p>
     </li>
   </ul>
@@ -550,6 +450,10 @@ const About=()=>{
   <h2 id="additional-information">Additional Information</h2>
   <ul>
     <li>
+      Both default username and password for django admin panel is <strong>admin</strong> at " 
+       <a href="http://127.0.0.1:8000/admin">http://127.0.0.1:8000/admin</a>"
+    </li>
+    <li>
       <p>
         If the Django Server is being run on other address from "
         <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>" then you can
@@ -582,7 +486,7 @@ const About=()=>{
       <p>
         For optimal printing, it may be necessary to adjust the dimensions of
         the PDF. While testing on desktops using Edge and Chrome, the print was
-        satisfactory. However, there is room for improvement in this regard.
+        satisfactory.
       </p>
     </li>
   </ul>

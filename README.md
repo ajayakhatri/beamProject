@@ -264,7 +264,7 @@ frontend
 
 ## Additional Information
 
-- Both user and password for django admin panel is **admin** at "http://127.0.0.1:8000/admin"
+- Both default username and password for Django admin panel is **admin** at "http://127.0.0.1:8000/admin"
   
 - If the Django Server is being run on other address from "http://127.0.0.1:8000" then you can update baseURL in axios.jsx file:
 
