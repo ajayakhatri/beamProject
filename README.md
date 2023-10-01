@@ -117,9 +117,7 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 
   - The position of loads and supports can be changed by simply dragging them along the beam or changed manually.
   - ![Demo](frontend/public/img/demo.gif)
-  - The application allows users to specify load units, beam length, and Young's Modulus to suit the material properties of their beam.
-  - Users can choose beam section from preset for automatic calculation of Moment of Inertia or specify the custom value.
-  - User can delete elements on a beam.
+
   - Distributed load changes its image when its loads are changed. User can also change colour of distributed load.
   - ![Demo](frontend/public/img/colourChange.gif)
 
@@ -135,8 +133,10 @@ The Beam Calculator App stands out due to its combination of interactive modelin
 
 - **Print:** Users can print the beam with its information and charts.
 
-- **Save, Share and Delete:** Users can save their beam models and analysis for future reference. The application also allows users to share them with colleagues or peers easily. User can delete beams from database by logging in as admin in django server.
+- **Save, Share and Delete:** Users can save their beam models and analysis for future reference. The application also allows users to share them with colleagues or peers easily. They can remove elements on a beam from view. Also, users can delete beams from database by logging in as admin in django server.
 
+- **Other features:** The application allows users to specify units, beam length, and Young's Modulus to suit the material properties of their beams. Users can choose beam section from preset for automatic calculation of Moment of Inertia or specify the custom value. 
+  
 ### Complexity
 
 The project's complexity is evident in its use of multiple technologies and the integration of various components. Besides the integration part what I found the most complex in the projects were:
@@ -264,6 +264,8 @@ frontend
 
 ## Additional Information
 
+- Both user and password for django admin panel is **admin** at "http://127.0.0.1:8000/admin"
+  
 - If the Django Server is being run on other address from "http://127.0.0.1:8000" then you can update baseURL in axios.jsx file:
 
   ```
