@@ -104,7 +104,7 @@ const About = () => {
         <ul>
           <li>
             Demo video:{" "}
-            <a href="https://youtu.be/q1yYABC7Nis">
+            <a target="_blank" href="https://youtu.be/q1yYABC7Nis">
               https://youtu.be/q1yYABC7Nis
             </a>
           </li>
