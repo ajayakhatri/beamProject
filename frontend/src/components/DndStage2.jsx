@@ -230,7 +230,7 @@ export function DropableNew(props) {
                 toolType == "distributedLoad" && status.loadSet &&(
                     <>
                     { !isDLLeftInputVisible ?(
-                        <div onClick={()=>setDLLeftInputVisible(true)}  className='inputPointer' style={{   position: "absolute", top: "-90px",border:!props.showInfoBorder&&"none" }}>
+                        <div onClick={()=>setDLLeftInputVisible(true)}  className='inputPointer' style={{minWidth:"75px",position: "absolute", top: "-90px",left:"5px",border:!props.showInfoBorder&&"none" }}>
                             {loadStart+" "+loadUnit}/{unit}
                         </div>
                     ):(
@@ -254,7 +254,7 @@ export function DropableNew(props) {
                                 />
                         )}
                     { !isDLRightInputVisible ?(
-                        <div onClick={()=>setDLRightInputVisible(true)} className='inputPointer' style={{  position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px`,border:!props.showInfoBorder&&"none" }}>
+                        <div onClick={()=>setDLRightInputVisible(true)} className='inputPointer' style={{  minWidth:"75px",position: "absolute", top: "-90px", right: `-${-10 + margin / (beamLength / actualBeamLength)}px`,border:!props.showInfoBorder&&"none" }}>
                            {loadEnd+" "+loadUnit}/{unit}
                         </div>
                     ):(

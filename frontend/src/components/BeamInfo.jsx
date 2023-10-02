@@ -26,7 +26,7 @@ setLoadUnitValue(e.target.value)
       <option style={{backgroundColor:"DimGray", color:"white"}}>{loadUnitValue}</option>
       <option value="kN">kN</option>
       <option value="N">N</option>
-      <option value="lb">lb</option>
+      <option value="lbf">lbf</option>
     </Form.Select>
         </div>
         <div className='d-flex gap-2 align-items-center mb-2' >
@@ -38,6 +38,7 @@ onChange={(e) => {
   } }>
       <option style={{backgroundColor:"DimGray", color:"white"}}>{lengthUnitValue}</option>
       <option value="m">m</option>
+      <option value="mm">mm</option>
       <option value="cm">cm</option>
       <option value="ft">ft</option>
       <option value="in">in</option>

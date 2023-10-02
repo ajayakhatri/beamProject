@@ -94,7 +94,7 @@ function Beam() {
       moi: 0.002278,
       fixedSupportLeft: true,
       fixedSupportRight: false,
-      youngModulus: 210,
+      youngModulus: 210000000,
       section: "Rectangular",
       radius: 0.15,
       depth: 0.45,
