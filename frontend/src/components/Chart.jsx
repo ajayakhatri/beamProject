@@ -83,8 +83,8 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
           };
     
     return (
-  <div className='card my-4' >
-    <Navbar className="bg-body-tertiary tohide"  >
+  <div className='card my-4 chartholder' >
+    <Navbar className="bg-body-tertiary not-printable"  >
       <Nav variant="underline" activeKey={activeTab} onSelect={handleNavSelect} className='ms-4 my-1'style={{width:actualBeamLength<300?"300px":null, fontSize:"12px"}}>
         <Nav.Item>
           <Nav.Link eventKey="link-0">Elastic Curve</Nav.Link>
@@ -101,11 +101,11 @@ export const MyCharts = ({beamID,plot,actualBeamLength,unit,loadUnit}) => {
       </Nav>
       </Navbar>
 <div className='d-flex flex-column '>
-<div className='d-flex justify-content-between'>
-  <div className='fs-3 ms-2 printable'>
+<div className='d-flex chartslabel'>
+  <div className='fs-3 ms-2 chartlabel'>
   <strong>Charts</strong>
   </div>
-  <div className='d-flex align-items-end justify-content-center'>
+  <div className='d-flex align-items-end justify-content-center not-printable'>
 
     <Form.Label htmlFor={`change-unit-of-length-${beamID}`} style={{width:"60px"}}>Units:</Form.Label>
     <Form.Select style={{ maxWidth: "70px"}} aria-label="Change unit of length" id={`change-unit-of-length-${beamID}`}
@@ -232,9 +232,8 @@ export const MyChart = ({ plot, x0,y0,y,label,actualBeamLength,beamlengthUnit,le
     };
 
     return (
-          <div className='mt-1 card' style={{ width:actualBeamLength+'px', minHeight:actualBeamLength<400?"250px":"400px"}}>
-            
-        <Scatter  data={chartData} options={options} />
+          <div className='mt-1 card chartplot dontbreak' style={{ width:actualBeamLength+'px', minHeight:actualBeamLength<400?"250px":"400px"}}>
+        <Scatter data={chartData} options={options} />
           </div> 
     );
 };

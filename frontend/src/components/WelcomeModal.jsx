@@ -7,7 +7,7 @@ import Modal from 'react-bootstrap/Modal';
 function WelcomePage(props) {
     return (
       <div>
-        <h1 className='text-center'>Welcome to the Beam Calculator App</h1>
+        <h1 className='text-center'>Welcome to the Beam App</h1>
         
         <h2 className='text-center'><small>A Tool for Beam Analysis</small>
         </h2>

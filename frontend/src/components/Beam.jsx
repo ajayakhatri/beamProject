@@ -108,7 +108,7 @@ function Beam() {
             isUp: true,
             loadEnd: 5,
             loadStart: 5,
-            span: 2,
+            span: 5,
             img: <ImgDistributedLoad hasid={true} newSpanValue={2} scale={10 / actualBeamLength} spacing={20} loadEnd={5} loadStart={5} />
           }
         ]
@@ -449,14 +449,15 @@ function Beam() {
 
   return (
     <div>
+      
       <MessageBox message={message} setMessage={setMessage} />
-      <div className='d-flex justify-content-between' >
+      <div className='d-flex justify-content-between not-printable' >
         <div className='d-flex gap-2 align-items-center'>
-          <h1 style={{ fontSize: "30px" }}>Beams</h1>
+          <h1 id="webtitle"style={{ fontSize: "30px" }}>Beams</h1>
           {beams.length > 0 &&
             <div className={(actualBeamLength < 660 ? 'flex-column mb-2 ' : "") + "d-flex " + "gap-2"}>
               <OnBoarding modalShow={modalShow} setModalShow={setModalShow} setShowAboutPage={setShowAboutPage}/>
-              <button className='btn btn-outline-primary' style={{ fontWeight: "bold", height: "30px", width: "100px", borderRadius: "10px", boxShadow: "#422800 4px 4px 0 0" }} onClick={() => setShowAboutPage(!showAboutPage)}>About</button>
+              <button className='btn btn-outline-primary not-printable' style={{ fontWeight: "bold", height: "30px", width: "100px", borderRadius: "10px", boxShadow: "#422800 4px 4px 0 0" }} onClick={() => setShowAboutPage(!showAboutPage)}>About</button>
             </div>
           }
         {
@@ -465,17 +466,18 @@ function Beam() {
            } 
         </div>
         {beams.length > 0 && (
-          <div id="tour-toggle" className={actualBeamLength > 660 ? "d-flex gap-2 align-items-center ms-4" : 'ms-4'} style={{ fontSize: "14px", minWidth: "120px" }}>
+          <div id="tour-toggle" className={actualBeamLength > 660 ? "d-flex gap-2 align-items-center ms-4 not-printable" : 'ms-4 not-printable'} style={{ fontSize: "14px", minWidth: "120px" }}>
             <Switch label={"Loads"} status={loadSet} setstatus={setloadSet} />
             <Switch label={"Length"} status={lengthSet} setstatus={setlengthSet} />
             <Switch label={"Border"} status={showInfoBorder} setstatus={setShowInfoBorder} />
           </div>
         )}
       </div>
-      {beams.map((beam) => (
-        <div key={beam.id} id={"toPrint"+beam.id} className='border-1 border-black border py-5 mb-4 position-relative d-flex flex-column align-items-center' style={{ borderRadius: "8px", padding: "0px 20px", boxShadow: "#422800 4px 4px 0 0" }}>
-          <div style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.referenceNo ? "Ref no." + beam.referenceNo : ""}</div>
-        <div className='tohide'style={{ marginBottom: "70px"}}>
+      {beams.map((beam,index) => (
+        <div key={beam.id} id={"toPrint"+beam.id} 
+        className={`beamground dimensionline  border-1 position-relative d-flex flex-column align-items-center`}>
+          <div className="not-printable" style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px",padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.referenceNo ? "Ref no." + beam.referenceNo : ""}</div>
+        <div className='not-printable'style={{ marginBottom: "70px"}}>
           <ToolBar
             beam={beam}
             beamID={beam.id}
@@ -507,7 +509,7 @@ function Beam() {
             <BeamInfo beam={beam} onChange={changeOrAddBeamProperty} actualBeamLength={actualBeamLength} />
           </div>
 
-          <div className='d-flex gap-2 mt-5 tohide' id="tour-diagramAndDelete">
+          <div className='d-flex gap-2 mt-5 not-printable' id="tour-diagramAndDelete">
             {!isFigAvailable[beam.id] &&
               !(
                 beam.tools?.rollerSupport?.length >= 2 ||
@@ -592,7 +594,7 @@ function Beam() {
 
         </div>
       ))}
-      <div className='d-flex justify-content-center gap-2 mb-2 tohide'>
+      <div className='d-flex justify-content-center gap-2 mb-2 not-printable'>
         <button className="btn btn-primary" style={{ minWidth: "120px" }} onClick={() => {
           addBeam()
           setMessage(["primary", "New Beam is added", true])

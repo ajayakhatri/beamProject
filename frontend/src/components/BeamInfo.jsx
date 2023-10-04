@@ -15,7 +15,7 @@ export const BeamInfo = ({beam,onChange,actualBeamLength}) => {
 
     
   return (
-    <div style={{marginTop:"55px", position:"relative"}} id="tour-beamInfo">
+    <div className='dontbreak' style={{marginTop:"55px", position:"relative"}} id="tour-beamInfo">
     <div className='d-flex gap-2 align-items-center  mb-2'>
     <Form.Label htmlFor={`input-loadunit-of-${beam.id}`} style={{width:"105px"}}>Unit of Load :</Form.Label>
 <Form.Select  style={{ maxWidth: "120px"}} aria-label="Select Unit of Length of Beam"  id={`input-loadunit-of-${beam.id}`}  
@@ -134,11 +134,11 @@ setMOI(moiValue)
                />
                </div>
              <div>
-                 <div style={{top:"50%",left:actualBeamLength>400?"260px":"0px",position:actualBeamLength>400?"absolute":"relative",height:"100px",width:"100px",border:"solid 1px", borderRadius:"50%"}}>
+                 <div className="dimensionline" style={{top:"50%",left:actualBeamLength>400?"260px":"0px",position:actualBeamLength>400?"absolute":"relative",height:"100px",width:"100px",border:"solid 1px", borderRadius:"50%"}}>
                 <div style={{right:"0",top:"50%",position:"absolute",width:"55px",display:"flex",alignItems:"start"}}>
-                <div className="border-dark" style={{ width: "100%", borderTop: "1px solid" }}></div>
+                <div className="dimensionline border-dark" style={{ width: "100%", borderTop: "1px solid" }}></div>
                 <div style={{marginTop:"-25%"}}>{radiusValue+beam.unit}</div>
-                <div className="border-dark" style={{ width: "100%", borderTop: "1px solid" }}></div>
+                <div className="dimensionline border-dark" style={{ width: "100%", borderTop: "1px solid" }}></div>
                 </div>
                 </div>
              </div>
@@ -206,13 +206,13 @@ setMOI(moiValue)
         />
     </div>
     <div>
-    <div style={{top:"50%",left:actualBeamLength>400?"260px":"0px",position:actualBeamLength>400?"absolute":"relative",width:"90px", height:"90px",border:"solid 1px"}}>
+    <div className="dimensionline" style={{top:"50%",left:actualBeamLength>400?"260px":"0px",position:actualBeamLength>400?"absolute":"relative",width:"90px", height:"90px",border:"solid 1px"}}>
       {/* Width */}
       <div style={{position:"absolute",top:"100%",display:"flex",justifyContent:"center",width:"100%"}}>
           <div className='strikethrough'>|</div>
-          <div className="border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
+          <div className="dimensionline border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
         {widthValue+beam.unit}
-          <div className="border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
+          <div className="dimensionline border-dark" style={{ width: "100%", marginTop: "10px", borderTop: "1px solid" }}></div>
           <div className='strikethrough'>|</div>
       </div>
       {/* Depth */}

@@ -289,7 +289,7 @@ export function DropableNew(props) {
                             <div className='d-flex justify-content-between' style={{ marginTop:"33px",zIndex:"10", width: dlSpanValue / (beamLength / actualBeamLength), marginLeft: `${(margin / (beamLength / actualBeamLength))}px` }}>
                                 <div className='strikethrough'>|</div>
 
-                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
+                                <div className="dimensionline" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
                         {!isDLSpanInputVisible? (
                              <div onClick={()=>setDLSpanInputVisible(true)}  className='inputPointer tour-inputSpan' style={{border:!props.showInfoBorder&&"none"}}>
                              {dlSpanValue+unit}
@@ -335,7 +335,7 @@ export function DropableNew(props) {
                                         }} />
                                         </div>
                                 )}
-                                <div style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
+                                <div className="dimensionline" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
                                 <div className='strikethrough'>|</div>
                             </div>
                         

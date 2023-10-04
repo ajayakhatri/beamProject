@@ -78,7 +78,7 @@ function OnBoarding({modalShow,setModalShow}) {
   return (
     <>
     <WelcomeModal modalShow={modalShow} setModalShow={setModalShow} startOnboarding={startOnboarding}/>
-    <button  className='btn btn-outline-primary' style={{fontWeight:"bold",height:"30px",width:"100px", borderRadius:"10px",boxShadow:"#422800 4px 4px 0 0"}} onClick={startOnboarding}>Take a Tour</button>
+    <button  className='btn btn-outline-primary not-printable' style={{fontWeight:"bold",height:"30px",width:"100px", borderRadius:"10px",boxShadow:"#422800 4px 4px 0 0"}} onClick={startOnboarding}>Take a Tour</button>
     </>
   );
 }

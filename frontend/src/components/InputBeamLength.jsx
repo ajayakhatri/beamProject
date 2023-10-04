@@ -12,7 +12,7 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength, showIn
           <div className='strikethrough'>|</div>
         </div>
   
-        <div className="border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
+        <div className="dimensionline border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
   
         {!isinputVisible ? (
           <div onClick={() => setisInputVisible(true)} id="tour-beamLength" className='inputPointer' style={{ fontSize: "15px", border: !showInfoBorder && "none" }}>
@@ -57,7 +57,7 @@ function InputBeamLength({ beam, onChange, updateScale, actualBeamLength, showIn
           </div>
         )}
   
-        <div className="border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
+        <div className="dimensionline border-dark" style={{ width: "100%", marginTop: "11px", borderTop: "1px solid" }}></div>
         <div>
           <div className='strikethrough'>|</div>
         </div>

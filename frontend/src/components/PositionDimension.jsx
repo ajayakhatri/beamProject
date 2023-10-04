@@ -1,9 +1,6 @@
 import React from 'react'
-import { getToolWidth } from './ToolBar'
 
 const PositionDimension = ({ beam, actualBeamLength,scale }) => {
-
-    const toolWidth = getToolWidth()
     let positionA = 0
     let positionB = 0
     let leftA = 0
@@ -45,9 +42,9 @@ const PositionDimension = ({ beam, actualBeamLength,scale }) => {
                   }}>
                   <div className='strikethrough'>|</div>
 
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+                  <div className="dimensionline" style={{ color: "DimGray",width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
                   {(positionB - positionA).toFixed(3) + beam.unit}
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+                  <div className="dimensionline" style={{color: "DimGray", width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
                   {(isLastTool && beam.length - positionB === 0) && (
 
                     <div className='strikethrough'>|</div>
@@ -57,17 +54,18 @@ const PositionDimension = ({ beam, actualBeamLength,scale }) => {
               )}
               {isLastTool && beam.length - positionB !== 0 && (
                 <div
-                  className='d-flex justify-content-between mt-1'
+                  className='d-flex justify-content-between mt-1 dimensionline'
                   style={{
+                    color: "DimGray",
                     width: (actualBeamLength - positions[i - 1]).toFixed(3) + "px",
                     left: leftB,
                     position: "absolute",
                   }}>
                   <div className='strikethrough'>|</div>
 
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+                  <div className="dimensionline" style={{ color: "DimGray",width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
                   {(beam.length - positionB).toFixed(3) + beam.unit}
-                  <div style={{ width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
+                  <div className="dimensionline" style={{color: "DimGray", width: "100%", marginTop: "9.5px", borderTop: "1px solid" }}></div>
                   <div className='strikethrough'>|</div>
 
                 </div>
