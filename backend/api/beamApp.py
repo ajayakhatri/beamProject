@@ -157,7 +157,6 @@ class Beam:
             self.plots["original"][0].extend([xi, xf])
             self.plots["original"][1].extend([yi, yf])
 
-
         for i in range(ne):
             dxi, dxf = self.node[self.bar[i, 0], 0], self.node[self.bar[i, 1], 0]
             dyi = self.node[self.bar[i, 0], 1] + self.displacement[i, 0]
@@ -182,6 +181,7 @@ class Beam:
             m_yf = self.force[i, 2]
             self.plots["shearForce"][0].extend([m_xi, m_xf])
             self.plots["shearForce"][1].extend([m_yi, m_yf])
+        print(self.plots)
 
 
     def add_point_load(self, loadingList):
