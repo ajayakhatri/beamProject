@@ -30,10 +30,10 @@ def chart(request):
     no_nodes, bars, n, value_ = arrangeData(
         distributedload_, support_, pointLoad_, max_element_span, leng
     )
-    # beam_1 = OpenseesApp(leng, no_nodes,500, E, I, bars, n)
+    # beam_1 = OpenseesApp(leng, no_node    s,500, E, I, bars, n)
     beam_1 = Beam(leng, no_nodes, E, I, bars, n)
     beam_1.add_values(value_)
-    # beam_1.analysis()
+    beam_1.analysis()
     beam_1.plot()
     plots = beam_1.plots
     # print(E)
