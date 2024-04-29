@@ -5,7 +5,7 @@ from .models import BeamModel
 from .beamApp import Beam
 import json
 from .arrangeData import arrangeData
-from .beamAppOpensees import OpenseesApp
+from .beamOpensees import beamOpensees
 
 
 @api_view(["POST"])
@@ -18,11 +18,16 @@ def chart(request):
     beamLength = data.get("beam_length")
     moi = data.get("moi")
     youngModulus = data.get("young_modulus")
+    area = data.get("area")
+    analysis_method = data.get("analysis_method")
+
     # maximum span of a beam element
     max_element_span = 0.05 * beamLength
     leng = beamLength
     E: float = youngModulus
     I: float = moi
+    A: float = area
+    analysis_method: int = analysis_method
 
     if len(pointLoad_) == 0 and len(distributedload_) == 0 and len(support_) == 0:
         return JsonResponse({"ERROR": "Beam is empty"})
@@ -30,13 +35,18 @@ def chart(request):
     no_nodes, bars, n, value_ = arrangeData(
         distributedload_, support_, pointLoad_, max_element_span, leng
     )
-    # beam_1 = OpenseesApp(leng, no_node    s,500, E, I, bars, n)
-    beam_1 = Beam(leng, no_nodes, E, I, bars, n)
-    beam_1.add_values(value_)
-    beam_1.analysis()
-    beam_1.plot()
-    plots = beam_1.plots
-    # print(E)
+
+    if analysis_method == 1:
+        beam_1 = Beam(leng, no_nodes, E, I, bars, n)
+        beam_1.add_values(value_)
+        beam_1.analysis()
+        beam_1.plot()
+        plots = beam_1.plots
+        print("Analysis by FEM")
+    else:
+        plots = beamOpensees(no_nodes, bars, n, value_, E, A, I)
+        print("Analysis by Opensees")
+
     return JsonResponse({"data": data, "plots": plots})
 
 

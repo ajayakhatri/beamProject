@@ -1,7 +1,7 @@
 venv
 backend/api/__pycache__
 backend/api/migrations
-backend/api/beamAppOpensees.py
+# backend/api/beamOpensees.py
 backend/api/test.py
 backend/api/beamApp.py
 backend/beam/__pycache__
