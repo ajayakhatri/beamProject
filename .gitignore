@@ -9,4 +9,5 @@ backend/.vscode
 backend/api/views.py
 backend/api/views.py
 backend - Copy
+node_modules
 test
