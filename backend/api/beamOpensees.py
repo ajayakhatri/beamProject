@@ -1,28 +1,4 @@
-import matplotlib.pyplot as plt
-import opsvis as opsv
 from openseespy.opensees import *
-
-
-def plotStructure(title):
-    # Pass in optional argument (fig_wi_he) to control plot size
-    opsv.plot_model(fig_wi_he=(50, 20))
-
-    # Housekeeping
-    plt.title(title)
-    plt.xlabel("Distance (m)")
-    plt.ylabel("Distance (m)")
-    plt.grid()
-    plt.show()
-
-
-# Define a new function to plot loads
-def plotLoads(title):
-    opsv.plot_loads_2d(nep=10, sfac=True, fig_wi_he=(50, 10))
-    plt.title(title)
-    plt.xlabel("Distance (m)")
-    plt.ylabel("Load (N)")
-    plt.grid()
-    plt.show()
 
 
 def beamOpensees(no_nodes, members, nodes, value_, E, A, I):
@@ -67,8 +43,8 @@ def beamOpensees(no_nodes, members, nodes, value_, E, A, I):
         load(i, 0,j,0)
 
 
-    # Create SOE
-    system("BandGeneral")  # BandGeneral more general solver than 'BandSPD'
+    # Create SOE System of Equations
+    system("BandGeneral")  
 
     # Create DOF number
     numberer("RCM")
