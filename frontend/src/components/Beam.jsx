@@ -43,7 +43,7 @@ function Beam() {
     // Function to handle changes in the media query
     const handleMediaQueryChange = (event) => {
       if (event.matches) {
-        console.log("(max-width: 800px)",true)
+        console.log("(max-width: 800px)", true)
         // Media query matches (screen width is less than 900px)
         setactualBeamLength(window.innerWidth - 100); // Adjust component as needed
       } else {
@@ -80,7 +80,7 @@ function Beam() {
       window.removeEventListener('load', handleWindowResize);
     };
 
-    
+
   });
 
 
@@ -95,10 +95,12 @@ function Beam() {
       fixedSupportLeft: true,
       fixedSupportRight: false,
       youngModulus: 210000000,
+      area: 0.135,
       section: "Rectangular",
       radius: 0.15,
       depth: 0.45,
       width: 0.3,
+      analysisMethod: 1,
       tools: {
         distributedLoad: [
           {
@@ -125,10 +127,12 @@ function Beam() {
       loadUnit: "kN",
       moi: 0.002278,
       youngModulus: 210,
+      area: 0.135,
       section: "Rectangular",
       radius: 0.15,
       depth: 0.45,
       width: 0.3,
+      analysisMethod: 1,
       tools: {
       },
     };
@@ -389,7 +393,7 @@ function Beam() {
 
   const [showInfoBorder, setShowInfoBorder] = useState(false);
 
-  const AllDivs = ({ beamID, scale}) => {
+  const AllDivs = ({ beamID, scale }) => {
     const toolWidth = getToolWidth()
     const beamIndex = beams.findIndex((beam) => beam.id === beamID);
     let beam = beams[beamIndex]
@@ -416,15 +420,15 @@ function Beam() {
           positionOnBeam={tool.positionOnBeam}
           //style
           color={tool.id.split("_")[0] === "distributedLoad" ? tool.color : null}
-          style={{ width: toolWidth + "px", left: (tool.positionOnBeam/scale)-toolWidth/2 ? (tool.positionOnBeam/scale)-toolWidth/2: 0 }}>
+          style={{ width: toolWidth + "px", left: (tool.positionOnBeam / scale) - toolWidth / 2 ? (tool.positionOnBeam / scale) - toolWidth / 2 : 0 }}>
           <div style={{
             marginTop: tool.isUp ? "4px" : "23px",
             display: "flex", flexDirection: "row", justifyContent: tool.id.split("_")[0] === "distributedLoad" ? "start" : "center",
           }}>
             {tool.id.split("_")[0] === "distributedLoad" ?
               <ImgDistributedLoad hasid={true} newSpanValue={tool.span} scale={scale} spacing={20} loadEnd={tool.loadEnd} loadStart={tool.loadStart} color={tool.color} />
-              :tool.id.split("_")[0] === "pointLoad" ?<ImgPointLoad load={tool.load}/>:
-              getImg(tool.id.split("_")[0])
+              : tool.id.split("_")[0] === "pointLoad" ? <ImgPointLoad load={tool.load} /> :
+                getImg(tool.id.split("_")[0])
             }
           </div>
         </DropableNew >
@@ -449,21 +453,21 @@ function Beam() {
 
   return (
     <div>
-      
+
       <MessageBox message={message} setMessage={setMessage} />
       <div className='d-flex justify-content-between not-printable' >
         <div className='d-flex gap-2 align-items-center'>
-          <h1 id="webtitle"style={{ fontSize: "30px" }}>Beams</h1>
+          <h1 id="webtitle" style={{ fontSize: "30px" }}>Beams</h1>
           {beams.length > 0 &&
             <div className={(actualBeamLength < 660 ? 'flex-column mb-2 ' : "") + "d-flex " + "gap-2"}>
-              <OnBoarding modalShow={modalShow} setModalShow={setModalShow} setShowAboutPage={setShowAboutPage}/>
+              <OnBoarding modalShow={modalShow} setModalShow={setModalShow} setShowAboutPage={setShowAboutPage} />
               <button className='btn btn-outline-primary not-printable' style={{ fontWeight: "bold", height: "30px", width: "100px", borderRadius: "10px", boxShadow: "#422800 4px 4px 0 0" }} onClick={() => setShowAboutPage(!showAboutPage)}>About</button>
             </div>
           }
-        {
-             showAboutPage&&
-             <AboutPage showAboutPage={showAboutPage} setShowAboutPage={setShowAboutPage} />
-           } 
+          {
+            showAboutPage &&
+            <AboutPage showAboutPage={showAboutPage} setShowAboutPage={setShowAboutPage} />
+          }
         </div>
         {beams.length > 0 && (
           <div id="tour-toggle" className={actualBeamLength > 660 ? "d-flex gap-2 align-items-center ms-4 not-printable" : 'ms-4 not-printable'} style={{ fontSize: "14px", minWidth: "120px" }}>
@@ -473,37 +477,37 @@ function Beam() {
           </div>
         )}
       </div>
-      {beams.map((beam,index) => (
-        <div key={beam.id} id={"toPrint"+beam.id} 
-        className={`beamground dimensionline  border-1 position-relative d-flex flex-column align-items-center`}>
-          <div className="not-printable" style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px",padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.referenceNo ? "Ref no." + beam.referenceNo : ""}</div>
-        <div className='not-printable'style={{ marginBottom: "70px"}}>
-          <ToolBar
-            beam={beam}
-            beamID={beam.id}
-            changeOrAddBeamProperty={changeOrAddBeamProperty}
-            deleteBeamProperty={deleteBeamProperty}
-            addSupportPositions={addSupportPositions}
-            removeSupportPositions={removeSupportPositions}
-            beamLength={beam.length}
-            actualBeamLength={actualBeamLength}
-          />
-        </div>
-         
-        <div id={`beamFig-${beam.id}`} style={{ marginTop: "30px"}}>
+      {beams.map((beam, index) => (
+        <div key={beam.id} id={"toPrint" + beam.id}
+          className={`beamground dimensionline  border-1 position-relative d-flex flex-column align-items-center`}>
+          <div className="not-printable" style={{ color: "white", backgroundColor: "black", position: "absolute", top: 0, left: 0, margin: "5px", padding: "2px 6px", border: "solid 2px white", borderRadius: "6px" }}>Beam {beam.referenceNo ? "Ref no." + beam.referenceNo : ""}</div>
+          <div className='not-printable' style={{ marginBottom: "70px" }}>
+            <ToolBar
+              beam={beam}
+              beamID={beam.id}
+              changeOrAddBeamProperty={changeOrAddBeamProperty}
+              deleteBeamProperty={deleteBeamProperty}
+              addSupportPositions={addSupportPositions}
+              removeSupportPositions={removeSupportPositions}
+              beamLength={beam.length}
+              actualBeamLength={actualBeamLength}
+            />
+          </div>
+
+          <div id={`beamFig-${beam.id}`} style={{ marginTop: "30px" }}>
             <BeamBar beamID={beam.id} addTool={addTool} scale={beam.length / actualBeamLength} actualBeamLength={actualBeamLength}
               checkedLeft={beam.fixedSupportLeft}
               checkedRight={beam.fixedSupportRight}
             >
-              <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength}/>
+              <AllDivs beamID={beam.id} scale={beam.length / actualBeamLength} />
             </BeamBar>
             {lengthSet &&
-            <>
-              <PositionDimension beam={beam} actualBeamLength={actualBeamLength} scale={beam.length / actualBeamLength} />
-          <InputBeamLength beam={beam} onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} showInfoBorder={showInfoBorder} />
-            </>
+              <>
+                <PositionDimension beam={beam} actualBeamLength={actualBeamLength} scale={beam.length / actualBeamLength} />
+                <InputBeamLength beam={beam} onChange={changeOrAddBeamProperty} updateScale={updateScale} actualBeamLength={actualBeamLength} showInfoBorder={showInfoBorder} />
+              </>
             }
-      
+
           </div>
           <div className={`align-self-start beaminfo-${beam.id}`}>
             <BeamInfo beam={beam} onChange={changeOrAddBeamProperty} actualBeamLength={actualBeamLength} />
@@ -518,46 +522,46 @@ function Beam() {
                 beam.fixedSupportLeft ||
                 beam.fixedSupportRight
               ) && showAlert[beam.id] &&
-              <div  className='alert' style={{ minHeight: "100px", position: "fixed", bottom: "5%",zIndex:4}}>
-                <Alert style={{ fontSize: "12px"}} variant="danger" onClose={() => setState(setShowAlert, beam.id, false)} dismissible>
-                <Alert.Heading>"Error"</Alert.Heading>
+              <div className='alert' style={{ minHeight: "100px", position: "fixed", bottom: "5%", zIndex: 4 }}>
+                <Alert style={{ fontSize: "12px" }} variant="danger" onClose={() => setState(setShowAlert, beam.id, false)} dismissible>
+                  <Alert.Heading>"Error"</Alert.Heading>
                   Invalid Support Condition!!
                 </Alert>
               </div>}
-              <SendData setMessage={setMessage} beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}
-                show={
-                  isFigAvailable[beam.id] && (
-                    beam.tools?.rollerSupport?.length >= 2 ||
-                    beam.tools?.hingedSupport?.length >= 2 ||
-                    (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
-                    beam.fixedSupportLeft ||
-                    beam.fixedSupportRight
-                  )
-                }>
-            <ToggleButton
-              id={`toggle-check-${beam.id}`}
-              type="checkbox"
-              variant="outline-primary"
-              checked={isFigAvailable[beam.id] && (
-                beam.tools?.rollerSupport?.length >= 2 ||
-                beam.tools?.hingedSupport?.length >= 2 ||
-                (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
-                beam.fixedSupportLeft ||
-                beam.fixedSupportRight
-              )}
-              value="1"
-              onChange={(e) => {
-                (
+            <SendData setMessage={setMessage} beams={beams} beamID={beam.id} setPlot={setPlot} plot={plot} beamLength={parseFloat(beam.length)}
+              show={
+                isFigAvailable[beam.id] && (
                   beam.tools?.rollerSupport?.length >= 2 ||
                   beam.tools?.hingedSupport?.length >= 2 ||
                   (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
                   beam.fixedSupportLeft ||
                   beam.fixedSupportRight
-                ) ? (setState(setIsFigAvailable, beam.id, e.currentTarget.checked)) : (setState(setIsFigAvailable, beam.id, false),
-                  (setState(setShowAlert, beam.id, true)))
-              }
-              }
-            >
+                )
+              }>
+              <ToggleButton
+                id={`toggle-check-${beam.id}`}
+                type="checkbox"
+                variant="outline-primary"
+                checked={isFigAvailable[beam.id] && (
+                  beam.tools?.rollerSupport?.length >= 2 ||
+                  beam.tools?.hingedSupport?.length >= 2 ||
+                  (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
+                  beam.fixedSupportLeft ||
+                  beam.fixedSupportRight
+                )}
+                value="1"
+                onChange={(e) => {
+                  (
+                    beam.tools?.rollerSupport?.length >= 2 ||
+                    beam.tools?.hingedSupport?.length >= 2 ||
+                    (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
+                    beam.fixedSupportLeft ||
+                    beam.fixedSupportRight
+                  ) ? (setState(setIsFigAvailable, beam.id, e.currentTarget.checked)) : (setState(setIsFigAvailable, beam.id, false),
+                    (setState(setShowAlert, beam.id, true)))
+                }
+                }
+              >
                 {isFigAvailable[beam.id] && (
                   beam.tools?.rollerSupport?.length >= 2 ||
                   beam.tools?.hingedSupport?.length >= 2 ||
@@ -565,11 +569,11 @@ function Beam() {
                   beam.fixedSupportLeft ||
                   beam.fixedSupportRight
                 ) ? "Hide Diagrams" : "Show Diagrams"}
-            </ToggleButton>
-              </SendData>
+              </ToggleButton>
+            </SendData>
 
             {/* For Debugging purpose */}
-           {/* <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
+            {/* <button className='btn btn-outline-primary p-1' onClick={() => printInfo(beam.id)}>Info</button>
             <button className='btn btn-outline-primary p-1' onClick={() => console.clear()}>clear</button>  */}
 
             <SaveBeam setMessage={setMessage} beam={beam} changeOrAddBeamProperty={changeOrAddBeamProperty} />
@@ -579,17 +583,17 @@ function Beam() {
             }}>🗑️ Delete Beam</button>
           </div>
           {
-          plot[beam.id] && isFigAvailable[beam.id] && (
-            beam.tools?.rollerSupport?.length >= 2 ||
-            beam.tools?.hingedSupport?.length >= 2 ||
-            (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
-            beam.fixedSupportLeft ||
-            beam.fixedSupportRight
-          ) &&
-          <>
-            <MyCharts beamID={beam.id} plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit} />
-            <PDFGenerator beamID={beam.id}/>
-          </>       
+            plot[beam.id] && isFigAvailable[beam.id] && (
+              beam.tools?.rollerSupport?.length >= 2 ||
+              beam.tools?.hingedSupport?.length >= 2 ||
+              (beam.tools?.rollerSupport?.length + beam.tools?.hingedSupport?.length >= 2) ||
+              beam.fixedSupportLeft ||
+              beam.fixedSupportRight
+            ) &&
+            <>
+              <MyCharts beamID={beam.id} plot={plot[beam.id]} actualBeamLength={actualBeamLength} unit={beam.unit} loadUnit={beam.loadUnit} />
+              <PDFGenerator beamID={beam.id} />
+            </>
           }
 
         </div>
@@ -602,7 +606,7 @@ function Beam() {
         }>Add New Beam</button>
         <LoadBeam setBeams={setBeams} beams={beams} setMessage={setMessage} />
       </div>
-      
+
     </div>
 
   )

@@ -33,3 +33,22 @@ export function hexToRGBA(hex, opacity) {
 
   return `rgba(${r},${g},${b},${opacity})`;
 }
+
+
+export function convertToMeterUnit(value, unit, power) {
+  switch(unit) {
+      case 'm':
+          return value * Math.pow(1, power);
+      case 'cm':
+          return value * Math.pow(0.01, power);
+      case 'ft':
+          return value * Math.pow(0.3048, power);
+      case 'in':
+          return value * Math.pow(0.0254, power);
+      case 'mm':
+          return value * Math.pow(0.001, power);
+      default:
+          return "Invalid unit";
+  }
+}
+convertToMeterUnit(10,"cm",2)
